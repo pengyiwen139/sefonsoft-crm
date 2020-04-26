@@ -12,12 +12,6 @@
     <artifactId>crm-getway9527</artifactId>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>com.sefonsoft.oa</groupId>-->
-<!--            <artifactId>sefonsoft-crm</artifactId>-->
-<!--            <version>1.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
-        <!--gateway-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
@@ -38,11 +32,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-tomcat</artifactId>-->
-<!--            <version>1.3.5.RELEASE</version>-->
-<!--        </dependency>-->
         <!--一般基础配置类-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
