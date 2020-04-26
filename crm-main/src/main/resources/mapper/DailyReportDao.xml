@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.report.DailyReportDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.report.DailyReportInfo" id="DailyReportInfoMap">
+        <result property="id" column="info_id" jdbcType="INTEGER"/>
+        <result property="reportId" column="report_id" jdbcType="INTEGER"/>
+        <result property="infoType" column="info_type" jdbcType="INTEGER"/>
+        <result property="externalId" column="external_id" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="digest" column="digest" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="desc" column="info_desc" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="info_last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="info_create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.entity.report.DailyReport" id="DailyReportMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="reportType" column="report_type" jdbcType="INTEGER"/>
+        <result property="reportTime" column="report_time" jdbcType="TIMESTAMP"/>
+        <result property="reportStatus" column="report_status" jdbcType="INTEGER"/>
+        <result property="reportDesc" column="report_desc" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <!--一对多关系的时候，一方使用collection标签映射多方，属性就是Teacher对象中的集合属性名称。因为是集合类型，所以不能再直接使用column属性，需要使用另一个映射对象结果集合，该结果集合也是通过namespace.id指定。当然也可以不引用其他结果集合，在标签内部可以自己在定义临时的resultMap标签对象，比如id,result标签 -->
+        <collection property="dailyReportInfoList"
+                    resultMap="DailyReportInfoMap"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.entity.report.DailyReportStatistics" id="DailyReportStatisticsMap">
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.daily_report(employee_id, report_type, report_time, report_status, report_desc , last_time, create_time)
+        values (#{employeeId}, #{reportType}, #{reportTime}, #{reportStatus}, #{reportDesc}, #{lastTime}, #{createTime})
+    </insert>
+
+    <select id="queryById" parameterType="long" resultMap="DailyReportMap">
+        <!-- 对于相同的属性名称s.id和t.id以及s.name和t.name，一定要注意起别名，不然会冲突 -->
+        SELECT report.id,
+        report.employee_id,
+        report.report_type,
+        report.report_time,
+        report.report_status,
+        report.report_desc ,
+        report.last_time,
+        report.create_time,
+        info.info_id,
+        info.report_id,
+        info.info_type,
+        info.external_id,
+        info.status,
+        info.content,
+        info.info_desc,
+        info.last_time as info_last_time,
+        info.create_time as info_create_time
+        FROM daily_report report left join daily_report_info info on
+        report.id=info.report_id
+        WHERE report.id = #{id}
+    </select>
+
+    <select id="queryByIds" resultMap="DailyReportMap">
+        <!-- 对于相同的属性名称s.id和t.id以及s.name和t.name，一定要注意起别名，不然会冲突 -->
+        SELECT report.id,
+        report.employee_id,
+        report.report_type,
+        report.report_time,
+        report.report_status,
+        report.report_desc ,
+        report.last_time,
+        report.create_time,
+        info.info_id,
+        info.report_id,
+        info.info_type,
+        info.external_id,
+        info.status,
+        info.name,
+        info.digest,
+        info.content,
+        info.info_desc,
+        info.last_time as info_last_time,
+        info.create_time as info_create_time,
+        se.employee_name,
+        sd.dept_name
+        FROM daily_report report
+        left join daily_report_info info on report.id=info.report_id
+        left join sys_employee se on se.employee_id=report.employee_id
+        left join sys_department sd on se.dept_id = sd.dept_id
+        WHERE report.id in
+        <foreach item="drid" index="index" collection="ids" open="(" separator="," close=")">
+            #{drid}
+        </foreach>
+    </select>
+
+    <select id="getOneDayDetail" resultMap="DailyReportMap">
+        SELECT
+        report.id,
+        report.employee_id,
+        report.report_type,
+        report.report_time,
+        report.report_status,
+        report.report_desc ,
+        report.last_time,
+        report.create_time,
+        info.info_id,
+        info.report_id,
+        info.info_type,
+        info.external_id,
+        info.status,
+         info.name,
+        info.digest,
+        info.content,
+        info.info_desc,
+        info.last_time as info_last_time,
+        info.create_time as info_create_time,
+         se.employee_name,
+        sd.dept_name
+        FROM daily_report report
+        left join daily_report_info info on  report.id=info.report_id
+        left join sys_employee se on se.employee_id=report.employee_id
+        left join  sys_department sd on se.dept_id = sd.dept_id
+        WHERE report.report_time = #{reportTime} and report.employee_id = #{userId}
+    </select>
+
+    <select id="search" resultMap="DailyReportMap">
+        SELECT
+        report.id,
+        report.employee_id,
+        report.report_type,
+        report.report_time,
+        report.report_status,
+        report.report_desc ,
+        report.last_time,
+        report.create_time,
+        se.employee_name,
+        sd.dept_name
+        FROM daily_report report
+        left join sys_employee se on se.employee_id=report.employee_id
+        left join sys_department sd on se.dept_id = sd.dept_id
+        <if test="keyword != null and keyword != ''">
+            left JOIN daily_report_info info on report.id = info.report_id
+        </if>
+
+        <where>
+
+            <if test="startday != null and startday != ''">
+                <![CDATA[
+                and report.report_time >= #{startday}
+                  ]]>
+            </if>
+
+            <if test="endday != null and endday != ''">
+                <![CDATA[
+                 and report.report_time <= #{endday}
+                    ]]>
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                and locate(#{keyword},info.name)>0
+            </if>
+
+            <if test="users != null  and users.size()>0">
+                and report.employee_id in
+                <foreach item="employeeidid" index="index" collection="users" open="(" separator="," close=")">
+                    #{employeeidid}
+                </foreach>
+            </if>
+
+        </where>
+        GROUP BY
+        report.id,
+        report.employee_id,
+        report.report_type,
+        report.report_time,
+        report.report_status,
+        report.report_desc ,
+        report.last_time,
+        report.create_time,
+        se.employee_name,
+        sd.dept_name
+        order by report.create_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+
+
+    <select id="searchTotal" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM daily_report WHERE
+        id in (
+        SELECT
+        report.id
+        FROM daily_report report
+        <if test="keyword != null and keyword != ''">
+            left JOIN daily_report_info info on report.id = info.report_id
+        </if>
+        <where>
+
+            <if test="startday != null and startday != ''">
+                <![CDATA[
+                and report.report_time >= #{startday}
+                  ]]>
+            </if>
+
+            <if test="endday != null and endday != ''">
+                <![CDATA[
+                 and report.report_time <= #{endday}
+                    ]]>
+            </if>
+
+            <if test="keyword != null and keyword != ''">
+                and locate(#{keyword},info.name)>0
+            </if>
+
+            <if test="users != null  and users.size()>0">
+                and report.employee_id in
+                <foreach item="employeeidid" index="index" collection="users" open="(" separator="," close=")">
+                    #{employeeidid}
+                </foreach>
+            </if>
+
+        </where>
+        GROUP BY report.id
+        )
+    </select>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.daily_report
+        <set>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="reportType != null">
+                report_type = #{reportType},
+            </if>
+            <if test="reportTime != null and reportTime != '' ">
+                report_time = #{reportTime},
+            </if>
+            <if test="reportStatus != null">
+                report_status = #{reportStatus},
+            </if>
+            <if test="reportDesc != null and reportDesc != ''">
+                report_desc = #{reportDesc},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <select id="statistics" resultMap="DailyReportStatisticsMap">
+        SELECT se.employee_name, sd.dept_name,se.employee_id , COUNT(info.info_type) as count
+        from sys_employee se
+        left JOIN daily_report report on se.employee_id=report.employee_id
+        left JOIN daily_report_info info on report.id = info.report_id
+        and
+        <![CDATA[
+        report.report_time >= #{startday}
+          ]]>
+        and
+        <![CDATA[
+        report.report_time <= #{endday}
+          ]]>
+        and info.info_type = #{infoType}
+        left JOIN sys_department sd on se.dept_id = sd.dept_id
+        where
+        se.job_status = 1
+        and se.dept_id in
+        <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        GROUP by se.employee_name, sd.dept_name,se.employee_id
+        union
+        SELECT se.employee_name, sd.dept_name,se.employee_id , COUNT(info.info_type) as count
+        from sys_employee se
+        left JOIN daily_report report on se.employee_id=report.employee_id
+        left JOIN daily_report_info info on report.id = info.report_id
+        and
+        <![CDATA[
+        report.report_time >= #{startday}
+          ]]>
+        and
+        <![CDATA[
+        report.report_time <= #{endday}
+          ]]>
+        and info.info_type = #{infoType}
+        left JOIN sys_department sd on se.dept_id = sd.dept_id
+        where
+        se.job_status = 2
+        and
+        <![CDATA[
+        se.modified_time >= #{startday}
+          ]]>
+        and
+        <![CDATA[
+        se.modified_time <= #{endday}
+          ]]>
+        and se.dept_id in
+        <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        GROUP by se.employee_name, sd.dept_name,se.employee_id
+        ORDER by count DESC
+    </select>
+
+
+    <select id="statisticsDailly" resultMap="DailyReportStatisticsMap">
+        SELECT se.employee_name, sd.dept_name,se.employee_id ,COUNT(report.report_time) as count
+        from sys_employee se
+        left JOIN daily_report report on se.employee_id=report.employee_id
+        and
+        <![CDATA[
+        se.create_time <= #{endday}
+          ]]>
+        and
+        <![CDATA[
+        report.report_time >= #{startday}
+          ]]>
+        and
+        <![CDATA[
+        report.report_time <= #{endday}
+          ]]>
+        left JOIN sys_department sd on se.dept_id = sd.dept_id
+        where
+        se.job_status = 1
+        and se.dept_id in
+        <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        GROUP by se.employee_name, sd.dept_name,se.employee_id
+        union
+        SELECT se.employee_name, sd.dept_name,se.employee_id ,COUNT(report.report_time) as count
+        from sys_employee se
+        left JOIN daily_report report on se.employee_id=report.employee_id
+        and
+        <![CDATA[
+        se.create_time <= #{endday}
+          ]]>
+        and
+        <![CDATA[
+        report.report_time >= #{startday}
+          ]]>
+        and
+        <![CDATA[
+        report.report_time <= #{endday}
+          ]]>
+        left JOIN sys_department sd on se.dept_id = sd.dept_id
+        where
+        se.job_status = 2
+        and
+        <![CDATA[
+        se.modified_time >= #{startday}
+          ]]>
+        and
+        <![CDATA[
+        se.modified_time <= #{endday}
+          ]]>
+        and se.dept_id in
+        <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        GROUP by se.employee_name, sd.dept_name,se.employee_id
+        ORDER by count DESC
+    </select>
+
+
+</mapper>

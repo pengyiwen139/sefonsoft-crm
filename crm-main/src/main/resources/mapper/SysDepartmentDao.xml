@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.sysdepartment.SysDepartmentDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.sysdepartment.SysDepartment" id="SysDepartmentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+        <result property="directLeaderId" column="direct_leader_id" jdbcType="VARCHAR"/>
+        <result property="chargePersonId" column="charge_person_id" jdbcType="VARCHAR"/>
+        <result property="operatorUserId" column="operator_user_id" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="curStatus" column="cur_status" jdbcType="INTEGER"/>
+        <result property="ancestors" column="ancestors" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysDepartmentMap">
+        select
+          id, dept_id, dept_name, parent_id, direct_leader_id, charge_person_id, operator_user_id, remark, cur_status, ancestors, modified_time, create_time, order_num
+        from sefonoa.sys_department
+        where id = #{id}
+    </select>
+
+    <!--查询deptid单个-->
+    <select id="selectByDeptId" resultMap="SysDepartmentMap">
+        select
+          id, dept_id, dept_name, parent_id, direct_leader_id, charge_person_id, operator_user_id, remark, cur_status, ancestors, modified_time, create_time, order_num
+        from sefonoa.sys_department
+        where dept_id = #{deptId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysDepartmentMap">
+        select
+          id, dept_id, dept_name, parent_id, direct_leader_id, charge_person_id, operator_user_id, remark, cur_status, ancestors, modified_time, create_time, order_num
+        from sefonoa.sys_department
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysDepartmentMap">
+        select
+          id, dept_id, dept_name, parent_id, direct_leader_id, charge_person_id, operator_user_id, remark, cur_status, ancestors, modified_time, create_time, order_num
+        from sefonoa.sys_department
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+            <if test="directLeaderId != null and directLeaderId != ''">
+                and direct_leader_id = #{directLeaderId}
+            </if>
+            <if test="chargePersonId != null and chargePersonId != ''">
+                and charge_person_id = #{chargePersonId}
+            </if>
+            <if test="operatorUserId != null and operatorUserId != ''">
+                and operator_user_id = #{operatorUserId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="curStatus != null">
+                and cur_status = #{curStatus}
+            </if>
+            <if test="ancestors != null and ancestors != ''">
+                and ancestors = #{ancestors}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="orderNum != null">
+                and order_num = #{orderNum}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.sys_department(dept_id, dept_name, parent_id, direct_leader_id, charge_person_id, operator_user_id, remark, cur_status, ancestors, modified_time, create_time, order_num)
+        values (#{deptId}, #{deptName}, #{parentId}, #{directLeaderId}, #{chargePersonId}, #{operatorUserId}, #{remark}, #{curStatus}, #{ancestors}, #{modifiedTime}, #{createTime}, #{orderNum})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.sys_department
+        <set>
+            <if test="deptId != null and deptId != ''">
+                dept_id = #{deptId},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="parentId != null and parentId != ''">
+                parent_id = #{parentId},
+            </if>
+            <if test="directLeaderId != null">
+                direct_leader_id = #{directLeaderId},
+            </if>
+            <if test="chargePersonId != null">
+                charge_person_id = #{chargePersonId},
+            </if>
+            <if test="operatorUserId != null and operatorUserId != ''">
+                operator_user_id = #{operatorUserId},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="curStatus != null">
+                cur_status = #{curStatus},
+            </if>
+            <if test="ancestors != null and ancestors != ''">
+                ancestors = #{ancestors},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.sys_department where id = #{id}
+    </delete>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getCondition" resultType="com.sefonsoft.oa.domain.sysdepartment.SysDepartmentQueryDTO" parameterType="com.sefonsoft.oa.domain.sysdepartment.SysDepartmentQueryDTO">
+        select
+        bt.id, bt.dept_id, bt.dept_name, bt.parent_id, bt.direct_leader_id, a.employee_name directLeaderName, bt.charge_person_id, b.employee_name chargePersonName,bt.operator_user_id, bt.remark, bt.cur_status, bt.ancestors, bt.modified_time, bt.create_time, bt.order_num
+        from sys_department bt
+        left join sefonoa.sys_employee a on bt.direct_leader_id = a.employee_id
+        left join sefonoa.sys_employee b on bt.charge_person_id = b.employee_id
+        <where>
+            <if test="deptName != null">
+                AND bt.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="deptId != null">
+                AND bt.dept_id = #{deptId}
+            </if>
+
+        </where>
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.sysdepartment.SysDepartmentQueryDTO">
+        SELECT COUNT(1)
+        from sys_department bt
+        left join sefonoa.sys_employee a on bt.direct_leader_id = a.employee_id
+        left join sefonoa.sys_employee b on bt.charge_person_id = b.employee_id
+        <where>
+            <if test="deptName != null">
+                AND bt.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="deptId != null">
+                AND bt.dept_id = #{deptId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectDeptList" parameterType="com.sefonsoft.oa.entity.sysdepartment.SysDepartment" resultMap="SysDepartmentMap">
+        select
+        bt.id, bt.dept_id, bt.dept_name, bt.parent_id, bt.direct_leader_id, a.employee_name directLeaderName, b.employee_name chargePersonName,
+        bt.charge_person_id, bt.operator_user_id, bt.remark, bt.cur_status, bt.ancestors, bt.modified_time, bt.create_time, bt.order_num
+        from sys_department bt
+        left join sefonoa.sys_employee a on bt.direct_leader_id = a.employee_id
+        left join sefonoa.sys_employee b on bt.charge_person_id = b.employee_id
+        where 1 = 1
+        <if test="parentId != null and parentId != ''">
+            AND  bt.parent_id = #{parentId}
+        </if>
+        <if test="deptId != null">
+            AND bt.dept_id = #{deptId}
+        </if>
+        <if test="deptName != null and deptName != ''">
+            AND bt.dept_name like concat('%', #{deptName}, '%')
+        </if>
+        order by bt.dept_id
+    </select>
+
+    <select id="selectSaleDeptList" parameterType="com.sefonsoft.oa.entity.sysdepartment.SysDepartment" resultMap="SysDepartmentMap">
+        select
+        id, dept_id, dept_name, parent_id, direct_leader_id, charge_person_id, operator_user_id, remark, cur_status, ancestors, modified_time, create_time, order_num
+        from sys_department
+        where 1 = 1
+        <if test="parentId != null and parentId != ''">
+            AND  parent_id = #{parentId}
+        </if>
+
+        <if test="deptId != null">
+            AND (dept_id = #{deptId} OR dept_id IN (SELECT t.dept_id FROM sys_department t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        <if test="deptName != null and deptName != ''">
+            AND dept_name like concat('%', #{deptName}, '%')
+        </if>
+
+        order by dept_id
+    </select>
+    <!-- 修改子元素关系-->
+    <update id="updateDeptChildren" parameterType="java.util.List">
+        update sys_department set ancestors =
+        <foreach collection="depts" item="item" index="index"
+                 separator=" " open="case dept_id" close="end">
+            when #{item.deptId} then #{item.ancestors}
+        </foreach>
+        where dept_id in
+        <foreach collection="depts" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.deptId}
+        </foreach>
+    </update>
+    <!-- 查询部门数量-->
+    <select id="selectDeptCount" parameterType="com.sefonsoft.oa.entity.sysdepartment.SysDepartment" resultType="int">
+        select count(1) from sys_department
+        where cur_status = 1
+        <if test="parentId != null "> and parent_id = #{parentId} </if>
+    </select>
+
+    <!-- 查询同一父节点部门名称不能相同-->
+    <select id="checkDeptNameUnique"   resultType="int">
+        select count(1) from sys_department
+        where  dept_name=#{deptName} and parent_id = #{parentId}
+    </select>
+
+    <!-- 查询是否有相同部门编号-->
+    <select id="checkDeptIdUnique"   resultType="int">
+        select count(1) from sys_department
+        where  dept_id=#{deptId}
+    </select>
+    <!-- 获取最大部门编号-->
+    <select id="getMaxDeptId"   resultType="String">
+       select Max(dept_id) max_code from sys_department
+    </select>
+    <!-- 检查部门下是否存在员工-->
+    <select id="checkDeptExistUser" parameterType="String" resultType="int">
+		select count(1) from sys_employee where dept_id = #{deptId}
+	</select>
+
+    <select id="queryDeptIdByDeptName" resultType="java.lang.String">
+        select dept_id from sys_department where dept_name = #{deptName};
+    </select>
+
+</mapper>

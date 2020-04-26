@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.workorder.WorkorderApprovalInfoDao">
+
+    <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.workorder.WorkorderApprovalInfo">
+        <id column="id" property="id" />
+        <result column="pgd_id" property="pgdId" />
+        <result column="approval_id" property="approvalId" />
+        <result column="approval_result" property="approvalResult" />
+        <result column="approval_desc" property="approvalDesc" />
+        <result column="create_time" property="createTime" />
+        <result column="modified_time" property="modifiedTime" />
+    </resultMap>
+
+
+
+    <sql id="Base_Column_List">
+        id, pgd_id, approval_order, approval_id, approval_result, approval_desc, create_time, modified_time
+    </sql>
+
+    <insert id="insert" parameterType="com.sefonsoft.oa.entity.workorder.WorkorderApprovalInfo">
+      insert into workorder_approval_info(pgd_id, approval_order, approval_id, approval_result, approval_desc, create_time, modified_time)
+      values (
+        #{pgdId},
+        #{approvalOrder},
+        #{approvalId},
+        #{approvalResult},
+        #{approvalDesc},
+        #{createTime},
+        #{modifiedTime}
+      )
+    </insert>
+</mapper>

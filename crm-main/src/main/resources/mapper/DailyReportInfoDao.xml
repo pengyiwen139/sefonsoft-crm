@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.report.DailyReportInfoDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.report.DailyReportInfo" id="DailyReportInfoMap">
+        <result property="id" column="info_id" jdbcType="INTEGER"/>
+        <result property="reportId" column="report_id" jdbcType="INTEGER"/>
+        <result property="infoType" column="info_type" jdbcType="INTEGER"/>
+        <result property="externalId" column="external_id" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="digest" column="digest" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="desc" column="info_desc" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--新增日报信息-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.daily_report_info(report_id, info_type, external_id, status, name, digest, content, last_time, create_time)
+        values (#{reportId}, #{infoType}, #{externalId}, #{status}, #{name},#{digest},#{content}, #{lastTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.daily_report_info
+        <set>
+            <if test="infoType != null">
+                info_type = #{infoType},
+            </if>
+            <if test="externalId != null">
+                external_id = #{externalId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="desc != null and desc != ''">
+                info_desc = #{desc},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+        </set>
+        where info_id = #{id}
+    </update>
+
+
+    <select id="queryByReportId" parameterType="long" resultMap="DailyReportInfoMap">
+        SELECT
+        info.info_id,
+        info.report_id,
+        info.info_type,
+        info.external_id,
+        info.status,
+        info.name,
+        info.digest,
+        info.content,
+        info.info_desc,
+        info.last_time,
+        info.create_time
+        FROM daily_report_info info
+        WHERE info.report_id = #{reportId}
+    </select>
+
+</mapper>

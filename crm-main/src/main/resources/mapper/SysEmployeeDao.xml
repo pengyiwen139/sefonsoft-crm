@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.sysemployee.SysEmployeeDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.sysemployee.SysEmployee" id="SysEmployeeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="tel" column="tel" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="jobStatus" column="job_status" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="gradeId" column="grade_id" jdbcType="VARCHAR"/>
+        <result property="stationId" column="station_id" jdbcType="VARCHAR"/>
+        <result property="operatorUserId" column="operator_user_id" jdbcType="VARCHAR"/>
+        <result property="directLeaderId" column="direct_leader_id" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysEmployeeMap">
+        select
+          id, employee_id, employee_name, sex, tel, email, job_status, dept_id, grade_id, station_id, operator_user_id, direct_leader_id, remark, modified_time, create_time
+        from sefonoa.sys_employee
+        where id = #{id}
+    </select>
+
+
+    <!--查询单个-->
+    <select id="queryByIds" resultMap="SysEmployeeMap">
+        select
+          id, employee_id, employee_name, sex, tel, email, job_status, dept_id, grade_id, station_id, operator_user_id, direct_leader_id, remark, modified_time, create_time
+        from sys_employee
+        where employee_id = #{employeeId}
+    </select>
+
+
+    <select id="queryByEmployeeIds" resultMap="SysEmployeeMap">
+        select
+            id,
+               employee_id,
+               employee_name,
+               sex, tel,
+               email,
+               job_status,
+               dept_id,
+               grade_id,
+               station_id,
+               operator_user_id,
+               direct_leader_id,
+               remark,
+               modified_time,
+               create_time
+        from sys_employee
+        where employee_id in
+        <foreach collection="employeeIds" close=")" separator="," open="(" item="employeeId">
+            '${employeeId}'
+        </foreach>
+    </select>
+
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysEmployeeMap">
+        select
+          id, employee_id, employee_name, sex, tel, email, job_status, dept_id, grade_id, station_id, operator_user_id, direct_leader_id, remark, modified_time, create_time
+        from sefonoa.sys_employee
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysEmployeeMap">
+        select
+        id, employee_id, employee_name, sex, tel, email, job_status, dept_id, grade_id, station_id, operator_user_id,
+        direct_leader_id, remark, modified_time, create_time
+        from sefonoa.sys_employee
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee_name = #{employeeName}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="tel != null and tel != ''">
+                and tel = #{tel}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="jobStatus != null">
+                and job_status = #{jobStatus}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                and dept_id = #{deptId}
+            </if>
+            <if test="gradeId != null and gradeId != ''">
+                and grade_id = #{gradeId}
+            </if>
+            <if test="stationId != null and stationId != ''">
+                and station_id = #{stationId}
+            </if>
+            <if test="operatorUserId != null and operatorUserId != ''">
+                and operator_user_id = #{operatorUserId}
+            </if>
+            <if test="directLeaderId != null and directLeaderId != ''">
+                and direct_leader_id = #{directLeaderId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert sys_employee(employee_id,employee_name, sex, tel, email, job_status, dept_id, grade_id, station_id, operator_user_id, direct_leader_id, remark, modified_time, create_time)
+        values (#{employeeId},#{employeeName}, #{sex}, #{tel}, #{email}, #{jobStatus}, #{deptId}, #{gradeId}, #{stationId}, #{operatorUserId}, #{directLeaderId}, #{remark}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.sys_employee
+        <set>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                employee_name = #{employeeName},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="jobStatus != null">
+                job_status = #{jobStatus},
+            </if>
+            <if test="deptId != null and deptId != ''">
+                dept_id = #{deptId},
+            </if>
+            <if test="gradeId != null and gradeId != ''">
+                grade_id = #{gradeId},
+            </if>
+            <if test="stationId != null and stationId != ''">
+                station_id = #{stationId},
+            </if>
+            <if test="operatorUserId != null and operatorUserId != ''">
+                operator_user_id = #{operatorUserId},
+            </if>
+            <if test="directLeaderId != null and directLeaderId != ''">
+                direct_leader_id = #{directLeaderId},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sys_employee where id = #{id}
+    </delete>
+
+    <!--通过主键删除-->
+    <delete id="deleteByEmployeeId">
+        delete from sys_employee where employee_id = #{employeeId}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteByIds">
+        delete from sys_employee where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--employee_id批量删除-->
+    <delete id="deleteByEmployeeIds">
+        delete from sys_employee where employee_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--user_id批量删除-->
+    <delete id="deleteByUserIds">
+        delete from sys_user where user_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--user_id批量删除-->
+    <delete id="deleteUserRoleByUserIds">
+        delete from sys_user_role where user_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!-- AND (a.dept_id = #{deptId} OR a.dept_id IN (SELECT t.dept_id FROM sys_department t WHERE FIND_IN_SET (#{deptId},ancestors) )) -->
+
+    <!-- 按条件查询列表 -->
+    <select id="getCondition" resultType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO"
+            parameterType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO">
+        select
+        a.id, e.user_id, a.employee_id, a.employee_name, a.sex, a.tel, a.email, a.job_status, a.dept_id,b.dept_name,
+        a.grade_id,c.grade_name, a.station_id,d.station_name,a.operator_user_id, a.direct_leader_id, a.remark,
+        a.modified_time, a.create_time
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        left join sys_user e on e.user_id = a.employee_id
+        <where>
+            AND a.employee_id != 'admin'
+            AND job_status = 1
+            <if test="deptId != null">
+                and a.dept_id = #{deptId}
+            </if>
+            <if test="deptName != null">
+                AND b.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeName != null">
+                AND a.employee_name LIKE CONCAT('%',#{employeeName, jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="employeeId != null">
+                AND a.employee_id = #{employeeId}
+            </if>
+            <if test="gradeId != null">
+                AND a.grade_id = #{gradeId}
+            </if>
+            <if test="stationId != null">
+                AND a.station_id = #{stationId}
+            </if>
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                and a.dept_id in
+                <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+        </where>
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+
+    <!--AND (a.dept_id = #{deptId} OR a.dept_id IN (SELECT t.dept_id FROM sys_department t WHERE FIND_IN_SET (#{deptId},ancestors) ))-->
+    <!-- 按条件查询总条数 -->
+    <select id="findCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO">
+        SELECT COUNT(1)
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        <where>
+            AND a.employee_id != 'admin'
+            AND job_status = 1
+            <if test="deptId != null">
+                and a.dept_id = #{deptId}
+            </if>
+            <if test="deptName != null">
+                AND b.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeName != null">
+                AND a.employee_name LIKE CONCAT('%',#{employeeName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeId != null">
+                AND a.employee_id = #{employeeId}
+            </if>
+
+            <if test="gradeId != null">
+                AND a.grade_id = #{gradeId}
+            </if>
+            <if test="stationId != null">
+                AND a.station_id = #{stationId}
+            </if>
+
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                and a.dept_id in
+                <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!-- 查询是否有相同员工编号-->
+    <select id="checkUnique" resultType="int">
+        select count(1) from sys_employee
+        where  employee_id=#{employeeId}
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getList" resultType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO"
+            parameterType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO">
+        select
+        a.id, a.employee_id, a.employee_name, a.sex, a.tel, a.email, a.job_status, a.dept_id,b.dept_name,
+        a.grade_id,c.grade_name, a.station_id,d.station_name,a.operator_user_id, a.direct_leader_id, a.remark,
+        a.modified_time, a.create_time
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        <where>
+            AND a.job_status=1
+            <if test="deptId != null">
+                AND (a.dept_id = #{deptId} OR a.dept_id IN (SELECT t.dept_id FROM sys_department t WHERE FIND_IN_SET
+                (#{deptId},ancestors) ))
+            </if>
+            <if test="deptName != null">
+                AND b.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeName != null">
+                AND a.employee_name LIKE CONCAT('%',#{employeeName, jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="employeeId != null">
+                AND a.employee_id = #{employeeId}
+            </if>
+            <if test="gradeId != null">
+                AND a.grade_id = #{gradeId}
+            </if>
+            <if test="stationId != null">
+                AND a.station_id = #{stationId}
+            </if>
+
+        </where>
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionList" resultType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO">
+        select distinct
+        a.id, e.user_id, a.employee_id, a.employee_name, a.sex, a.tel, a.email, a.job_status, a.dept_id,b.dept_name,
+        a.grade_id,c.grade_name, a.station_id,d.station_name,a.operator_user_id, a.direct_leader_id, a.remark,
+        a.modified_time, a.create_time
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        left join sys_user e on e.user_id = a.employee_id
+        <where>a.job_status=1 AND
+            b.dept_id in
+            <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")">
+                #{dataDeptIdList}
+            </foreach>
+            <if test="employeeQueryDTO.employeeId != null and employeeQueryDTO.employeeId !=''">
+                OR a.employee_id = #{employeeQueryDTO.employeeId}
+            </if>
+            <if test="employeeQueryDTO.deptName != null">
+                AND b.dept_name LIKE CONCAT('%',#{employeeQueryDTO.deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeQueryDTO.employeeName != null">
+                AND a.employee_name LIKE CONCAT('%',#{employeeQueryDTO.employeeName, jdbcType=VARCHAR},'%')
+            </if>
+
+        </where>
+        <if test="employeeQueryDTO.offset != null and employeeQueryDTO.rows != null">
+            limit #{employeeQueryDTO.offset}, #{employeeQueryDTO.rows}
+        </if>
+    </select>
+
+    <select id="getConditionListSupportLeave" resultType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO">
+        select distinct
+        a.id, e.user_id, a.employee_id, a.employee_name, a.sex, a.tel, a.email, a.job_status, a.dept_id,b.dept_name,
+        a.grade_id,c.grade_name, a.station_id,d.station_name,a.operator_user_id, a.direct_leader_id, a.remark,
+        a.modified_time, a.create_time
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        left join sys_user e on e.user_id = a.employee_id
+        <where>
+
+            AND b.dept_id in
+            <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")">
+                #{dataDeptIdList}
+            </foreach>
+            <if test="employeeQueryDTO.employeeId != null and employeeQueryDTO.employeeId !=''">
+                OR a.employee_id = #{employeeQueryDTO.employeeId}
+            </if>
+            <if test="employeeQueryDTO.deptName != null">
+                AND b.dept_name LIKE CONCAT('%',#{employeeQueryDTO.deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeQueryDTO.employeeName != null">
+                AND a.employee_name LIKE CONCAT('%',#{employeeQueryDTO.employeeName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeQueryDTO.gradeId != null">
+                AND c.grade_id LIKE CONCAT('%',#{employeeQueryDTO.gradeId, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeQueryDTO.gradeName != null">
+                AND c.grade_name LIKE CONCAT('%',#{employeeQueryDTO.gradeName, jdbcType=VARCHAR},'%')
+            </if>
+
+
+        </where>
+        <if test="employeeQueryDTO.offset != null and employeeQueryDTO.rows != null">
+            limit #{employeeQueryDTO.offset}, #{employeeQueryDTO.rows}
+        </if>
+    </select>
+
+    <!-- 查询部门所有员工，包括已离职的 -->
+    <select id="getAllEmployeeInDepts" resultType="com.sefonsoft.oa.domain.sysemployee.SysEmployeeQueryDTO" >
+        select distinct
+        a.id, e.user_id, a.employee_id, a.employee_name, a.sex, a.tel, a.email, a.job_status, a.dept_id,b.dept_name,
+        a.grade_id,c.grade_name, a.station_id,d.station_name,a.operator_user_id, a.direct_leader_id, a.remark,
+        a.modified_time, a.create_time
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        left join sys_user e on e.user_id = a.employee_id
+        <where>
+            a.job_status=1
+            AND b.dept_id in
+            <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")">
+                #{dataDeptIdList}
+            </foreach>
+        </where>
+        union
+        select distinct
+        a.id, e.user_id, a.employee_id, a.employee_name, a.sex, a.tel, a.email, a.job_status, a.dept_id,b.dept_name,
+        a.grade_id,c.grade_name, a.station_id,d.station_name,a.operator_user_id, a.direct_leader_id, a.remark,
+        a.modified_time, a.create_time
+        from sys_employee a
+        left join sys_department b on a.dept_id=b.dept_id
+        left join grade_info c on a.grade_id = c.grade_id
+        left join station_info d on a.station_id=d.station_id
+        left join sys_user e on e.user_id = a.employee_id
+        <where>
+            a.job_status=2
+            AND b.dept_id in
+            <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")">
+                #{dataDeptIdList}
+            </foreach>
+            <if test="startDate != null">
+                and
+                <![CDATA[
+                a.modified_time >= #{startDate}
+                  ]]>
+            </if>
+            <if test="endDate != null">
+                and
+                <![CDATA[
+                a.modified_time <= #{endDate}
+                  ]]>
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getApproverList" resultType="com.sefonsoft.oa.entity.sysemployee.SysEmployee" parameterType="list">
+        select * from sys_employee where employee_id in
+        <foreach collection="userIds" item="ud" open="(" close=")" separator=",">
+            #{ud}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sefonsoft.oa.dao.trans.TransDao">
+    <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.trans.Trans">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="orgId" property="orgId" jdbcType="BIGINT"/>
+        <result column="transCode" property="transCode" jdbcType="CHAR"/>
+        <result column="assetCode" property="assetCode" jdbcType="CHAR"/>
+        <result column="transName" property="transName" jdbcType="VARCHAR"/>
+        <result column="transStatus" property="transStatus" jdbcType="CHAR"/>
+        <result column="instalTime" property="instalTime" jdbcType="TIMESTAMP"/>
+        <result column="pubSpeFlag" property="pubSpeFlag" jdbcType="CHAR"/>
+        <result column="dataStatus" property="dataStatus" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, orgId, transCode, assetCode, transName, transStatus, instalTime, pubSpeFlag, 
+    dataStatus
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from br_trans
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from br_trans
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.sefonsoft.oa.entity.trans.Trans">
+    insert into br_trans (id, orgId, transCode, 
+      assetCode, transName, transStatus, 
+      instalTime, pubSpeFlag, dataStatus
+      )
+    values (#{id,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{transCode,jdbcType=CHAR}, 
+      #{assetCode,jdbcType=CHAR}, #{transName,jdbcType=VARCHAR}, #{transStatus,jdbcType=CHAR}, 
+      #{instalTime,jdbcType=TIMESTAMP}, #{pubSpeFlag,jdbcType=CHAR}, #{dataStatus,jdbcType=TINYINT}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.sefonsoft.oa.entity.trans.Trans">
+        insert into br_trans
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="orgId != null">
+                orgId,
+            </if>
+            <if test="transCode != null">
+                transCode,
+            </if>
+            <if test="assetCode != null">
+                assetCode,
+            </if>
+            <if test="transName != null">
+                transName,
+            </if>
+            <if test="transStatus != null">
+                transStatus,
+            </if>
+            <if test="instalTime != null">
+                instalTime,
+            </if>
+            <if test="pubSpeFlag != null">
+                pubSpeFlag,
+            </if>
+            <if test="dataStatus != null">
+                dataStatus,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="transCode != null">
+                #{transCode,jdbcType=CHAR},
+            </if>
+            <if test="assetCode != null">
+                #{assetCode,jdbcType=CHAR},
+            </if>
+            <if test="transName != null">
+                #{transName,jdbcType=VARCHAR},
+            </if>
+            <if test="transStatus != null">
+                #{transStatus,jdbcType=CHAR},
+            </if>
+            <if test="instalTime != null">
+                #{instalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pubSpeFlag != null">
+                #{pubSpeFlag,jdbcType=CHAR},
+            </if>
+            <if test="dataStatus != null">
+                #{dataStatus,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.sefonsoft.oa.entity.trans.Trans">
+        update br_trans
+        <set>
+            <if test="orgId != null">
+                orgId = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="transCode != null">
+                transCode = #{transCode,jdbcType=CHAR},
+            </if>
+            <if test="assetCode != null">
+                assetCode = #{assetCode,jdbcType=CHAR},
+            </if>
+            <if test="transName != null">
+                transName = #{transName,jdbcType=VARCHAR},
+            </if>
+            <if test="transStatus != null">
+                transStatus = #{transStatus,jdbcType=CHAR},
+            </if>
+            <if test="instalTime != null">
+                instalTime = #{instalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pubSpeFlag != null">
+                pubSpeFlag = #{pubSpeFlag,jdbcType=CHAR},
+            </if>
+            <if test="dataStatus != null">
+                dataStatus = #{dataStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.entity.trans.Trans">
+    update br_trans
+    set orgId = #{orgId,jdbcType=BIGINT},
+      transCode = #{transCode,jdbcType=CHAR},
+      assetCode = #{assetCode,jdbcType=CHAR},
+      transName = #{transName,jdbcType=VARCHAR},
+      transStatus = #{transStatus,jdbcType=CHAR},
+      instalTime = #{instalTime,jdbcType=TIMESTAMP},
+      pubSpeFlag = #{pubSpeFlag,jdbcType=CHAR},
+      dataStatus = #{dataStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

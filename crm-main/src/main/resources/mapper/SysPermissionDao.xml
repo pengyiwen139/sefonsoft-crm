@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.permission.SysPermissionDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.permission.SysPermission" id="SysPermissionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="menuId" column="menu_id" jdbcType="VARCHAR"/>
+        <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+        <result property="perms" column="perms" jdbcType="VARCHAR"/>
+        <result property="hasChecked" column="has_checked" jdbcType="INTEGER"/>
+        <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="menuType" column="menu_type" jdbcType="VARCHAR"/>
+        <result property="visible" column="visible" jdbcType="VARCHAR"/>
+        <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.domain.permission.SysPermissionTreeDTO" id="PermissionTreeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="menuId" column="menu_id" jdbcType="VARCHAR"/>
+        <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+        <result property="perms" column="perms" jdbcType="VARCHAR"/>
+        <result property="hasChecked" column="has_checked" jdbcType="INTEGER"/>
+        <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="menuType" column="menu_type" jdbcType="VARCHAR"/>
+        <result property="visible" column="visible" jdbcType="VARCHAR"/>
+        <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysPermissionMap">
+        select
+          id, menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, app_id, icon, remark, modified_time, create_time
+        from sefonoa.sys_permission
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysPermissionMap">
+        select
+          id, menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, app_id, icon, remark, modified_time, create_time
+        from sefonoa.sys_permission
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysPermissionMap">
+        select
+          id, menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, app_id, icon, remark, modified_time, create_time
+        from sefonoa.sys_permission
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="menuId != null and menuId != ''">
+                and menu_id = #{menuId}
+            </if>
+            <if test="menuName != null and menuName != ''">
+                and menu_name = #{menuName}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+            <if test="orderNum != null">
+                and order_num = #{orderNum}
+            </if>
+            <if test="url != null and url != ''">
+                and url = #{url}
+            </if>
+            <if test="menuType != null and menuType != ''">
+                and menu_type = #{menuType}
+            </if>
+            <if test="visible != null and visible != ''">
+                and visible = #{visible}
+            </if>
+            <if test="perms != null and perms != ''">
+                and perms = #{perms}
+            </if>
+            <if test="appId != null and appId != ''">
+                and app_id = #{appId}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryTreeNeed" resultMap="PermissionTreeMap">
+        select
+            id, menu_id, menu_name, parent_id, perms, order_num, has_checked, url, menu_type, visible, app_id, icon, remark, modified_time, create_time
+        from sefonoa.sys_permission
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="menuId != null and menuId != ''">
+                and menu_id = #{menuId}
+            </if>
+            <if test="menuName != null and menuName != ''">
+                and menu_name = #{menuName}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                and parent_id = #{parentId}
+            </if>
+            <if test="orderNum != null">
+                and order_num = #{orderNum}
+            </if>
+            <if test="hasChecked != null">
+                and has_checked = #{hasChecked}
+            </if>
+            <if test="url != null and url != ''">
+                and url = #{url}
+            </if>
+            <if test="menuType != null and menuType != ''">
+                and menu_type = #{menuType}
+            </if>
+            <if test="visible != null and visible != ''">
+                and visible = #{visible}
+            </if>
+            <if test="perms != null and perms != ''">
+                and perms = #{perms}
+            </if>
+            <if test="appId != null and appId != ''">
+                and app_id = #{appId}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="countByMenuId" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_permission where menu_id = #{menuId}
+    </select>
+
+    <select id="batchCountChild" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_permission where parent_id in
+            <foreach collection="menuIdList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </select>
+
+    <select id="countInUsed" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_role_permission where menu_id in
+            <foreach collection="menuIdList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </select>
+
+    <select id="batchGetMenuIdById" resultType="java.lang.String">
+        select menu_id from sefonoa.sys_permission where id in
+            <foreach collection="idList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.sys_permission(menu_id, menu_name, parent_id, order_num, url, menu_type, visible, perms, app_id, icon, remark, modified_time, create_time)
+        values (#{menuId}, #{menuName}, #{parentId}, #{orderNum}, #{url}, #{menuType}, #{visible}, #{perms}, #{appId}, #{icon}, #{remark}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.sys_permission
+        <set>
+            <if test="menuId != null and menuId != ''">
+                menu_id = #{menuId},
+            </if>
+            <if test="menuName != null and menuName != ''">
+                menu_name = #{menuName},
+            </if>
+            <if test="parentId != null and parentId != ''">
+                parent_id = #{parentId},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+            <if test="url != null and url != ''">
+                url = #{url},
+            </if>
+            <if test="menuType != null and menuType != ''">
+                menu_type = #{menuType},
+            </if>
+            <if test="visible != null and visible != ''">
+                visible = #{visible},
+            </if>
+            <if test="perms != null and perms != ''">
+                perms = #{perms},
+            </if>
+            <if test="appId != null and appId != ''">
+                app_id = #{appId},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="batchDeleteById">
+        delete from sefonoa.sys_permission where id in
+            <foreach collection="idList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </delete>
+
+</mapper>

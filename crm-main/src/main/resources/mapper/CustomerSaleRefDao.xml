@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.customer.CustomerSaleRefDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.customer.CustomerSaleRef" id="CustomerSaleRefMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="cowner" column="cowner" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CustomerSaleRefMap">
+        select
+          id, customer_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.customer_sale_ref
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CustomerSaleRefMap">
+        select
+          id, customer_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.customer_sale_ref
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="CustomerSaleRefMap">
+        select
+          id, customer_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.customer_sale_ref
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and customer_id = #{customerId}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="cowner != null and cowner != ''">
+                and cowner = #{cowner}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into customer_sale_ref(customer_id, employee_id, cowner, operator, last_time, create_time)
+        values (#{customerId}, #{employeeId}, #{cowner}, #{operator}, #{lastTime}, #{createTime})
+    </insert>
+
+    <insert id="batchInsert">
+        insert into customer_sale_ref(customer_id, employee_id, cowner, operator, last_time, create_time)
+        values
+        <foreach collection="batch" item="cs" separator=",">
+             (#{cs.customerId}, #{cs.employeeId}, #{cs.cowner}, #{cs.operator}, #{cs.lastTime}, #{cs.createTime})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.customer_sale_ref
+        <set>
+            <if test="customerId != null and customerId != ''">
+                customer_id = #{customerId},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="cowner != null and cowner != ''">
+                cowner = #{cowner},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过客户编号修改数据-->
+    <update id="batchUpdate" >
+        update customer_sale_ref
+        <set>
+
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="cowner != null and cowner != ''">
+                cowner = #{cowner},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+        </set>
+        where locate (customer_id,#{customerId}) > 0
+    </update>
+
+
+    <!--通过客户编号修改数据-->
+    <update id="customerUpdate" >
+        update customer_sale_ref
+        <set>
+
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="cowner != null ">
+                cowner = #{cowner}
+            </if>
+        </set>
+        where customer_id = #{customerId}
+    </update>
+
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from customer_sale_ref where id = #{id}
+    </delete>
+    
+    <!-- deleteRef -->
+    <delete id="deleteRef">
+        delete from customer_sale_ref where customer_id = #{customerId} AND employee_id = #{employeeId}
+    </delete>
+
+    <!--通过customerId删除-->
+    <delete id="deleteByCustomerId">
+        delete from customer_sale_ref where customer_id = #{customerId}
+    </delete>
+
+    <!--customerId查询对象-->
+    <select id="findCustomerSaleRef" resultMap="CustomerSaleRefMap" parameterType="com.sefonsoft.oa.entity.customer.CustomerSaleRef">
+        select
+          id, customer_id, employee_id, cowner, operator, last_time, create_time
+        from  customer_sale_ref
+        where customer_id = #{customerId}
+    </select>
+
+    <!--customerId查询对象-->
+    <select id="findCustomerByCustomerIds" resultMap="CustomerSaleRefMap">
+        select
+            id, customer_id, employee_id, cowner, operator, last_time, create_time
+        from  customer_sale_ref
+        where customer_id in
+        <foreach collection="customerIds" index="ide" item="customerId" open="(" separator="," close=")">
+            '${customerId}'
+        </foreach>
+    </select>
+    
+    <!-- 测试关系 -->
+    <select id="countRef" resultType="java.lang.Integer">
+      select count(*) from customer_sale_ref where customer_id = #{customerId} AND employee_id = #{employeeId}
+    </select>
+
+    <select id="refInfo" resultType="com.sefonsoft.oa.entity.customer.CustomerSaleRef">
+        select * from customer_sale_ref where customer_id = #{customerId} AND employee_id = #{employeeId}
+    </select>
+
+    <delete id="deleteRefByProjectId">
+      delete from customer_sale_ref 
+        where 
+        customer_id = (select customer_id from project_info where project_id = #{projectId})
+        and employee_id = (select employee_id from project_sale_ref where project_id = #{projectId})
+    </delete>
+
+    <select id="findByCustomerId" resultType="java.lang.String">
+        select employee_id from customer_sale_ref where customer_id = #{customerId}
+    </select>
+</mapper>

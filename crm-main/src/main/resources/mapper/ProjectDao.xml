@@ -1,0 +1,2460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.project.ProjectDao">
+
+
+    <!-- 查询是否是子部门-->
+    <select id="contain"   resultType="int">
+       select #{deptId} IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptIds},ancestors) )
+
+    </select>
+
+    <!-- 导出项目全量数据 -->
+    <select id="getConditionAlls" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryExpDTO" >
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        a.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        a.contact_name as contacts,
+        a.contact_dept_name as contactDeptName,
+        a.contact_job as contactJob,
+        a.contact_tel as contactTel,
+
+        a.partner_id as partnerId,
+        a.partner_name as partnerName,
+        a.partner_contact_dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        a.partner_contact_name as customerContact,
+        a.partner_contact_tel as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion,
+        n.product_name as productName,
+        m.sale_count as saleCount,
+        m.amount as amount
+
+        from project_info a
+        left join  product_project_ref m  on a.project_id = m.project_id
+        left join  product_info n on m.product_id = n.product_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+
+
+        where
+         <!-- 删除标识 -->
+          a.is_delete = 0
+
+        order by i.check_status asc,a.last_time desc
+
+    </select>
+    <!-- 导出项目全量数据 -->
+    <select id="getConditionAllss" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryExpDTO" >
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        a.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        a.contact_name as contacts,
+        a.contact_dept_name as contactDeptName,
+        a.contact_job as contactJob,
+        a.contact_tel as contactTel,
+
+        a.partner_id as partnerId,
+        a.partner_name as partnerName,
+        a.partner_contact_dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        a.partner_contact_name as customerContact,
+        a.partner_contact_tel as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion,
+        n.product_name as productName,
+        m.sale_count as saleCount,
+        m.amount as amount
+
+        from project_info a
+        left join  product_project_ref m  on a.project_id = m.project_id
+        left join  product_info n on m.product_id = n.product_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+
+        where
+          <!-- 删除标识 -->
+          a.is_delete = 0
+
+        order by i.check_status asc,a.last_time desc
+
+    </select>
+
+
+
+    <!-- 导出项目全量数据 -->
+    <select id="getConditionAll" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" >
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where> 1=1
+
+          <!-- 删除标识 -->
+          and a.is_delete = 0
+
+        </where>
+        order by i.check_status asc,a.last_time desc
+
+    </select>
+
+    <!-- 按条件查询列表，控制数据权限 -->
+    <select id="getConditionList" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" >
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion,
+        <if test="projectInfoQueryDTO.includeMe != null">
+            case b.employee_id when #{projectInfoQueryDTO.includeMe} then 1 else 0 end topMe,
+        </if>
+        i.last_time checkDate
+        
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where> 
+
+        	<!-- 删除标识 -->
+            a.is_delete = 0
+
+            <choose>
+            
+              <!-- 资源池查询 -->
+              <when test="projectInfoQueryDTO.shareProjects">
+                <choose>
+                  <!-- 所有资源 -->
+                  <when test="projectInfoQueryDTO.overTimeFlag == null">
+                    AND (
+                      <!-- 公司资源池 -->
+                      a.over_time_flag = 2 
+                      OR (
+                          <!-- 大区资源池 + 权限 -->
+                          a.over_time_flag = 1 AND d.dept_id  in
+                          <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                              #{dataDeptIdList}
+                          </foreach>
+                        )
+                    )
+                  </when>
+                  <!-- 公司资源池 -->
+                  <when test="projectInfoQueryDTO.overTimeFlag == 2">
+                    AND  a.over_time_flag = 2
+                  </when>
+                  <!-- 大区资源池 -->
+                  <otherwise>
+                    AND a.over_time_flag = 1 AND d.dept_id  in
+                    <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                        #{dataDeptIdList}
+                    </foreach>
+                  </otherwise>
+                </choose>
+              </when> <!-- END 资源池查询 -->
+              
+              <!-- 正常项目查询 -->
+              <otherwise>
+                  <!-- 未过期的项目 -->
+                  AND a.over_time_flag = 0
+                  <choose>
+                    <!-- 所有 -->
+                    <when test="projectInfoQueryDTO.scope == 1">
+                      AND (
+                        <!-- 自己 -->
+                        b.employee_id = #{projectInfoQueryDTO.includeMe}
+                        OR (
+                          <!-- 大区 -->
+                          a.over_time_flag = 0 AND d.dept_id  in
+                          <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                              #{dataDeptIdList}
+                          </foreach>
+                        )
+                      )
+                    </when> <!-- END 所有 -->
+
+                    <!-- 只查大区 -->
+                    <when test = "projectInfoQueryDTO.scope == 2">
+                      AND d.dept_id  in
+                      <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                          #{dataDeptIdList}
+                      </foreach>
+                    </when>
+
+                    <!-- 只查自己 -->
+                    <otherwise>
+                      AND b.employee_id = #{projectInfoQueryDTO.includeMe}
+                    </otherwise>
+                  </choose>
+              </otherwise> <!-- END 正常项目查询 -->
+            </choose>
+            
+            <if test="projectInfoQueryDTO.projectName != null and projectInfoQueryDTO.projectName !=''">
+                AND 
+                (a.project_name LIKE CONCAT('%',#{projectInfoQueryDTO.projectName, jdbcType=VARCHAR},'%')
+                OR
+                a.project_id = #{projectInfoQueryDTO.projectName, jdbcType=VARCHAR}
+                OR 
+                m.customer_name LIKE CONCAT('%',#{projectInfoQueryDTO.projectName, jdbcType=VARCHAR},'%')
+                )
+            </if>
+            <if test="projectInfoQueryDTO.year != null and projectInfoQueryDTO.year != ''">
+                and YEAR(a.create_time) = #{projectInfoQueryDTO.year}
+            </if>
+            <if test='projectInfoQueryDTO.halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='projectInfoQueryDTO.halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="projectInfoQueryDTO.month != null and projectInfoQueryDTO.month != ''">
+                and MONTH(a.create_time) = #{projectInfoQueryDTO.month}
+            </if>
+            <if test="projectInfoQueryDTO.checkStatuses!=null">
+                and i.check_status in
+                <foreach collection="projectInfoQueryDTO.checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                     #{checkStatus}
+                </foreach>
+            </if>
+            <if test="projectInfoQueryDTO.employeeId != null and projectInfoQueryDTO.employeeId != ''">
+                AND c.employee_id = #{projectInfoQueryDTO.employeeId}
+            </if>
+            <if test="projectInfoQueryDTO.spstageId != null and projectInfoQueryDTO.spstageId != ''">
+                AND a.spstage_id = #{projectInfoQueryDTO.spstageId}
+            </if>
+            <if test="projectInfoQueryDTO.hasImportant != null">
+                AND a.has_important = #{projectInfoQueryDTO.hasImportant}
+            </if>
+        </where>
+        order by 
+          <if test="projectInfoQueryDTO.includeMe != null">
+            topMe desc,
+          </if>
+          a.last_time desc,
+          i.check_status asc
+          <if test="projectInfoQueryDTO.shareProjects">
+            , checkDate desc
+          </if>
+        <if test="projectInfoQueryDTO.offset != null and projectInfoQueryDTO.rows != null">
+            limit #{projectInfoQueryDTO.offset}, #{projectInfoQueryDTO.rows}
+        </if>
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionListCount" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where> 
+
+        	<!-- 删除标识 -->
+            a.is_delete = 0
+
+            <choose>
+            
+              <!-- 资源池查询 -->
+              <when test="projectInfoQueryDTO.shareProjects">
+                <choose>
+                  <!-- 所有资源 -->
+                  <when test="projectInfoQueryDTO.overTimeFlag == null">
+                    AND (
+                      <!-- 公司资源池 -->
+                      a.over_time_flag = 2 
+                      OR (
+                          <!-- 大区资源池 + 权限 -->
+                          a.over_time_flag = 1 AND d.dept_id  in
+                          <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                              #{dataDeptIdList}
+                          </foreach>
+                        )
+                    )
+                  </when>
+                  <!-- 公司资源池 -->
+                  <when test="projectInfoQueryDTO.overTimeFlag == 2">
+                    AND  a.over_time_flag = 2
+                  </when>
+                  <!-- 大区资源池 -->
+                  <otherwise>
+                    AND a.over_time_flag = 1 AND d.dept_id  in
+                    <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                        #{dataDeptIdList}
+                    </foreach>
+                  </otherwise>
+                </choose>
+              </when> <!-- END 资源池查询 -->
+              
+              <!-- 正常项目查询 -->
+              <otherwise>
+                  <!-- 未过期的项目 -->
+                  AND a.over_time_flag = 0
+                  <choose>
+                    <!-- 所有 -->
+                    <when test="projectInfoQueryDTO.scope == 1">
+                      AND (
+                        <!-- 自己 -->
+                        b.employee_id = #{projectInfoQueryDTO.includeMe}
+                        OR (
+                          <!-- 大区 -->
+                          a.over_time_flag = 0 AND d.dept_id  in
+                          <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                              #{dataDeptIdList}
+                          </foreach>
+                        )
+                      )
+                    </when> <!-- END 所有 -->
+
+                    <!-- 只查大区 -->
+                    <when test = "projectInfoQueryDTO.scope == 2">
+                      AND d.dept_id  in
+                      <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                          #{dataDeptIdList}
+                      </foreach>
+                    </when>
+
+                    <!-- 只查自己 -->
+                    <otherwise>
+                      AND b.employee_id = #{projectInfoQueryDTO.includeMe}
+                    </otherwise>
+                  </choose>
+              </otherwise> <!-- END 正常项目查询 -->
+            </choose>
+            
+            <if test="projectInfoQueryDTO.projectName != null and projectInfoQueryDTO.projectName !=''">
+                AND 
+                (a.project_name LIKE CONCAT('%',#{projectInfoQueryDTO.projectName, jdbcType=VARCHAR},'%')
+                OR
+                a.project_id = #{projectInfoQueryDTO.projectName, jdbcType=VARCHAR}
+                OR 
+                m.customer_name LIKE CONCAT('%',#{projectInfoQueryDTO.projectName, jdbcType=VARCHAR},'%')
+                )
+            </if>
+            <if test="projectInfoQueryDTO.year != null and projectInfoQueryDTO.year != ''">
+                and YEAR(a.create_time) = #{projectInfoQueryDTO.year}
+            </if>
+            <if test='projectInfoQueryDTO.halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='projectInfoQueryDTO.halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='projectInfoQueryDTO.quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="projectInfoQueryDTO.month != null and projectInfoQueryDTO.month != ''">
+                and MONTH(a.create_time) = #{projectInfoQueryDTO.month}
+            </if>
+            <if test="projectInfoQueryDTO.checkStatuses!=null">
+                and i.check_status in
+                <foreach collection="projectInfoQueryDTO.checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                     #{checkStatus}
+                </foreach>
+            </if>
+            <if test="projectInfoQueryDTO.employeeId != null and projectInfoQueryDTO.employeeId != ''">
+                AND c.employee_id = #{projectInfoQueryDTO.employeeId}
+            </if>
+            <if test="projectInfoQueryDTO.spstageId != null and projectInfoQueryDTO.spstageId != ''">
+                AND a.spstage_id = #{projectInfoQueryDTO.spstageId}
+            </if>
+            <if test="projectInfoQueryDTO.hasImportant != null">
+                AND a.has_important = #{projectInfoQueryDTO.hasImportant}
+            </if>
+        </where>
+
+    </select>
+
+    <!-- 按条件查询列表(普通销售) -->
+    <select id="getConditiont" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>1=1
+
+            <!-- 删除标识 -->
+            AND a.is_delete = 0
+
+            <if test="projectName != null and projectName !=''">
+                AND 
+                (a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+                OR
+                a.project_id = #{projectName, jdbcType=VARCHAR}
+                OR 
+                m.customer_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+                )
+            </if>
+            <!-- 所有 -->
+            <!-- <if test="shareProjects == true">
+                AND a.over_time_flag IN (1, 2)
+            </if> -->
+            <if test="overTimeFlag != null">
+                AND a.over_time_flag = #{overTimeFlag}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND (c.employee_id = #{employeeId})
+            </if>
+            <if test="spstageId != null and spstageId != ''">
+                AND a.spstage_id = #{spstageId}
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="checkStatuses!=null">
+                and i.check_status in
+                <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                     #{checkStatus}
+                </foreach>
+            </if>
+        </where>
+        order by i.check_status asc,a.last_time desc
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+
+    </select>
+
+    <!-- 按条件查询总条数(普通销售) -->
+    <select id="findConditiont" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>1=1
+
+            <!-- 删除标识 -->
+            AND a.is_delete = 0
+
+
+            <if test="projectName != null and projectName !=''">
+                AND 
+                (a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+                OR
+                a.project_id = #{projectName, jdbcType=VARCHAR}
+                OR 
+                m.customer_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+                )
+            </if>
+            <!-- 所有 -->
+            <!-- <if test="shareProjects == true">
+                AND a.over_time_flag IN (1, 2)
+            </if> -->
+            <if test="overTimeFlag != null">
+                AND a.over_time_flag = #{overTimeFlag}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND (c.employee_id = #{employeeId})
+            </if>
+            <if test="spstageId != null and spstageId != ''">
+                AND a.spstage_id = #{spstageId}
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="checkStatuses!=null">
+                and i.check_status in
+                <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                     #{checkStatus}
+                </foreach>
+            </if>
+        </where>
+        order by a.last_time desc
+
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditions" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>1=1
+
+            <!-- 删除标识 -->
+            AND a.is_delete = 0
+
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND (c.employee_id = #{employeeId})
+            </if>
+        </where>
+        order by i.check_status asc,a.last_time desc
+
+       <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditions" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>1=1
+
+            <!-- 删除标识 -->
+            AND a.is_delete = 0
+
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND (c.employee_id = #{employeeId})
+            </if>
+        </where>
+        order by a.last_time desc
+
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getCondition" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+             <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+                AND ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+                OR (c.employee_id = #{employeeId}))
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="checkStatuses!=null">
+                and i.check_status in
+                <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                     #{checkStatus}
+                </foreach>
+            </if>
+            <if test="spstageId != null and spstageId != ''">
+                AND a.spstage_id = #{spstageId}
+            </if>
+             </where>
+        order by i.check_status asc,a.last_time desc
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+                AND ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+                OR (c.employee_id = #{employeeId}))
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="spstageId != null and spstageId != ''">
+                AND a.spstage_id = #{spstageId}
+            </if>
+            <if test="checkStatuses!=null">
+                and i.check_status in
+                <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                     #{checkStatus}
+                </foreach>
+            </if>
+             </where>
+        order by a.last_time desc
+
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionx" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+                AND ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+                OR (c.employee_id = #{employeeId}))
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+        order by i.check_status asc,a.last_time desc
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionx" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+                AND ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+                OR (c.employee_id = #{employeeId}))
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+        order by a.last_time desc
+
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionxx" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+
+            <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+               AND (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+        order by i.check_status asc,a.last_time desc
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionxx" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+           <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+                AND (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+        order by a.last_time desc
+
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionss" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        i.opinion
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+            a.is_delete = 0
+
+            <if test="deptId != null and deptId !=''">
+                AND ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+                )
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+
+        </where>
+        order by i.check_status asc,a.last_time desc
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionss" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+             a.is_delete = 0
+            <if test="deptId != null and deptId !=''">
+                AND ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                )
+                )
+            </if>
+            <if test="projectName != null and projectName !=''">
+                AND a.project_name LIKE CONCAT('%',#{projectName, jdbcType=VARCHAR},'%')
+            </if>
+
+        </where>
+        order by a.last_time desc
+
+    </select>
+
+    <!--通过projectId删除项目-->
+    <delete id="deleteById">
+        <!-- delete from project_info where project_id = #{projectId} -->
+        update
+          project_info
+        set
+          is_delete = 1
+        where
+          project_id = #{projectId}
+    </delete>
+
+    <!--2020.1.3去掉查询单个-->
+    <select id="queryByProjectIdsDeprecated" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        a.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        a.contact_name as contacts,
+        a.contact_dept_name as contactDeptName,
+        a.contact_job as contactJob,
+        a.contact_tel as contactTel,
+
+        a.partner_id as partnerId,
+        a.partner_name as partnerName,
+        a.partner_contact_dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        a.partner_contact_name as customerContact,
+        a.partner_contact_tel as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion
+
+        from project_info a
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        where
+        	 a.project_id = #{projectId}
+
+        	<!-- 删除标识 -->
+        	AND a.is_delete = 0
+    </select>
+    
+    <!--2020.1.3查询单个备份还原-->
+    <select id="queryByBizId" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion,
+        f.job customerContactJob,
+        
+        a.biz_opport_id as bizOpportId
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+
+        where
+          a.biz_opport_id = #{bizId}
+          AND a.is_delete = 0
+          <!-- 删除标识 -->
+            <!-- 内部调用，这里不适用 delete 防止奇怪的事请发生 -->
+          <!-- AND a.is_delete = 0 -->
+    </select>
+
+    <!--2020.1.3查询单个备份还原-->
+    <select id="queryByProjectId" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion,
+        f.job customerContactJob,
+        
+        a.biz_opport_id as bizOpportId
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+
+        where
+        	a.project_id = #{projectId}
+
+	        <!-- 删除标识 -->
+            <!-- 内部调用，这里不适用 delete 防止奇怪的事请发生 -->
+    	    <!-- AND a.is_delete = 0 -->
+    </select>
+    
+    
+    <select id="queryByProjectIds" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        m.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        e.contact_name as contacts,
+        e.dept_name as contactDeptName,
+        e.job as contactJob,
+        e.telphone as contactTel,
+
+        a.partner_id as partnerId,
+        n.customer_name as partnerName,
+        f.dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        f.contact_name as customerContact,
+        f.telphone as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion,
+        f.job customerContactJob,
+        
+        a.biz_opport_id as bizOpportId
+
+        from project_info a
+        left join  customer_info m on a.customer_id =m.customer_id
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  contact_info e on  a.contact_id = e.id
+        left join  customer_info n on a.partner_id =n.customer_id
+        left join  contact_info f on  a.partner_contact_id =f.id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+
+        where
+        	a.project_id in 
+            
+            <!-- 项目 IDs -->
+            <foreach collection="projectIds" item="projectId" open="(" separator="," close=")">
+                 #{projectId}
+            </foreach>
+
+	        <!-- 删除标识 -->
+    	    AND a.is_delete = 0
+    </select>
+
+
+    <!--通过主键修改数据-->
+    <update id="updates">
+        update project_check_info
+        <set>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="opinion != null">
+                opinion = #{opinion},
+            </if>
+            <if test="checkStatus != null">
+                check_status = #{checkStatus},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where project_id = #{projectId}
+    </update>
+    <!--通过主键修改数据-->
+    <update id="update">
+        update project_info
+        <set>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="hasImportant != null">
+                has_important = #{hasImportant},
+            </if>
+            <if test="industry != null and industry != ''">
+                industry = #{industry},
+            </if>
+            <if test="customerId != null and customerId != ''">
+                customer_id = #{customerId},
+            </if>
+            <if test="totalInvestment != null and totalInvestment != ''">
+                total_investment = #{totalInvestment},
+            </if>
+            <if test="customerProjectPhase != null and customerProjectPhase != ''">
+                customer_project_phase = #{customerProjectPhase},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location},
+            </if>
+            <if test="contactId != null">
+                contact_id = #{contactId},
+            </if>
+            <if test="partnerId != null and partnerId != ''">
+                partner_id = #{partnerId},
+            </if>
+            <if test="partnerContactId != null and partnerContactId != ''">
+                partner_contact_id = #{partnerContactId},
+            </if>
+            <if test="estimateMoney != null">
+                estimate_money = #{estimateMoney},
+            </if>
+            <if test="estimateTime != null">
+                estimate_time = #{estimateTime},
+            </if>
+            <if test="estimateSuccess != null">
+                estimate_success = #{estimateSuccess},
+            </if>
+            <if test="projectSituation != null and projectSituation != ''">
+                project_situation = #{projectSituation},
+            </if>
+            <if test="userRelationAnalysis != null and userRelationAnalysis != ''">
+                user_relation_analysis = #{userRelationAnalysis},
+            </if>
+            <if test="integratorSituation != null and integratorSituation != ''">
+                integrator_situation = #{integratorSituation},
+            </if>
+            <if test="competeOpponentAnalysis != null and competeOpponentAnalysis != ''">
+                compete_opponent_analysis = #{competeOpponentAnalysis},
+            </if>
+            <if test="projectRunStrategy != null and projectRunStrategy != ''">
+                project_run_strategy = #{projectRunStrategy},
+            </if>
+            <if test="spstageId != null">
+                spstage_id = #{spstageId},
+            </if>
+            <if test="prosId != null">
+                pros_id = #{prosId},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="hasSimilarType != null">
+                has_similar_type = #{hasSimilarType},
+            </if>
+            <if test="overTimeFlag != null">
+                over_time_flag = #{overTimeFlag},
+            </if>
+        </set>
+        where project_id = #{projectId}
+    </update>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="projectFollow" resultType="com.sefonsoft.oa.domain.customer.EmployeeReportDTO" parameterType="com.sefonsoft.oa.domain.customer.EmployeeReportDTO">
+        select
+        c.customer_id as customerId,
+        c.customer_name as customerName,
+        a.employee_id as employeeId,
+        e.employee_name as employeeName,
+        a.project_id as projectId ,
+        b.project_name as projectName,
+        a.contact_id as contactId,
+        d.contact_name as contactName,
+        a.report_type as reportType,
+        a.report_time as reportTime ,
+        a.operation_type as operationType,
+        a.follow_details as followDetails,
+        a.next_step_plan as nextStepPlan,
+        a.operator as operator,
+        a.last_time as lastTime,
+        a.create_time as createTime
+
+        from employee_report_info a
+
+        left join  project_info b on a.project_id = b.project_id
+        left join  customer_info c on b.customer_id = c.customer_id
+        left join  contact_info d on a.contact_id = d.id
+        left join  sys_employee e on a.employee_id = e.employee_id
+
+        <where>
+            a.operation_type!=3
+            <!-- 删除标识 -->
+            AND b.is_delete = 0
+            <if test="projectId != null and projectId != ''">
+                AND   a.project_id = #{projectId}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND a.employee_id = #{employeeId}
+            </if>
+            <if test="operationType != null and employeeId != ''">
+                AND a.operation_type = #{operationType}
+            </if>
+        </where>
+        order by a.report_time desc
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="projectFollowTotal" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.customer.EmployeeReportDTO">
+        SELECT COUNT(1)
+        from employee_report_info a
+
+        left join  project_info b on a.project_id = b.project_id
+        left join  customer_info c on b.customer_id = c.customer_id
+        left join  contact_info d on a.contact_id = d.id
+        left join  sys_employee e on a.employee_id = e.employee_id
+
+        <where>
+            a.operation_type!=3
+            <!-- 删除标识 -->
+            AND b.is_delete = 0
+            <if test="projectId != null and projectId != ''">
+            AND a.project_id = #{projectId}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND a.employee_id = #{employeeId}
+            </if>
+            <if test="operationType != null and employeeId != ''">
+                AND a.operation_type = #{operationType}
+            </if>
+        </where>
+
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getCustomerProjectPhaset" resultType="java.lang.String" >
+        select stage_name from custome_stage  order by stage_id
+    </select>
+
+    <select id="statisticsOfGroup" resultType="com.sefonsoft.oa.domain.project.vo.ProjectStatisticVo">
+        SELECT
+            count( tmp.project_id ) count,
+            tm.m date
+        FROM
+            (
+                SELECT
+                    distinct
+                    pro.project_id,
+                    <choose>
+                        <!-- day -->
+                        <when test="groupType==0">
+                            DATE_FORMAT(pro.create_time, '%Y-%m-%d') time
+                        </when>
+                        <!-- month -->
+                        <when test="groupType==1">
+                            DATE_FORMAT(pro.create_time, '%Y-%m') time
+                        </when>
+                        <!-- year -->
+                        <otherwise>
+                            DATE_FORMAT(pro.create_time, '%Y') time
+                        </otherwise>
+                    </choose>
+                FROM
+                    project_info pro
+                    LEFT JOIN project_check_info pci ON pci.project_id = pro.project_id
+                    LEFT JOIN project_sale_ref psr ON psr.project_id = pro.project_id
+                    LEFT JOIN sys_employee emp ON emp.employee_id = psr.employee_id
+                <where>
+                    AND pro.over_time_flag = 0
+
+                    <!-- 删除标识 -->
+                    AND pro.is_delete = 0
+                    AND pci.check_status = 3
+                    <choose>
+                        <when test="deptId!=null and deptId!=''">
+                            AND dept_id = '${deptId}'
+                            <if test="employeeId!=null and employeeId!=''">
+                                AND emp.employee_id=#{employeeId}
+                            </if>
+                        </when>
+                        <otherwise>
+                            AND emp.employee_id=#{loginUser.employeeId}
+                        </otherwise>
+                    </choose>
+                </where>
+                <!--OR
+                (
+                  pro.over_time_flag = 0
+                  AND pro.is_delete = 0
+                  AND pci.check_status = 3
+                  and psr.employee_id=#{employeeId}
+                )-->
+
+            ) tmp
+            RIGHT JOIN (
+                <foreach collection="groupDateList" separator=" " item="date" index="index">
+                    SELECT '${date.value1}' m
+                    <if test="index != (groupDateList.size() - 1)">
+                        UNION ALL
+                    </if>
+                </foreach>
+            ) tm ON tm.m = tmp.time
+        GROUP BY
+            tm.m
+            ORDER BY tm.m ASC
+    </select>
+
+
+    <select id="statisticsOfPeriod" resultType="com.sefonsoft.oa.domain.project.vo.ProjectStatisticVo">
+        <foreach collection="groupDateList" item="date" index="index">
+            SELECT
+                COUNT( DISTINCT pro.project_id) count,
+                '${date.value2}' date
+            FROM
+                project_info pro
+            LEFT JOIN project_check_info pci ON pci.project_id = pro.project_id
+            LEFT JOIN project_sale_ref psr ON psr.project_id = pro.project_id
+            LEFT JOIN sys_employee emp ON emp.employee_id = psr.employee_id
+            where pro.over_time_flag = 0
+
+            <!-- 删除标识 -->
+            AND pro.is_delete = 0
+            AND pci.check_status = 3
+            AND pci.last_time  BETWEEN '${date.value1} 00:00:00' AND '${date.value2} 23:59:59'
+            <choose>
+                <when test="deptId!=null and deptId!=''">
+                    AND emp.dept_id = #{deptId}
+                    <if test="employeeId!=null and employeeId!=''">
+                        AND emp.employee_id=#{employeeId}
+                    </if>
+                </when>
+                <otherwise>
+                    AND emp.employee_id=#{loginUser.employeeId}
+                </otherwise>
+            </choose>
+
+            <!-- OR
+            (
+              pro.over_time_flag = 0
+              AND pro.is_delete = 0
+              AND pci.check_status = 3
+              and psr.employee_id=#{employeeId}
+            )-->
+            <if test="index != (groupDateList.size() - 1)">
+                UNION ALL
+            </if>
+        </foreach>
+    </select>
+
+    <select id="statisticCount" resultType="java.lang.Integer">
+        SELECT
+        count( DISTINCT pro.project_id )
+        FROM
+        project_info pro
+        LEFT JOIN project_sale_ref psr ON psr.project_id = pro.project_id
+        LEFT JOIN project_check_info pci ON pci.project_id = pro.project_id
+        LEFT JOIN sys_employee emp ON emp.employee_id = psr.employee_id
+        where pro.over_time_flag = 0
+
+        <!-- 删除标识 -->
+        AND pro.is_delete = 0
+        AND pci.check_status = 3
+
+        <choose>
+            <when test="deptIds!=null and deptIds.size()>0">
+                AND dept_id IN
+                <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                    '${dept}'
+                </foreach>
+                <if test="employeeId!=null and employeeId!=''">
+                    AND emp.employee_id=#{employeeId}
+                </if>
+            </when>
+            <otherwise>
+                AND psr.employee_id=#{employeeId}
+            </otherwise>
+        </choose>
+    </select>
+    <select id="totalCount" resultType="java.lang.Integer">
+      SELECT
+          count( pro.project_id )
+      FROM
+          project_info pro
+      where
+        <!-- 删除标识 -->
+        pro.is_delete = 0
+    </select>
+    <select id="onTimeStatisticCount" resultType="java.lang.Integer">
+        SELECT
+        count( DISTINCT pro.project_id )
+        FROM
+        project_info pro
+        LEFT JOIN project_check_info pci ON pci.project_id = pro.project_id
+        LEFT JOIN project_sale_ref psr ON psr.project_id = pro.project_id
+        LEFT JOIN sys_employee emp ON emp.employee_id = psr.employee_id
+        WHERE
+        pro.over_time_flag = 0
+
+        <!-- 删除标识 -->
+        AND pro.is_delete = 0
+        AND pci.last_time BETWEEN '${startTime} 00:00:00' AND '${endTime} 23:59:59'
+        AND pci.check_status = 3
+      <choose>
+        <when test="deptIds!=null and deptIds.size()>0">
+            AND dept_id IN
+            <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                '${dept}'
+            </foreach>
+            <if test="employeeId!=null and employeeId!=''">
+                AND emp.employee_id=#{employeeId}
+            </if>
+        </when>
+        <otherwise>
+            AND emp.employee_id=#{employeeId}
+        </otherwise>
+      </choose>
+        <!--OR
+        (
+            pro.over_time_flag = 0
+            AND pro.is_delete = 0
+            AND pci.last_time BETWEEN '${startTime} 00:00:00' AND '${endTime} 23:59:59'
+            AND pci.check_status = 3
+            and psr.employee_id=#{employeeId}
+        )-->
+
+    </select>
+
+    <select id="onTimeStatisticMoney" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL( sum( p.estimate_money ), 0 )
+        FROM
+        project_info p
+        LEFT JOIN project_check_info chk ON chk.project_id = p.project_id
+        LEFT JOIN project_sale_ref pro ON pro.project_id = p.project_id
+        LEFT JOIN sys_employee emp ON emp.employee_id = pro.employee_id
+        WHERE
+        p.over_time_flag = 0
+
+        <!-- 删除标识 -->
+        AND p.is_delete = 0
+
+        AND chk.check_status = 3
+        AND chk.last_time BETWEEN '${startTime} 00:00:00' AND '${endTime} 23:59:59'
+        <choose>
+            <when test="deptIds!=null and deptIds.size()>0">
+                AND dept_id IN
+                <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                    '${dept}'
+                </foreach>
+                <if test="employeeId!=null and employeeId!=''">
+                    AND emp.employee_id=#{employeeId}
+                </if>
+            </when>
+            <otherwise>
+                AND emp.employee_id=#{employeeId}
+            </otherwise>
+        </choose>
+        <!-- OR
+        (
+            p.over_time_flag = 0
+            AND p.is_delete = 0
+            AND chk.check_status = 3
+            AND chk.last_time BETWEEN '${startTime} 00:00:00' AND '${endTime} 23:59:59'
+            AND pro.employee_id=#{employeeId}
+        )-->
+    </select>
+
+
+    <select id="statisticMoney" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL( sum( p.estimate_money ), 0 )
+        FROM
+        project_info p
+        LEFT JOIN project_check_info chk ON chk.project_id = p.project_id
+        LEFT JOIN project_sale_ref pro ON pro.project_id = p.project_id
+        LEFT JOIN sys_employee emp ON emp.employee_id = pro.employee_id
+        WHERE
+        p.over_time_flag = 0
+
+        <!-- 删除标识 -->
+        AND p.is_delete = 0
+
+        AND chk.check_status = 3
+        <choose>
+            <when test="deptIds!=null and deptIds.size()>0">
+                AND dept_id IN
+                <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                    '${dept}'
+                </foreach>
+                <if test="employeeId!=null and employeeId!=''">
+                    AND emp.employee_id=#{employeeId}
+                </if>
+            </when>
+            <otherwise>
+                AND emp.employee_id=#{employeeId}
+            </otherwise>
+        </choose>
+        <!-- OR(
+            p.over_time_flag = 0
+            AND pro.employee_id=#{employeeId}
+            AND p.is_delete = 0
+            AND chk.check_status = 3
+        )-->
+    </select>
+
+    <select id="getBizOpportIdByProjectId" resultType="long" parameterType="string">
+        SELECT  biz_opport_id FROM  project_info WHERE project_id = #{projectId}
+    </select>
+    <select id="findFirstProject" resultType="com.sefonsoft.oa.entity.project.ProjectInfo">
+        select * from project_info order by create_time asc limit 1
+    </select>
+    <select id="getDeptIdsByEmployeeId" resultType="java.lang.String">
+        SELECT
+            distinct
+            emp.dept_id
+        FROM
+            project_info p
+            LEFT JOIN project_sale_ref pro ON pro.project_id = p.project_id
+            LEFT JOIN sys_employee emp ON emp.employee_id = pro.employee_id
+        where emp.employee_id = #{employeeId}
+    </select>
+  <select id="totalAmount" resultType="java.lang.Integer">
+      select sum(p.estimate_money) from project_info p where is_delete=0
+  </select>
+  
+  
+  <!-- 预测查询条件-->
+  <sql id="selectPredictionListWhere">
+    <where>
+        p.is_delete = 0
+        AND p.over_time_flag = 0
+        <!-- 权限 -->
+        AND (
+          1 = 0
+          <if test="accessRule.includeDepts.size > 0">
+            OR e.dept_id IN 
+            <foreach item="deptId" collection="accessRule.includeDepts" separator="," open="(" close=")">
+              #{deptId}
+            </foreach>
+          </if>
+          <if test="accessRule.includeEmployees.size > 0">
+            OR e.employee_id IN 
+            <foreach item="empId" collection="accessRule.includeEmployees" separator="," open="(" close=")">
+              #{empId}
+            </foreach>
+          </if>
+        )
+        <!-- 项目名称 -->
+        <if test="projectName != null and projectName !=''">
+            AND (
+              p.project_name LIKE CONCAT('%',#{projectName},'%')
+              OR p.project_id = #{p.projectName}
+              OR c.customer_name LIKE CONCAT('%',#{projectName},'%')
+            )
+        </if>
+        <if test="year != null and year != ''">
+            and YEAR(p.create_time) = #{year}
+        </if>
+        <if test='halfYear == "1"'>
+            and MONTH(p.create_time) in (1, 2, 3, 4, 5, 6)
+        </if>
+        <if test='halfYear == "2"'>
+            and MONTH(p.create_time) in (7, 8, 9, 10, 11, 12)
+        </if>
+        <if test='quarter == "1"'>
+            and MONTH(p.create_time) in (1, 2, 3)
+        </if>
+        <if test='quarter == "2"'>
+            and MONTH(p.create_time) in (4, 5, 6)
+        </if>
+        <if test='quarter == "3"'>
+            and MONTH(p.create_time) in (7, 8, 9)
+        </if>
+        <if test='quarter == "4"'>
+            and MONTH(p.create_time) in (10, 11, 12)
+        </if>
+        <if test="month != null and month != ''">
+            and MONTH(p.create_time) = #{month}
+        </if>
+        <if test="checkStatuses!=null">
+            and pci.check_status in
+            <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                 #{checkStatus}
+            </foreach>
+        </if>
+        <if test="employeeId != null and employeeId != ''">
+            AND e.employee_id = #{employeeId}
+        </if>
+        <if test="hasImportant != null">
+            AND p.has_important = #{hasImportant}
+        </if>
+    </where>
+  </sql>
+  
+  <!-- 预测查询列表 -->
+  <select id="selectPredictionList" resultType="com.sefonsoft.oa.domain.project.vo.ProjectPredictionListVO">
+  
+    SELECT 
+    	p.project_id,
+    	p.project_name,
+    	p.customer_id,
+    	c.customer_name,
+    	p.customer_project_phase,
+    	p.estimate_money,
+    	p.estimate_success,
+    	p.estimate_time,
+    	e.employee_id,
+    	e.employee_name,
+    	dpt.dept_id,
+    	dpt.dept_name
+    
+    from project_info p
+    
+    LEFT JOIN project_sale_ref   psr on p.project_id     = psr.project_id
+    LEFT JOIN sys_employee       e   on psr.employee_id  = e.employee_id
+    LEFT JOIN sys_department     dpt on e.dept_id        = dpt.dept_id
+    LEFT JOIN project_check_info pci on p.project_id     = pci.project_id 
+    LEFT JOIN customer_info      c   on p.customer_id    = c.customer_id
+
+    <include refid="selectPredictionListWhere" />
+    
+    limit #{page}, #{rows}
+    
+  </select>
+  
+  <!-- 预测查询列表 Count -->
+  <select id="selectPredictionListCount" resultType="java.lang.Integer">
+  
+    select
+      count(1)
+    from 
+      project_info p
+      LEFT JOIN project_sale_ref   psr on p.project_id     = psr.project_id
+      LEFT JOIN sys_employee       e   on psr.employee_id  = e.employee_id
+      LEFT JOIN sys_department     dpt on e.dept_id        = dpt.dept_id
+      LEFT JOIN project_check_info pci on p.project_id     = pci.project_id 
+      LEFT JOIN customer_info      c   on p.customer_id    = c.customer_id
+    <include refid="selectPredictionListWhere" />
+  
+  </select>
+  
+  <!-- 预测统计信息 -->
+  <select id="selectPredictionInfoBySucess" resultType="com.sefonsoft.oa.domain.project.dto.PredictionInfo">
+  
+    SELECT 
+    	count(1)                                  count,
+    	SUM(estimate_money)                       money,
+    	FLOOR(estimate_success / 10)  * 10        sucess
+    
+    from 
+      project_info p
+      LEFT JOIN project_sale_ref   psr on p.project_id     = psr.project_id
+      LEFT JOIN sys_employee       e   on psr.employee_id  = e.employee_id
+      LEFT JOIN project_check_info pci on p.project_id     = pci.project_id 
+      LEFT JOIN customer_info      c   on p.customer_id    = c.customer_id
+      
+    <include refid="selectPredictionListWhere" />
+      
+    GROUP BY 
+      sucess
+    ORDER BY
+      sucess
+  </select>
+  
+    <!-- 预测统计信息 -->
+  <select id="selectPredictionInfoByMonth" resultType="com.sefonsoft.oa.domain.project.dto.PredictionInfo">
+  
+    SELECT 
+      count(1)                                  count,
+      SUM(estimate_money)                       money,
+	  DATE_FORMAT(estimate_time, '%Y%m')        month
+    
+    from 
+      project_info p
+      LEFT JOIN project_sale_ref   psr on p.project_id     = psr.project_id
+      LEFT JOIN sys_employee       e   on psr.employee_id  = e.employee_id
+      LEFT JOIN project_check_info pci on p.project_id     = pci.project_id 
+      LEFT JOIN customer_info      c   on p.customer_id    = c.customer_id
+      
+    <include refid="selectPredictionListWhere" />
+      
+    GROUP BY 
+      month
+    ORDER BY 
+      month
+  </select>
+</mapper>

@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.workorder.WorkorderInfoDao">
+
+    <resultMap id="WorkorderInfoResultMap" type="com.sefonsoft.oa.entity.workorder.WorkorderInfo">
+        <id column="id" property="id"/>
+        <result column="pgd_id" property="pgdId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="employee_name" property="employeeName"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="biz_opports_id" property="bizOpportsId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_phase" property="projectPhase"/>
+        <result column="project_industry" property="projectIndustry"/>
+        <result column="product_info_list" property="productInfoList"/>
+        <result column="digest" property="digest"/>
+        <result column="connector_name" property="connectorName"/>
+        <result column="connector_job" property="connectorJob"/>
+        <result column="connector_tel" property="connectorTel"/>
+        <result column="apply_type" property="applyType"/>
+        <result column="supported_unit" property="supportedUnit"/>
+        <result column="demand_way_id" property="demandWayId"/>
+        <result column="location" property="location"/>
+        <result column="communication_time" property="communicationTime"/>
+        <result column="content_goal" property="contentGoal"/>
+        <result column="object_size" property="objectSize"/>
+        <result column="object_ability_id" property="objectAbilityId"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="approval_employee_id" property="approvalEmployeeId"/>
+        <result column="approval_status" property="approvalStatus"/>
+        <result column="approval_desc" property="approvalDesc"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.entity.sysemployee.SysEmployee" id="SysEmployeeMap">
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="jobStatus" column="job_status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        pgd_id,
+        employee_id,
+        dept_id,
+        biz_opports_id,
+        project_id,
+        projectName,
+        project_phase,
+        project_industry,
+        product_info_list,
+        digest,
+        connector_name,
+        connector_job,
+        connector_tel,
+        apply_type,
+        supported_unit,
+        demand_way_id,
+        location,
+        communication_time,
+        content_goal,
+        object_size,
+        object_ability_id,
+        remark,
+        is_delete,
+        approval_status,
+        approval_employee_id,
+        approval_desc,
+        create_time,
+        modified_time
+    </sql>
+
+
+    <select id="getMaxPGD" resultType="string" parameterType="string">
+        SELECT MAX(pgd_id) FROM sefonoa_order.workorder_info WHERE pgd_id LIKE CONCAT (#{prefix},"%")
+    </select>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderInfo">
+      insert into sefonoa_order.workorder_info(
+       pgd_id,
+       employee_id,
+       dept_id,
+       biz_opports_id,
+       project_id,
+       project_name,
+       project_phase,
+       project_industry,
+       product_info_list,
+       digest,
+       connector_name,
+       connector_job,
+       connector_tel,
+       apply_type,
+       supported_unit,
+       demand_way_id,
+       location,
+       communication_time,
+       content_goal,
+       object_size,
+       object_ability_id,
+       remark,
+       create_time,
+       modified_time
+      )values (
+        #{pgdId},
+        #{employeeId},
+        #{deptId},
+        #{bizOpportsId},
+        #{projectId},
+        #{projectName},
+        #{projectPhase},
+        #{projectIndustry},
+        #{productInfoList},
+        #{digest},
+        #{connectorName},
+        #{connectorJob},
+        #{connectorTel},
+        #{applyType},
+        #{supportedUnit},
+        #{demandWayId},
+        #{location},
+        #{communicationTime},
+        #{contentGoal},
+        #{objectSize},
+        #{objectAbilityId},
+        #{remark},
+        #{createTime},
+        #{modifiedTime}
+      )
+    </insert>
+
+    <update id="modify">
+        update sefonoa_order.workorder_info
+        <set>
+            <if test="bizOpportsId != null and bizOpportsId != ''">
+                biz_opports_id = #{bizOpportsId},
+            </if>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="projectPhase != null and projectPhase != ''">
+                project_phase = #{projectPhase},
+            </if>
+            <if test="projectIndustry != null and projectIndustry != ''">
+                project_industry = #{projectIndustry},
+            </if>
+            <if test="productInfoList != null and productInfoList != ''">
+                product_info_list = #{productInfoList},
+            </if>
+            <if test="digest != null and digest != ''">
+                digest = #{digest},
+            </if>
+            <if test="connectorName != null and connectorName != ''">
+                connector_name = #{connectorName},
+            </if>
+            <if test="connectorJob != null and connectorJob != ''">
+                connector_job = #{connectorJob},
+            </if>
+            <if test="connectorTel != null and connectorTel != ''">
+                connector_tel = #{connectorTel},
+            </if>
+            <if test="applyType != null and applyType != ''">
+                `apply_type` = #{applyType},
+            </if>
+            <if test="supportedUnit != null and supportedUnit != ''">
+                `supported_unit` = #{supportedUnit},
+            </if>
+            <if test="demandWayId != null and demandWayId != ''">
+                demand_way_id = #{demandWayId},
+            </if>
+            <if test="location != null and location != ''">
+                `location` = #{location},
+            </if>
+            <if test="communicationTime != null and communicationTime != ''">
+                `communication_time` = #{communicationTime},
+            </if>
+            <if test="contentGoal != null and contentGoal != ''">
+                content_goal = #{contentGoal},
+            </if>
+            <if test="objectSize != null">
+                object_size = #{objectSize},
+            </if>
+            <if test="objectAbilityId != null">
+                object_ability_id = #{objectAbilityId},
+            </if>
+            <if test="remark != null and remark != ''">
+                `remark` = #{remark},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="approvalEmployeeId != null  and approvalEmployeeId != ''">
+                approval_employee_id = #{approvalEmployeeId},
+            </if>
+            <if test="approvalStatus != null ">
+                approval_status = #{approvalStatus},
+            </if>
+            <if test="approvalDesc != null">
+                approval_desc = #{approvalDesc},
+            </if>
+        </set>
+        where pgd_id = #{pgdId}
+    </update>
+
+    <select id="queryByPgdId" parameterType="String" resultMap="WorkorderInfoResultMap">
+        <!-- 对于相同的属性名称s.id和t.id以及s.name和t.name，一定要注意起别名，不然会冲突 -->
+        SELECT
+        order_info.pgd_id,
+        order_info.employee_id,
+        order_info.dept_id,
+        order_info.biz_opports_id,
+        order_info.project_id,
+        order_info.project_name,
+        order_info.project_phase,
+        order_info.project_industry,
+        order_info.product_info_list,
+        order_info.digest,
+        order_info.connector_name,
+        order_info.connector_job,
+        order_info.connector_tel,
+        order_info.apply_type,
+        order_info.supported_unit,
+        order_info.demand_way_id,
+        order_info.location,
+        order_info.communication_time,
+        order_info.content_goal,
+        order_info.object_size,
+        order_info.object_ability_id,
+        order_info.remark,
+        order_info.is_delete,
+        order_info.approval_status,
+        order_info.approval_employee_id,
+        order_info.approval_desc,
+        order_info.create_time,
+        order_info.modified_time,
+        se.employee_name,
+        sd.dept_name
+        FROM sefonoa_order.workorder_info order_info
+        left join sefonoa.sys_employee se on se.employee_id=order_info.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+        WHERE order_info.pgd_id = #{pgdId}
+    </select>
+
+    <select id="getCondition" parameterType="com.sefonsoft.oa.domain.workorder.WorkorderSearchDTO"
+            resultMap="WorkorderInfoResultMap">
+        SELECT
+        order_info.pgd_id,
+        order_info.employee_id,
+        order_info.dept_id,
+        order_info.biz_opports_id,
+        order_info.project_id,
+        order_info.project_name,
+        order_info.project_phase,
+        order_info.project_industry,
+        order_info.product_info_list,
+        order_info.digest,
+        order_info.connector_name,
+        order_info.connector_job,
+        order_info.connector_tel,
+        order_info.apply_type,
+        order_info.supported_unit,
+        order_info.demand_way_id,
+        order_info.location,
+        order_info.communication_time,
+        order_info.content_goal,
+        order_info.object_size,
+        order_info.object_ability_id,
+        order_info.remark,
+        order_info.is_delete,
+        order_info.approval_status,
+        order_info.approval_employee_id,
+        order_info.approval_desc,
+        order_info.create_time,
+        order_info.modified_time,
+        se.employee_name,
+        sd.dept_name
+        FROM sefonoa_order.workorder_info order_info
+        left join sefonoa.sys_employee se on se.employee_id=order_info.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+        left join sefonoa_order.workorder_feedback_sale_info salefeedback on order_info.pgd_id = salefeedback.pgd_id
+        left join sefonoa_order.workorder_feedback_pre_info prefeedback on order_info.pgd_id = prefeedback.pgd_id
+        <where>
+            order_info.is_delete = 0
+            <if test="deptIds != null">
+                and order_info.dept_id in
+                <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="saleEmployeeIdList != null">
+                and order_info.employee_id in
+                <foreach item="employeeId" index="index" collection="saleEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="preEmployeeIdList != null ">
+                and prefeedback.employee_id in
+                <foreach item="employeeId" index="index" collection="preEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="projectPhaseList != null">
+                and order_info.project_phase in
+                <foreach item="projectPhase" index="index" collection="projectPhaseList" open="(" separator=","
+                         close=")">
+                    #{projectPhase}
+                </foreach>
+            </if>
+            <if test="projectIndustryList != null">
+                and order_info.project_industry in
+                <foreach item="projectIndustry" index="index" collection="projectIndustryList" open="(" separator=","
+                         close=")">
+                    #{projectIndustry}
+                </foreach>
+            </if>
+            <if test="productInfo != null and productInfo != ''">
+                and locate(#{productInfo},order_info.product_info_list)>0
+            </if>
+            <if test="approvalStatusList != null">
+                and order_info.approval_status in
+                <foreach item="status" index="index" collection="approvalStatusList" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="keyWord != null and keyWord != ''">
+                and locate(#{keyWord},order_info.project_name)>0
+            </if>
+            <if test="saleCommentStatus != null">
+                and salefeedback.sale_comment_status = #{saleCommentStatus}
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time >= #{startDate}
+                  ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[
+                 and order_info.create_time <= #{endDate}
+                  ]]>
+            </if>
+        </where>
+
+        group BY
+        order_info.pgd_id,
+        order_info.employee_id,
+        order_info.dept_id,
+        order_info.biz_opports_id,
+        order_info.project_id,
+        order_info.project_name,
+        order_info.project_phase,
+        order_info.project_industry,
+        order_info.product_info_list,
+        order_info.digest,
+        order_info.connector_name,
+        order_info.connector_job,
+        order_info.connector_tel,
+        order_info.apply_type,
+        order_info.supported_unit,
+        order_info.demand_way_id,
+        order_info.location,
+        order_info.communication_time,
+        order_info.content_goal,
+        order_info.object_size,
+        order_info.object_ability_id,
+        order_info.remark,
+        order_info.is_delete,
+        order_info.approval_status,
+        order_info.approval_employee_id,
+        order_info.approval_desc,
+        order_info.create_time,
+        order_info.modified_time,
+        se.employee_name,
+        sd.dept_name
+        order by order_info.create_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+
+    <select id="getConditionTotal" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM(
+        SELECT
+        order_info.pgd_id
+        FROM sefonoa_order.workorder_info order_info
+        left join sefonoa.sys_employee se on se.employee_id=order_info.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+        left join sefonoa_order.workorder_feedback_sale_info salefeedback on order_info.pgd_id = salefeedback.pgd_id
+        left join sefonoa_order.workorder_feedback_pre_info prefeedback on order_info.pgd_id = prefeedback.pgd_id
+        <where>
+            order_info.is_delete = 0
+            <if test="deptIds != null">
+                and order_info.dept_id in
+                <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="saleEmployeeIdList != null">
+                and order_info.employee_id in
+                <foreach item="employeeId" index="index" collection="saleEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="preEmployeeIdList != null ">
+                and prefeedback.employee_id in
+                <foreach item="employeeId" index="index" collection="preEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="projectPhaseList != null">
+                and order_info.project_phase in
+                <foreach item="projectPhase" index="index" collection="projectPhaseList" open="(" separator=","
+                         close=")">
+                    #{projectPhase}
+                </foreach>
+            </if>
+            <if test="projectIndustryList != null">
+                and order_info.project_industry in
+                <foreach item="projectIndustry" index="index" collection="projectIndustryList" open="(" separator=","
+                         close=")">
+                    #{projectIndustry}
+                </foreach>
+            </if>
+            <if test="productInfo != null and productInfo != ''">
+                and locate(#{productInfo},order_info.product_info_list)>0
+            </if>
+            <if test="approvalStatusList != null">
+                and order_info.approval_status in
+                <foreach item="status" index="index" collection="approvalStatusList" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="keyWord != null and keyWord != ''">
+                and locate(#{keyWord},order_info.project_name)>0
+            </if>
+            <if test="saleCommentStatus != null">
+                and salefeedback.sale_comment_status = #{saleCommentStatus}
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time >= #{startDate}
+                  ]]>
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time <= #{endDate}
+                  ]]>
+            </if>
+        </where>
+        group BY
+        order_info.pgd_id
+        )
+        temp
+    </select>
+
+    <select id="getSourceDeptConfig" resultType="java.lang.String">
+        SELECT
+        dept.dept_id ,dept.dept_name
+        FROM sefonoa_order.workorder_dept_config matchconfig
+        left join sefonoa.sys_department dept on dept.dept_id = matchconfig.dept_source
+        WHERE matchconfig.dept_des in
+        <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        GROUP BY dept.dept_id ,dept.dept_name
+    </select>
+
+    <select id="getDesDeptConfig" resultType="java.lang.String">
+        SELECT
+        dept.dept_id ,dept.dept_name
+        FROM sefonoa_order.workorder_dept_config matchconfig
+        left join sefonoa.sys_department dept on dept.dept_id = matchconfig.dept_des
+        WHERE matchconfig.dept_des in
+        <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+        GROUP BY dept.dept_id ,dept.dept_name
+    </select>
+
+    <select id="getProjectStage" resultType="java.util.Map">
+        SELECT project_stage_id,project_stage_name FROM sefonoa_order.project_stage_info
+    </select>
+
+    <select id="getDemandWay" resultType="java.util.Map">
+        SELECT demand_way_id,demand_way_name FROM sefonoa_order.demand_way_info
+    </select>
+
+    <select id="getObjectAbility" resultType="java.util.Map">
+        SELECT object_ability_id,object_ability_name FROM sefonoa_order.object_ability_info
+    </select>
+    <select id="countBySales" resultType="java.lang.Integer">
+          select count(*) from sefonoa_order.workorder_info where employee_id=#{employeeId} and is_delete=0
+      </select>
+    <select id="countByPre" resultType="java.lang.Integer">
+        select
+               count(*)
+        from sefonoa_order.workorder_info ord
+            left join workorder_feedback_pre_info pref on ord.pgd_id = pref.pgd_id
+        where pref.employee_id=#{employeeId} and ord.is_delete=0
+    </select>
+
+    <!--查询授权人员列表-->
+    <select id="getApprovalUserList" resultMap="SysEmployeeMap">
+        SELECT se.employee_id, se.employee_name, se.email FROM sefonoa.sys_employee se
+        LEFT JOIN sefonoa.sys_user_role ur on ur.user_id = se.employee_id
+        LEFT JOIN sefonoa.sys_role_permission rp on rp.role_id = ur.role_id
+        LEFT JOIN sefonoa.sys_permission sp on sp.menu_id = rp.menu_id
+        WHERE
+        sp.perms = #{perms}
+        and
+        ur.user_id in (
+            SELECT ur.user_id FROM sefonoa_order.workorder_dept_config wdc
+            LEFT JOIN sefonoa.sys_role_dept rd on rd.dept_id = wdc.dept_des
+            LEFT JOIN sefonoa.sys_user_role ur on rd.role_id = ur.role_id
+            WHERE wdc.dept_source = #{deptId}
+        )
+    </select>
+  <select id="totalCount" resultType="java.lang.Integer">
+      select count(*) from sefonoa_order.workorder_info where is_delete=0
+  </select>
+</mapper>

@@ -1,0 +1,994 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.bizopports.BizOpportsDao">
+
+    <resultMap
+            type="com.sefonsoft.oa.entity.bizopports.BizOpports"
+            id="BizOpportsMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="bizId" column="biz_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id"
+                jdbcType="VARCHAR"/>
+        <result property="customerId" column="customer_id"
+                jdbcType="VARCHAR"/>
+        <result property="contactId" column="contact_id"
+                jdbcType="INTEGER"/>
+        <result property="keywords" column="keywords"
+                jdbcType="VARCHAR"/>
+        <result property="desc" column="desc" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time"
+                jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time"
+                jdbcType="TIMESTAMP"/>
+        <result property="createId" column="create_id"
+                jdbcType="VARCHAR"/>
+        <result property="referencesId" column="references_id"
+                jdbcType="VARCHAR"/>
+        <result property="state" column="state"
+                jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--新增所有列 -->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.sefonsoft.oa.domain.bizopports.BizOpportsDTO">
+         <selectKey  keyProperty="id" order="AFTER" resultType="long">
+             select LAST_INSERT_ID()
+         </selectKey>
+		INSERT INTO `biz_opports`
+		(
+        `id`,
+		`biz_id`,
+		`bizopports_name`,
+		`employee_id`,
+		`customer_id`,
+		`contact_id`,
+		`keywords`,
+		`desc`,
+		`modified_time`,
+		`create_time`,
+		`create_id`,
+		`references_id`,
+		`state`,
+		`import_type`
+		)
+		VALUES
+		(
+        #{id},
+		#{bizId},
+		#{name},
+		#{employeeId},
+		#{customerId},
+		#{contactId},
+		#{keywords},
+		#{desc},
+		#{modifiedTime},
+		#{createTime},
+		#{createId},
+		#{referencesId},
+		#{state},
+		#{importType});
+	</insert>
+
+    <!--通过主键修改数据 -->
+    <update id="update">
+        update biz_opports
+        <set>
+            <if test="name != null and name != ''">
+                bizopports_name = #{name},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="customerId != null and customerId != ''">
+                customer_id = #{customerId},
+            </if>
+            <if test="contactId != null and contactId != ''">
+                contact_id = #{contactId},
+            </if>
+            <if test="keywords != null and keywords != ''">
+                keywords = #{keywords},
+            </if>
+            <if test="desc != null and desc != ''">
+                `desc` = #{desc},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="referencesId != null and referencesId != ''">
+                references_id = #{referencesId},
+            </if>
+            <if test="state != null and state!=''">
+                `state` = #{state},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    
+    <update id="checkAndUpdate">
+        update biz_opports
+        <set>
+            <if test="biz.name != null and biz.name != ''">
+                bizopports_name = #{biz.name},
+            </if>
+            <if test="biz.employeeId != null and biz.employeeId != ''">
+                employee_id = #{biz.employeeId},
+            </if>
+            <if test="biz.customerId != null and biz.customerId != ''">
+                customer_id = #{biz.customerId},
+            </if>
+            <if test="biz.contactId != null and biz.contactId != ''">
+                contact_id = #{biz.contactId},
+            </if>
+            <if test="biz.keywords != null and biz.keywords != ''">
+                keywords = #{biz.keywords},
+            </if>
+            <if test="biz.desc != null and biz.desc != ''">
+                `desc` = #{biz.desc},
+            </if>
+            <if test="biz.modifiedTime != null">
+                modified_time = #{biz.modifiedTime},
+            </if>
+            <if test="biz.referencesId != null and biz.referencesId != ''">
+                references_id = #{biz.referencesId},
+            </if>
+            <if test="biz.state != null and biz.state!=''">
+                `state` = #{biz.state},
+            </if>
+        </set>
+        where id = #{biz.id}
+        AND `state` = #{state}
+        AND is_delete = 0
+    </update>
+
+    <!--通过主键修改描述 -->
+    <update id="updateDesc">
+        update biz_opports
+        <set>
+            <if test="desc != null and desc != ''">
+                `desc` = #{desc},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--查询单个 -->
+    <select id="queryById"
+            resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        SELECT b.id,b.bizopports_name as name,b.biz_id,
+        b.employee_id,b.customer_id,c.customer_name,b.contact_id,t.contact_name,t.job as contactJob,t.telphone as
+        contactTelphone,b.keywords,d.dept_name,
+        b.desc,b.modified_time,b.create_time,b.create_id,b.references_id,e3.employee_name as referencesName, b.state,e2.employee_name,e1.employee_name as
+        createName
+        FROM (select * from biz_opports where id = #{id}) b
+        LEFT JOIN customer_info c on b.customer_id = c.customer_id
+        LEFT JOIN contact_info t on b.contact_id=t.id
+        LEFT JOIN sys_employee e1 ON b.create_id = e1.employee_id
+        LEFT JOIN sys_employee e2 ON b.employee_id =  e2.employee_id
+        LEFT JOIN sys_employee e3 ON b.references_id = e3.employee_id
+        LEFT JOIN sys_department d ON d.dept_id = e2.dept_id
+	</select>
+
+    <!--通过主键删除 -->
+    <update id="deleteById">
+		update biz_opports set is_delete = '1' where id = #{id}
+	</update>
+
+    <select id="queryByManagementByKeyWords"
+            resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        select a.bizopports_name as name, a.customer_id, a.keywords,d.customer_name,a.`desc`, a.contact_id,a.biz_id,
+        g.contact_name,b.employee_name,c.dept_name,a.id,a.employee_id,a.modified_time,a.create_time,
+        a.`create_id`,b2.employee_name as createName,a.`references_id`,a.`state`,s.state_name as stateName
+        from biz_opports a
+        LEFT JOIN sys_employee b ON b.employee_id = a.employee_id
+        LEFT JOIN sys_department c ON c.dept_id = b.dept_id
+        LEFT JOIN customer_info d ON a.customer_id=d.customer_id
+        LEFT JOIN contact_info g ON g.id = a.contact_id
+        LEFT JOIN sys_employee b2 ON b2.employee_id=a.create_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.is_delete='0'
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL(s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        and (
+        b.employee_id=#{employeeId} or (a.create_id=#{employeeId} and b2.grade_id='DX0001')
+        )
+        order by a.modified_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+    <!--
+    大区领导和销售管理部根据关键字查看商机信息
+    查询权限下所有的员工的所负责的商机，兼容未联系人和客户的情况
+    -->
+    <select id="queryByManagementByKeyWordsForRole"
+            resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        select a.bizopports_name as name, a.customer_id, a.keywords,d.customer_name,a.`desc`, a.contact_id,a.biz_id,
+        g.contact_name,b.employee_name,c.dept_name,a.id,a.employee_id,a.modified_time,a.create_time,
+        a.`create_id`,b2.employee_name as createName,a.`references_id`,a.`state`,a.state,s.state_name as stateName
+        from biz_opports a
+        LEFT JOIN customer_info d ON a.customer_id=d.customer_id
+        LEFT JOIN sys_employee b2 ON b2.employee_id=a.create_id
+        LEFT JOIN sys_employee b ON b.employee_id = a.employee_id
+        LEFT JOIN sys_department c ON c.dept_id = b.dept_id
+        LEFT JOIN contact_info g ON g.id = a.contact_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.is_delete='0'
+        <if test="employeeId != null and employeeId != ''">
+            and a.employee_id = #{employeeId}
+        </if>
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL(s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="scope != null and scope != '' and scope == 1">
+            AND a.employee_id IN(
+            SELECT t1.employee_id as user_id FROM sys_employee t1 where t1.dept_id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            or t1.employee_id = #{userId}
+            )
+        </if>
+        <if test="scope != null and scope != '' and scope == 2">
+            AND a.employee_id IN(
+            SELECT t1.employee_id as user_id FROM sys_employee t1 where t1.dept_id in
+            <foreach collection="dataDeptIdList" item="dataDeptId" open="(" separator="," close=")">
+                #{dataDeptId}
+            </foreach>
+            )
+        </if>
+        order by FIELD(a.employee_id, #{userId}) desc,a.modified_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+
+    <!--个人销售根据关键字查看商机信息数量 -->
+    <select id="queryByManagementByKeyWordsTotal"
+            resultType="java.lang.Integer">
+        select count(a.id)
+        from biz_opports a
+        LEFT JOIN sys_employee b ON b.employee_id = a.employee_id
+        LEFT JOIN sys_department c ON c.dept_id = b.dept_id
+        LEFT JOIN customer_info d ON a.customer_id=d.customer_id
+        LEFT JOIN contact_info g ON g.id = a.contact_id
+        LEFT JOIN sys_employee b2 ON b2.employee_id=a.create_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.is_delete='0'
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL( a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL( c.dept_name,''),
+            IFNULL( s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        and (
+        b.employee_id=#{employeeId} or (a.create_id=#{employeeId} and b2.grade_id='DX0001')
+        )
+    </select>
+
+    <!--
+    大区领导和销售管理部根据关键字查看商机信息数量
+     查询权限下所有的员工的所负责的商机，兼容未联系人和客户的情况
+     -->
+    <select id="queryByManagementByKeyWordsTotalForRole"
+            resultType="java.lang.Integer">
+        select count(a.id)
+        from biz_opports a
+        LEFT JOIN customer_info d ON a.customer_id=d.customer_id
+        LEFT JOIN sys_employee b2 ON b2.employee_id=a.create_id
+        LEFT JOIN sys_employee b ON b.employee_id = a.employee_id
+        LEFT JOIN sys_department c ON c.dept_id = b.dept_id
+        LEFT JOIN contact_info g ON g.id = a.contact_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.is_delete='0'
+        <if test="employeeId != null and employeeId != ''">
+            and a.employee_id = #{employeeId}
+        </if>
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL( s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="scope != null and scope != '' and scope == 1">
+            AND a.employee_id IN(
+            SELECT t1.employee_id as user_id FROM sys_employee t1 where t1.dept_id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            or t1.employee_id = #{userId}
+            )
+        </if>
+        <if test="scope != null and scope != '' and scope == 2">
+            AND a.employee_id IN(
+            SELECT t1.employee_id as user_id FROM sys_employee t1 where t1.dept_id in
+            <foreach collection="dataDeptIdList" item="dataDeptId" open="(" separator="," close=")">
+                #{dataDeptId}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <resultMap
+            type="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO"
+            id="customerInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id"
+                jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name"
+                jdbcType="VARCHAR"/>
+        <result property="countryNum" column="country_num"
+                jdbcType="VARCHAR"/>
+        <result property="provinceNum" column="province_num"
+                jdbcType="VARCHAR"/>
+        <result property="cityNum" column="city_num" jdbcType="VARCHAR"/>
+        <result property="district" column="district"
+                jdbcType="VARCHAR"/>
+        <result property="industry" column="industry"
+                jdbcType="VARCHAR"/>
+        <result property="enterId" column="enter_id" jdbcType="INTEGER"/>
+        <result property="isListed" column="is_listed"
+                jdbcType="INTEGER"/>
+        <result property="website" column="website" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="zipCode" column="zip_code" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone"
+                jdbcType="VARCHAR"/>
+        <result property="fax" column="fax" jdbcType="VARCHAR"/>
+        <result property="contacts" column="contacts"
+                jdbcType="VARCHAR"/>
+        <result property="contactsDepart" column="contacts_depart"
+                jdbcType="VARCHAR"/>
+        <result property="contactsTelephone"
+                column="contacts_telephone" jdbcType="VARCHAR"/>
+        <result property="contactsEmail" column="contacts_email"
+                jdbcType="VARCHAR"/>
+        <result property="operator" column="operator"
+                jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time"
+                jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time"
+                jdbcType="TIMESTAMP"/>
+
+        <result property="cowner" column="cowner" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id"
+                jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name"
+                jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name"
+                jdbcType="VARCHAR"/>
+        <result property="entername" column="enter_name"
+                jdbcType="VARCHAR"/>
+        <collection property="contactList"
+                    ofType="com.sefonsoft.oa.domain.contact.ContactInfo"
+                    select="selectContactList" column="{customerId=customer_id}">
+        </collection>
+    </resultMap>
+    <select id="customerInfoList" resultMap="customerInfoMap"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num,
+        a.city_num, a.district, a.industry,
+        a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax,
+        a.contacts, a.contacts_depart,
+        a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time
+        ,b.cowner,c.employee_id,c.employee_name,d.dept_id,d.dept_name,m.enter_name
+        from customer_info a
+        left join customer_sale_ref b on a.customer_id=b.customer_id
+        left join sys_employee c on b.employee_id = c.employee_id
+        left join sys_department d on c.dept_id = d.dept_id
+        left join enterprise_type m on a.enter_id = m.enter_id
+        where a.customer_id=#{customer_id, jdbcType=BIGINT}
+        <if test="employee_id != null and employee_id != ''">
+            and b.employee_id = #{employee_id}
+        </if>
+
+    </select>
+    <resultMap type="com.sefonsoft.oa.domain.contact.ContactInfo"
+               id="customerContactInfoMap">
+        <result property="ids" column="ids" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id"
+                jdbcType="VARCHAR"/>
+        <result property="job" column="job" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="contactName" column="contact_name"
+                jdbcType="VARCHAR"/>
+        <result property="contactSex" column="contact_sex"
+                jdbcType="INTEGER"/>
+        <result property="deptNames" column="deptNames"
+                jdbcType="VARCHAR"/>
+        <result property="telphone" column="telphone"
+                jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectContactList"
+            resultMap="customerContactInfoMap"
+            parameterType="com.sefonsoft.oa.domain.contact.ContactInfoQueryDTO">
+        select distinct g.id as
+        ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name
+        as
+        deptNames,g.telphone,g.email
+        from contact_info g
+        <where>
+            g.customer_id=#{customerId}
+        </where>
+        order by g.contact_name
+    </select>
+
+    <select id="statisticsOfGroup" resultType="com.sefonsoft.oa.domain.bizopports.vo.BizOpportsStatisticVo">
+
+        SELECT
+        count( tmp.id ) count,
+        tm.m date
+        FROM (
+        SELECT
+        distinct
+        biz.id,
+        <choose>
+            <!-- day -->
+            <when test="groupType==0">
+                DATE_FORMAT(biz.create_time, '%Y-%m-%d') time
+            </when>
+            <!-- month -->
+            <when test="groupType==1">
+                DATE_FORMAT(biz.create_time, '%Y-%m') time
+            </when>
+            <!-- year -->
+            <otherwise>
+                DATE_FORMAT(biz.create_time, '%Y') time
+            </otherwise>
+        </choose>
+        FROM
+        biz_opports biz
+        LEFT JOIN sys_employee emp ON emp.employee_id = biz.employee_id
+        <where>
+            <!-- 删除标识 -->
+            AND biz.is_delete = 0
+            <choose>
+                <when test="deptId!=null and deptId!=''">
+                    AND dept_id = #{deptId}
+                    <if test="employeeId!=null and employeeId!=''">
+                        AND biz.employee_id=#{employeeId}
+                    </if>
+                </when>
+                <otherwise>
+                    AND biz.employee_id=#{loginUser.employeeId}
+                </otherwise>
+            </choose>
+        </where>
+        <!-- OR(
+            biz.employee_id = #{employeeId}
+            AND biz.is_delete = 0
+        )
+        OR(
+            biz.create_id = #{employeeId}
+            AND biz.is_delete = 0
+        ) -->
+        ) tmp
+        RIGHT JOIN (
+        <foreach collection="groupDateList" separator=" " item="date" index="index">
+            SELECT '${date.value1}' m
+            <if test="index != (groupDateList.size() - 1)">
+                UNION ALL
+            </if>
+        </foreach>
+        ) tm ON tm.m = tmp.time
+        GROUP BY
+        tm.m
+        ORDER BY tm.m ASC
+    </select>
+
+    <select id="statisticsOfPeriod" resultType="com.sefonsoft.oa.domain.bizopports.vo.BizOpportsStatisticVo">
+        <foreach collection="groupDateList" item="date" index="index">
+            SELECT
+            COUNT( DISTINCT biz.id) count,
+            '${date.value2}' date
+            FROM
+            biz_opports biz
+            LEFT JOIN sys_employee emp ON emp.employee_id = biz.employee_id
+            WHERE
+            biz.create_time BETWEEN '${date.value1} 00:00:00' AND '${date.value2} 23:59:59'
+            <!-- 删除标识 -->
+            AND biz.is_delete = 0
+            <choose>
+                <when test="deptId!=null and deptId!=''">
+                    AND dept_id = #{deptId}
+                    <if test="employeeId!=null and employeeId!=''">
+                        AND biz.employee_id=#{employeeId}
+                    </if>
+                </when>
+                <otherwise>
+                    AND biz.employee_id=#{loginUser.employeeId}
+                </otherwise>
+            </choose>
+
+            <!-- OR(
+                biz.employee_id = #{employeeId}
+                AND biz.is_delete = 0
+            )
+            OR(
+                biz.create_id = #{employeeId}
+                AND biz.is_delete = 0
+            ) -->
+            <if test="index != (groupDateList.size() - 1)">
+                UNION ALL
+            </if>
+        </foreach>
+    </select>
+
+    <!--获取与销售相关的客户 -->
+    <select id="queryCustomerByUser" resultType="java.util.Map">
+		select a.customer_id,b.customer_name from customer_sale_ref a,customer_info
+		b where a.employee_id = #{userId} and a.customer_id=b.customer_id
+	</select>
+
+    <!--大区领导或销售管理部获取相关销售 -->
+    <select id="querySaleForRole" resultType="java.util.Map">
+        select employee_id,employee_name from sys_employee where dept_id in
+        <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+    </select>
+
+    <!--查询公司所有销售 -->
+    <select id="queryAllSale" resultType="java.util.Map">
+		select employee_id,employee_name from sys_employee where job_status=1
+	</select>
+
+    <!--查询属于个人且未立项的商机列表 -->
+    <select id="queryByPersonal" resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        select a.bizopports_name as name, a.customer_id, a.keywords,d.customer_name,a.`desc`, a.contact_id,a.biz_id,
+        g.contact_name,b.employee_name,c.dept_name,a.id,a.employee_id,a.modified_time,a.create_time,
+        a.`create_id`,b2.employee_name as createName,a.`references_id`,a.`state`,s.state_name as stateName
+        from biz_opports a
+        LEFT JOIN sys_employee b ON b.employee_id = a.employee_id
+        LEFT JOIN sys_department c ON c.dept_id = b.dept_id
+        LEFT JOIN customer_info d ON a.customer_id=d.customer_id
+        LEFT JOIN contact_info g ON g.id = a.contact_id
+        LEFT JOIN sys_employee b2 ON b2.employee_id=a.create_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.is_delete='0' and a.state = '1'
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL(s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        and b.employee_id=#{userId}
+        AND b.job_status=1
+        order by a.modified_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+    <select id="queryBizOpportsByEmployeeIdAndCustomerId"
+            resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+    select * from biz_opports where customer_id=#{customerId} and employee_id=#{employeeId}
+  </select>
+
+    <update id="updateBizOpports" parameterType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        UPDATE `biz_opports`
+        <set>
+            <if test="name!=null and name!=''">
+                `bizopports_name` = #{name},
+            </if>
+            <if test="employeeId!=null">
+                `employee_id` = #{employeeId},
+            </if>
+            <if test="customerId!=null">
+                `customer_id` = #{customerId},
+            </if>
+            <if test="contactId!=null">
+                `contact_id` = #{contactId},
+            </if>
+            <if test="keywords!=null">
+                `keywords` = #{keywords},
+            </if>
+            <if test="desc!=null">
+                `desc` = #{desc},
+            </if>
+            <if test="modifiedTime!=null">
+                `modified_time` = #{modifiedTime},
+            </if>
+            <if test="createId!=null">
+                `create_id` = #{createId},
+            </if>
+            <if test="referencesId!=null">
+                `references_id` = #{referencesId},
+            </if>
+            <if test="state!=null">
+                `state` = #{state}
+            </if>
+        </set>
+        WHERE
+        `id` = #{id}
+    </update>
+
+    <!--查询属于个人且未立项的商机数量 -->
+    <select id="queryByPersonalTotal" resultType="java.lang.Integer">
+        select count(*)
+        from biz_opports a
+        LEFT JOIN sys_employee b ON b.employee_id = a.employee_id
+        LEFT JOIN sys_department c ON c.dept_id = b.dept_id
+        LEFT JOIN customer_info d ON a.customer_id=d.customer_id
+        LEFT JOIN contact_info g ON g.id = a.contact_id
+        LEFT JOIN sys_employee b2 ON b2.employee_id=a.create_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.is_delete='0' and a.state = '1'
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL(s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        and
+        b.employee_id=#{userId}
+    </select>
+
+    <!--指派商机-查询 -->
+    <select id="queryAllBiz" resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        SELECT b.id,b.bizopports_name as name,b.biz_id,
+        b.employee_id,b.customer_id,c.customer_name,b.contact_id,t.contact_name,t.job as
+        contactJob,c.telephone as contactTelphone,b.keywords,
+        b.desc,b.modified_time,b.create_time,b.create_id,e1.employee_name as
+        createName,b.references_id,e3.employee_name as referencesName,b.state
+        FROM biz_opports b
+        LEFT JOIN customer_info c on b.customer_id = c.customer_id
+        LEFT JOIN contact_info t on b.contact_id=t.id
+        LEFT JOIN sys_employee e1 ON b.create_id = e1.employee_id
+        LEFT JOIN sys_employee e3 ON e3.employee_id = b.references_id
+        WHERE
+        (
+        b.employee_id is null
+        or
+        (b.employee_id is not null and TIMESTAMPDIFF(HOUR,b.create_time,NOW())>24 and e1.grade_id='DX0001' and
+        b.employee_id=b.create_id)
+        ) and
+        b.create_id IN (
+        SELECT sd.employee_id as createId1 from sys_employee
+        sd WHERE dept_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        <if test="biz.keywords != null and biz.keywords != ''">
+            and CONCAT(
+            IFNULL(b.bizopports_name,''),
+            IFNULL(c.customer_name,''),
+            IFNULL(b.keywords,''),
+            IFNULL(b.`desc`,''),
+            IFNULL(t.contact_name,'')
+            ) LIKE
+            CONCAT('%',#{biz.keywords},'%')
+        </if>
+        and b.is_delete='0' and b.state = 1
+        ORDER BY b.modified_time desc limit ${(biz.page-1)* biz.limit},#{biz.limit}
+    </select>
+
+    <!--指派商机-查询 -->
+    <select id="queryAllBizTotal" resultType="java.lang.Integer">
+
+        SELECT count(b.id)
+        FROM biz_opports b
+        LEFT JOIN customer_info c on b.customer_id = c.customer_id
+        LEFT JOIN contact_info t on b.contact_id=t.id
+        LEFT JOIN sys_employee e1 ON b.create_id = e1.employee_id
+        LEFT JOIN sys_employee e3 ON e3.employee_id = b.references_id
+        WHERE
+        (
+        b.employee_id is null
+        or
+        (b.employee_id is not null and TIMESTAMPDIFF(HOUR,b.create_time,NOW())>24 and e1.grade_id='DX0001' and
+        b.employee_id=b.create_id)
+        ) and
+        b.create_id IN (
+        SELECT sd.employee_id as createId1 from sys_employee
+        sd WHERE dept_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        <if test="biz.keywords != null and biz.keywords != ''">
+            and CONCAT(
+            IFNULL(b.bizopports_name,''),
+            IFNULL(c.customer_name,''),
+            IFNULL(b.keywords,''),
+            IFNULL(b.`desc`,''),
+            IFNULL(t.contact_name,'')
+            ) LIKE
+            CONCAT('%',#{biz.keywords},'%')
+        </if>
+        and b.is_delete='0' and b.state = 1
+    </select>
+
+    <!--交付售前获取自己创建的商机列表 -->
+    <select id="queryPreSaleAll" resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        select a.id,a.bizopports_name as name, a.customer_id, a.keywords,d.customer_name,a.`desc`, a.contact_id,
+        g.contact_name,b.employee_name,c.dept_name,a.employee_id,a.modified_time,a.create_time,a.`create_id`,a.biz_id,
+        b2.employee_name as createName,b3.employee_name as referencesName,a.`references_id`,a.`state`,s.state_name as
+        stateName
+        from biz_opports a
+        left join sys_employee b on b.employee_id = a.employee_id
+        left join sys_department c on c.dept_id = b.dept_id
+        left join customer_info d on a.customer_id=d.customer_id
+        left join contact_info g on g.id = a.contact_id
+        left join sys_employee b2 on b2.employee_id=a.create_id
+        left join sys_employee b3 on b3.employee_id=a.references_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.create_id = #{userId} and a.is_delete='0'
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL(s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+        order by a.modified_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+
+    <!--交付售前获取自己创建的商机列表数量 -->
+    <select id="queryPreSaleAllTotal" resultType="java.lang.Integer">
+        select count(*)
+        from biz_opports a
+        left join sys_employee b on b.employee_id = a.employee_id
+        left join sys_department c on c.dept_id = b.dept_id
+        left join customer_info d on a.customer_id=d.customer_id
+        left join contact_info g on g.id = a.contact_id
+        left join sys_employee b2 on b2.employee_id=a.create_id
+        left join sys_employee b3 on b3.employee_id=a.references_id
+        LEFT JOIN biz_opports_state s ON s.state = a.state
+        where a.create_id = #{userId} and a.is_delete='0'
+        <if test="keywords != null and keywords != ''">
+            and CONCAT(
+            IFNULL(a.bizopports_name,''),
+            IFNULL(b.employee_name,''),
+            IFNULL(d.customer_name,''),
+            IFNULL(a.keywords,''),
+            IFNULL(a.`desc`,''),
+            IFNULL(g.contact_name,''),
+            IFNULL(c.dept_name,''),
+            IFNULL(s.state_name,'')
+            ) LIKE
+            CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="name != null and name != ''">
+            AND a.bizopports_name LIKE CONCAT('%',#{name},'%')
+        </if>
+    </select>
+    <select id="statisticCount" resultType="java.lang.Integer">
+
+        SELECT
+        count( biz.id )
+        FROM
+        biz_opports biz
+        LEFT JOIN sys_employee emp ON emp.employee_id = biz.employee_id
+        <where>
+            <!-- 删除标识 -->
+            AND biz.is_delete = 0
+            <choose>
+                <when test="deptIds!=null and deptIds.size()>0">
+                    AND dept_id IN
+                    <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                        '${dept}'
+                    </foreach>
+                    <if test="employeeId!=null and employeeId!=''">
+                        AND emp.employee_id=#{employeeId}
+                    </if>
+                </when>
+                <otherwise>
+                    AND emp.employee_id=#{employeeId}
+                </otherwise>
+            </choose>
+        </where>
+        <!-- OR(
+            biz.create_id=#{employeeId}
+            AND biz.is_delete = 0
+        )
+        OR(
+            biz.employee_id = #{employeeId}
+            AND biz.is_delete = 0
+        ) -->
+
+    </select>
+    <select id="totalCount" resultType="java.lang.Integer">
+        SELECT
+        count( biz.id )
+        FROM
+        biz_opports biz
+        <!-- 删除标识 -->
+        WHERE biz.is_delete = 0
+    </select>
+    <select id="onTimeStatisticCount" resultType="java.lang.Integer">
+        SELECT
+        count( biz.id )
+        FROM
+        biz_opports biz
+        LEFT JOIN sys_employee emp ON emp.employee_id = biz.employee_id
+        where
+        biz.create_time BETWEEN '${startTime} 00:00:00' AND '${endTime} 23:59:59'
+        <!-- 删除标识 -->
+        AND biz.is_delete = 0
+        <choose>
+            <when test="deptIds!=null and deptIds.size()>0">
+                AND dept_id IN
+                <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                    '${dept}'
+                </foreach>
+                <if test="employeeId!=null and employeeId!=''">
+                    AND emp.employee_id=#{employeeId}
+                </if>
+            </when>
+            <otherwise>
+                AND emp.employee_id=#{employeeId}
+            </otherwise>
+        </choose>
+        <!-- OR(
+            biz.create_time BETWEEN '${startTime} 00:00:00' AND '${endTime} 23:59:59'
+            AND biz.is_delete = 0
+            and biz.create_id=#{employeeId}
+        ) -->
+    </select>
+    <select id="findFirstBizOpports" resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        select * from biz_opports order by create_time asc limit 1
+    </select>
+    <select id="relatedTotal" resultType="java.lang.Integer">
+        select count(*)
+        from biz_opports b,project_info p where p.biz_opport_id = b.id and b.id=#{id} and p.is_delete = '0'
+    </select>
+
+    <!-- 查询客户商机数量 -->
+    <select id="findBizOpportsCountByCustomerId" resultType="java.lang.Integer">
+        select count(*) from biz_opports where customer_id = #{customerId}
+    </select>
+
+    <select id="queryBizOpportInfos" parameterType="string"
+            resultType="com.sefonsoft.oa.entity.workorder.BizOpportInfo">
+        SELECT b.bizopports_name,ci.contact_name,ci.telphone,c.customer_name,p.project_id,p.partner_name FROM biz_opports b
+        LEFT JOIN customer_info c ON b.customer_id = c.customer_id
+        LEFT JOIN contact_info ci ON b.contact_id = ci.id
+        LEFT JOIN
+        (SELECT pi.project_id,pi.biz_opport_id,pi.partner_name FROM project_check_info pc,project_info pi WHERE pc.project_id = pi.project_id and pc.check_status=3) p ON
+        b.id=p.biz_opport_id
+        WHERE b.employee_id = #{employeeId}
+    </select>
+    <select id="getDeptIdsByEmployeeId" resultType="java.lang.String">
+      SELECT
+            distinct
+          emp.dept_id
+      FROM
+          biz_opports biz
+              LEFT JOIN sys_employee emp ON emp.employee_id = biz.employee_id
+      where emp.employee_id=#{employeeId}
+  </select>
+
+    <select id="queryAllBizOpportsExport" resultType="com.sefonsoft.oa.domain.bizopports.BizOpportsExport">
+    select a.biz_id,a.bizopports_name as name,b1.employee_name as createName,a.create_id,
+        c1.dept_name as createDeptName,b2.employee_name,a.employee_id,c2.dept_name as employeeDeptName,
+        d.state_name,a.keywords,a.`desc`,e.customer_name,f.enter_name,e.industry,
+        concat(e.province_num,'/',e.city_num,'/',e.district) as ssq,e.address,e.website,e.zip_code,
+        e.telephone as customerTelephone,e.fax,g.contact_name,g.contact_sex as sex,g.dept_name as contactDeptName,
+        g.job,g.telphone  as contactTelephone,g.email as contactEmail,g.office_plane,g.university,g.major,
+        g.family_info,g.birthday,g.other
+    from biz_opports a
+    left join sys_employee b1 on b1.employee_id = a.create_id
+    left join sys_department c1 on c1.dept_id = b1.dept_id
+    left join sys_employee b2 on b2.employee_id = a.employee_id
+    left join sys_department c2 on c2.dept_id = b2.dept_id
+    left join biz_opports_state d on d.state=a.state
+    left join customer_info e on a.customer_id = e.customer_id
+    left join enterprise_type f on f.enter_id = e.enter_id
+    left join contact_info g on g.id = a.contact_id
+    where a.is_delete='0'
+    order by a.modified_time desc
+    </select>
+
+    <select id="getMaxSJ" resultType="java.lang.String">
+        SELECT MAX(biz_id) FROM biz_opports WHERE biz_id LIKE CONCAT (#{sjPrefix},"%")
+    </select>
+
+    <select id="findByBizId" resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+
+    SELECT b.id,b.bizopports_name as name,b.biz_id,
+        b.employee_id,b.customer_id,c.customer_name,b.contact_id,t.contact_name,t.job as contactJob,t.telphone as
+        contactTelphone,b.keywords,d.dept_name,
+        b.desc,b.modified_time,b.create_time,b.create_id,b.references_id,e3.employee_name as referencesName, b.state,e2.employee_name,e1.employee_name as
+        createName
+        FROM (select * from biz_opports where biz_id = #{bizId}) b
+        LEFT JOIN customer_info c on b.customer_id = c.customer_id
+        LEFT JOIN contact_info t on b.contact_id=t.id
+        LEFT JOIN sys_employee e1 ON b.create_id = e1.employee_id
+        LEFT JOIN sys_employee e2 ON b.employee_id =  e2.employee_id
+        LEFT JOIN sys_employee e3 ON b.references_id = e3.employee_id
+        LEFT JOIN sys_department d ON d.dept_id = e2.dept_id
+    </select>
+
+    <select id="queryByBizId" resultType="com.sefonsoft.oa.entity.bizopports.BizOpports">
+        SELECT b.id,b.bizopports_name as name,b.biz_id,
+        b.employee_id,b.customer_id,c.customer_name,b.contact_id,t.contact_name,t.job as contactJob,t.telphone as
+        contactTelphone,b.keywords,d.dept_name,
+        b.desc,b.modified_time,b.create_time,b.create_id,b.references_id,e3.employee_name as referencesName, b.state,e2.employee_name,e1.employee_name as
+        createName
+        FROM (select * from biz_opports where biz_id = #{bizId}) b
+        LEFT JOIN customer_info c on b.customer_id = c.customer_id
+        LEFT JOIN contact_info t on b.contact_id=t.id
+        LEFT JOIN sys_employee e1 ON b.create_id = e1.employee_id
+        LEFT JOIN sys_employee e2 ON b.employee_id =  e2.employee_id
+        LEFT JOIN sys_employee e3 ON b.references_id = e3.employee_id
+        LEFT JOIN sys_department d ON d.dept_id = e2.dept_id
+    </select>
+    <select id="findBizopportsWorkerOrderCount" resultType="java.lang.Integer">
+        select count(*) from sefonoa_order.workorder_info where biz_opports_id=#{bizId} and is_delete=0
+    </select>
+    <select id="findBizOpportsCountByStatus" resultType="java.lang.Integer">
+        select count(*) from sefonoa.biz_opports where state=#{status} and is_delete=0
+    </select>
+</mapper>

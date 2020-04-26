@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.contract.ContractProductInfoDao">
+  <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.contract.ContractProductInfo">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="contract_id" jdbcType="VARCHAR" property="contractId"/>
+    <result column="product_id" jdbcType="BIGINT" property="productId"/>
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc"/>
+    <result column="count" jdbcType="INTEGER" property="count"/>
+    <result column="price" jdbcType="DECIMAL" property="price"/>
+    <result column="tax_rate" jdbcType="INTEGER" property="taxRate"/>
+    <result column="amount" jdbcType="DECIMAL" property="amount"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, contract_id, product_id, product_desc, `count`, price, tax_rate, amount
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from contract_product_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete
+    from contract_product_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id"
+          parameterType="com.sefonsoft.oa.entity.contract.ContractProductInfo" useGeneratedKeys="true">
+    insert into contract_product_info (contract_id, product_id, product_desc,
+                                       `count`, price, tax_rate,
+                                       amount)
+    values (#{contractId,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT}, #{productDesc,jdbcType=VARCHAR},
+            #{count,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{taxRate,jdbcType=INTEGER},
+            #{amount,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id"
+          parameterType="com.sefonsoft.oa.entity.contract.ContractProductInfo" useGeneratedKeys="true">
+    insert into contract_product_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="contractId != null">
+        contract_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productDesc != null">
+        product_desc,
+      </if>
+      <if test="count != null">
+        `count`,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="contractId != null">
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productDesc != null">
+        #{productDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sefonsoft.oa.entity.contract.ContractProductInfo">
+    update contract_product_info
+    <set>
+      <if test="contractId != null">
+        contract_id = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productDesc != null">
+        product_desc = #{productDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null">
+        `count` = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.entity.contract.ContractProductInfo">
+    update contract_product_info
+    set contract_id = #{contractId,jdbcType=VARCHAR},
+        product_id  = #{productId,jdbcType=BIGINT},
+        product_desc = #{productDesc,jdbcType=VARCHAR},
+        `count`     = #{count,jdbcType=INTEGER},
+        price       = #{price,jdbcType=DECIMAL},
+        tax_rate    = #{taxRate,jdbcType=INTEGER},
+        amount      = #{amount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <!-- 根据合同ID 删除 -->
+  <delete id="deleteByContractId">
+  
+    delete from contract_product_info where contract_id = #{contractId}
+  
+  </delete>
+  
+  <!-- 根据合同编号获取产品信息 -->
+  <select id="selectByContractId" resultType="com.sefonsoft.oa.domain.contract.vo.ContractProductVO">
+  
+    select 
+      c.product_id,
+      p.product_name,
+      c.product_desc,
+      c.count,
+      c.price,
+      c.tax_rate,
+      c.amount
+    
+     from contract_product_info c 
+     
+     left join product_info p on c.product_id = p.product_id
+     where contract_id = #{contractId}
+  
+  </select>
+  
+</mapper>

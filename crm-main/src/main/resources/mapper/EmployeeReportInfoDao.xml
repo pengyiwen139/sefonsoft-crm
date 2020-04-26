@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.report.EmployeeReportInfoDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.report.EmployeeReportInfo" id="EmployeeReportInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="reportType" column="report_type" jdbcType="INTEGER"/>
+        <result property="reportTime" column="report_time" jdbcType="TIMESTAMP"/>
+        <result property="operationType" column="operation_type" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="contactId" column="contact_id" jdbcType="INTEGER"/>
+        <result property="followDetails" column="follow_details" jdbcType="VARCHAR"/>
+        <result property="nextStepPlan" column="next_step_plan" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeReportInfoMap">
+        select
+          id, employee_id, report_type, report_time, operation_type, project_id, contact_id, follow_details, next_step_plan, operator, last_time, create_time
+        from sefonoa.employee_report_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeReportInfoMap">
+        select
+          id, employee_id, report_type, report_time, operation_type, project_id, contact_id, follow_details, next_step_plan, operator, last_time, create_time
+        from sefonoa.employee_report_info
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="EmployeeReportInfoMap">
+        select
+          id, employee_id, report_type, report_time, operation_type, project_id, contact_id, follow_details, next_step_plan, operator, last_time, create_time
+        from sefonoa.employee_report_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="reportType != null">
+                and report_type = #{reportType}
+            </if>
+            <if test="reportTime != null">
+                and report_time = #{reportTime}
+            </if>
+            <if test="operationType != null">
+                and operation_type = #{operationType}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="contactId != null">
+                and contact_id = #{contactId}
+            </if>
+            <if test="followDetails != null and followDetails != ''">
+                and follow_details = #{followDetails}
+            </if>
+            <if test="nextStepPlan != null and nextStepPlan != ''">
+                and next_step_plan = #{nextStepPlan}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getOneDayDetailList" resultType="com.sefonsoft.oa.domain.report.EmployeeReportDetailDTO">
+        SELECT
+            a.id,
+            a.employee_id,
+            b.employee_name,
+            c.dept_id,
+            c.dept_name,
+            a.report_type,
+            a.report_time,
+            a.operation_type,
+            a.project_id,
+            d.project_name,
+            a.contact_id,
+            e.contact_name,
+            e.telphone,
+            a.follow_details,
+            a.next_step_plan,
+            a.operator,
+            a.last_time,
+            a.create_time
+        FROM
+            sefonoa.employee_report_info a
+                left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+                left join sefonoa.sys_department c on b.dept_id = c.dept_id
+                left join sefonoa.project_info d on a.project_id = d.project_id
+                left join sefonoa.contact_info e on a.contact_id = e.id
+                    where a.employee_id = #{userId} and a.report_time = #{reportTime} and a.operation_type != 3;
+    </select>
+
+    <select id="getRecentlyWeekReportDay" resultType="java.util.Date">
+        select max(report_time) from sefonoa.employee_report_info
+            where operation_type != #{operationOperateReport} and report_type = #{dayTypeReport} and employee_id = #{userId} and report_time &lt; DATE_FORMAT(#{date},"%Y-%m-%d");
+    </select>
+
+    <select id="getRecentDayList" resultType="com.sefonsoft.oa.domain.report.EmployeeReportDetailDTO">
+        SELECT
+            max(a.report_time),
+            a.id,
+            a.employee_id,
+            b.employee_name,
+            c.dept_id,
+            c.dept_name,
+            a.report_type,
+            a.report_time,
+            a.operation_type,
+            a.project_id,
+            d.project_name,
+            a.contact_id,
+            e.contact_name,
+            e.telphone,
+            a.follow_details,
+            a.next_step_plan,
+            a.operator,
+            a.last_time,
+            a.create_time
+        FROM
+            sefonoa.employee_report_info a
+                left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+                left join sefonoa.sys_department c on b.dept_id = c.dept_id
+                left join sefonoa.project_info d on a.project_id = d.project_id
+                left join sefonoa.contact_info e on a.contact_id = e.id
+        where a.employee_id = #{userId} and a.report_time between #{startDateStr} and #{endDateStr}
+    </select>
+
+    <select id="getRecentDayProjectIdList" resultType="java.lang.String">
+        select distinct(project_id) from sefonoa.employee_report_info
+        where employee_id = #{userId}
+          and report_time between #{startDateStr} and #{endDateStr}
+          and report_type = #{dayTypeReport}
+          and operation_type != #{operationOperateReport};
+    </select>
+
+    <select id="getRecentDayReportByProjectId"
+            resultType="com.sefonsoft.oa.domain.report.EmployeeReportDetailDTO">
+        SELECT
+            a.id,
+            a.employee_id,
+            b.employee_name,
+            c.dept_id,
+            c.dept_name,
+            a.report_type,
+            a.report_time,
+            a.operation_type,
+            a.project_id,
+            d.project_name,
+            a.contact_id,
+            e.contact_name,
+            e.telphone,
+            a.follow_details,
+            a.next_step_plan,
+            a.operator,
+            a.last_time,
+            a.create_time
+        FROM
+            sefonoa.employee_report_info a
+                LEFT JOIN sefonoa.sys_employee b ON a.employee_id = b.employee_id
+                LEFT JOIN sefonoa.sys_department c ON b.dept_id = c.dept_id
+                LEFT JOIN sefonoa.project_info d ON a.project_id = d.project_id
+                LEFT JOIN sefonoa.contact_info e ON a.contact_id = e.id
+        WHERE
+              a.employee_id = #{userId}
+          AND a.project_id = #{projectId}
+          AND a.report_time BETWEEN #{startDateStr} AND #{endDateStr}
+          AND a.report_type = #{dayTypeReport}
+          AND a.operation_type != #{operationOperateReport}
+            order by a.create_time
+    </select>
+
+    <select id="getSumCount" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_employee a left join sefonoa.sys_user b on a.employee_id = b.user_id
+            where
+                a.job_status != 2
+                <if test="dataDeptIdList!=null and dataDeptIdList.size()>0">
+                    and a.dept_id in
+                    <foreach collection="dataDeptIdList" item="deptId1" open="(" close=")" separator=",">
+                        #{deptId1}
+                    </foreach>
+                </if>
+    </select>
+
+    <select id="getSignedCount" resultType="java.lang.Integer">
+        select count(distinct c.employee_id) from sefonoa.sys_employee a
+            left join sefonoa.sys_user b on a.employee_id = b.user_id
+            left join sefonoa.employee_report_info c on a.employee_id = c.employee_id
+            where
+              c.report_time = #{reportTime}
+              and c.report_type = #{dayTypeReport}
+              and c.operation_type != #{operationOperateReport}
+              and a.job_status != 2
+              <if test="dataDeptIdList!=null and dataDeptIdList.size()>0">
+                  and a.dept_id in
+                    <foreach collection="dataDeptIdList" item="deptId" open="(" close=")" separator=",">
+                        #{deptId}
+                    </foreach>
+              </if>
+    </select>
+
+    <select id="getLoginUserToDayReportIdByReportType" resultType="java.lang.Long">
+            select id from employee_report_info
+                where employee_id = #{userId} and
+                      report_time = #{reportTime} and
+                      report_type = #{reportType}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.employee_report_info(employee_id, report_type, report_time, operation_type, project_id, contact_id, follow_details, next_step_plan, operator, last_time, create_time)
+        values (#{employeeId}, #{reportType}, #{reportTime}, #{operationType}, #{projectId}, #{contactId}, #{followDetails}, #{nextStepPlan}, #{operator}, #{lastTime}, #{createTime})
+    </insert>
+
+    <insert id="batchInsert">
+        insert into sefonoa.employee_report_info(employee_id, report_type, report_time, operation_type, project_id, contact_id, follow_details, next_step_plan, operator, last_time, create_time) values
+            <foreach collection="list" item="report" separator=",">
+                (#{report.employeeId}, #{report.reportType}, #{report.reportTime}, #{report.operationType}, #{report.projectId}, #{report.contactId}, #{report.followDetails}, #{report.nextStepPlan}, #{report.operator}, #{report.lastTime}, #{report.createTime})
+            </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.employee_report_info
+        <set>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="reportType != null">
+                report_type = #{reportType},
+            </if>
+            <if test="reportTime != null">
+                report_time = #{reportTime},
+            </if>
+            <if test="operationType != null">
+                operation_type = #{operationType},
+            </if>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="contactId != null">
+                contact_id = #{contactId},
+            </if>
+            <if test="followDetails != null and followDetails != ''">
+                follow_details = #{followDetails},
+            </if>
+            <if test="nextStepPlan != null and nextStepPlan != ''">
+                next_step_plan = #{nextStepPlan},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.employee_report_info where id = #{id}
+    </delete>
+
+    <delete id="batchDeleteByIdList">
+        delete from sefonoa.employee_report_info where id in
+            <foreach collection="idList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </delete>
+
+</mapper>

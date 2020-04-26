@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.project.ProjectCheckInfoDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.project.ProjectCheckInfo" id="ProjectCheckInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="opinion" column="opinion" jdbcType="VARCHAR"/>
+        <result property="checkStatus" column="check_status" jdbcType="INTEGER"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProjectCheckInfoMap">
+        select
+          id, project_id, employee_id, opinion, check_status, last_time, create_time
+        from sefonoa.project_check_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProjectCheckInfoMap">
+        select
+          id, project_id, employee_id, opinion, check_status, last_time, create_time
+        from sefonoa.project_check_info
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProjectCheckInfoMap">
+        select
+          id, project_id, employee_id, opinion, check_status, last_time, create_time
+        from sefonoa.project_check_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="opinion != null and opinion != ''">
+                and opinion = #{opinion}
+            </if>
+            <if test="checkStatus != null">
+                and check_status = #{checkStatus}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getStatusByProjectId" resultType="java.lang.Integer">
+        select check_status from sefonoa.project_check_info where project_id = #{projectId}
+    </select>
+
+    <select id="getCheckStatusByProjectId" resultType="java.lang.Integer">
+        select check_status from project_check_info where project_id = #{projectId};
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.project_check_info(project_id, employee_id, opinion, check_status, last_time, create_time)
+        values (#{projectId}, #{employeeId}, #{opinion}, #{checkStatus}, #{lastTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.project_check_info
+        <set>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="opinion != null and opinion != ''">
+                opinion = #{opinion},
+            </if>
+            <if test="checkStatus != null">
+                check_status = #{checkStatus},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateCheckStatus2UnCheck">
+        update sefonoa.project_check_info set check_status = #{projectPreCheckStatus} where project_id = #{projectId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.project_check_info where id = #{id}
+    </delete>
+    
+    <delete id="deleteCheck">
+        delete from sefonoa.project_check_info where  project_id = #{projectId} AND employee_id = #{employeeId} 
+    </delete>
+
+    <!--通过projectId删除-->
+    <delete id="deleteByIds">
+        delete from project_check_info where project_id = #{projectId}
+    </delete>
+</mapper>

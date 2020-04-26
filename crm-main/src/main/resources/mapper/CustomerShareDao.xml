@@ -1,0 +1,1283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.customer.CustomerShareDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.customer.CustomerInfo" id="CustomerInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="countryNum" column="country_num" jdbcType="VARCHAR"/>
+        <result property="provinceNum" column="province_num" jdbcType="VARCHAR"/>
+        <result property="cityNum" column="city_num" jdbcType="VARCHAR"/>
+        <result property="district" column="district" jdbcType="VARCHAR"/>
+        <result property="industry" column="industry" jdbcType="VARCHAR"/>
+        <result property="enterId" column="enter_id" jdbcType="INTEGER"/>
+        <result property="isListed" column="is_listed" jdbcType="INTEGER"/>
+        <result property="website" column="website" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="zipCode" column="zip_code" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+        <result property="fax" column="fax" jdbcType="VARCHAR"/>
+        <result property="contacts" column="contacts" jdbcType="VARCHAR"/>
+        <result property="contactsDepart" column="contacts_depart" jdbcType="VARCHAR"/>
+        <result property="contactsTelephone" column="contacts_telephone" jdbcType="VARCHAR"/>
+        <result property="contactsEmail" column="contacts_email" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+
+    </resultMap>
+
+
+
+    <!--查询单个-->
+    <select id="queryById" resultType="com.sefonsoft.oa.domain.customer.vo.CustomerInfoQueryVo">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry,
+        a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart,
+        a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time,m.enter_name
+        <!--,b.cowner,c.employee_id,c.employee_name
+        ,d.dept_id,d.dept_name-->
+        from customer_info_share a
+        left join sys_employee c on a.operator = c.employee_id
+        left join sys_department d on c.dept_id = d.dept_id
+        left join enterprise_type m on a.enter_id = m.enter_id
+        where a.id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CustomerInfoMap">
+        select
+          id, customer_id, customer_name, country_num, province_num, city_num, district, industry, enter_id, is_listed, website, address, zip_code, telephone, fax, contacts, contacts_depart, contacts_telephone, contacts_email, operator, last_time, create_time
+        from
+          sefonoa.customer_info_share
+        where
+          a.is_delete = 0
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.sefonsoft.oa.entity.customer.CustomerInfo">
+        insert into customer_info_share(customer_id, customer_name, country_num, province_num, city_num, district, industry, enter_id, is_listed, website, address, zip_code, telephone, fax, contacts, contacts_depart, contacts_telephone, contacts_email, operator, last_time, create_time)
+        values (#{customerId}, #{customerName}, #{countryNum}, #{provinceNum}, #{cityNum}, #{district}, #{industry}, #{enterId}, #{isListed}, #{website}, #{address}, #{zipCode}, #{telephone}, #{fax}, #{contacts}, #{contactsDepart}, #{contactsTelephone}, #{contactsEmail}, #{operator}, #{lastTime}, #{createTime})
+    </insert>
+
+    <insert id="importInsertContactInfo" useGeneratedKeys="true" keyProperty="id" parameterType="com.sefonsoft.oa.domain.project.ImportContactDTO">
+        insert into contact_info_share(import_type, employee_id, customer_id, contact_name, dept_name, telphone, operator, last_time, create_time)
+            values (#{importType}, #{employeeId}, #{customerId}, #{contactName}, #{contactDeptName}, #{tel}, #{operatorId}, #{lastDate}, #{lastDate});
+    </insert>
+
+    <insert id="importInsertCustomerInfo">
+        insert into customer_info_share(industry, telephone, import_type, customer_id, customer_name, operator, last_time, create_time)
+            values (#{industry}, #{tel}, #{importType}, #{customerIdNew}, #{customerName}, #{operatorId}, #{date}, #{date})
+    </insert>
+
+    <!-- insert id="importInsertCustomerSaleRef">
+        insert into customer_sale_ref(customer_id, employee_id, operator, last_time, create_time)
+            values (#{customerIdNew}, #{employeeId}, #{operatorId}, #{date}, #{date});
+    </insert -->
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.customer_info_share
+        <set>
+            <if test="customerId != null and customerId != ''">
+                customer_id = #{customerId},
+            </if>
+            <if test="customerName != null and customerName != ''">
+                customer_name = #{customerName},
+            </if>
+            <if test="countryNum != null and countryNum != ''">
+                country_num = #{countryNum},
+            </if>
+            <if test="provinceNum != null and provinceNum != ''">
+                province_num = #{provinceNum},
+            </if>
+            <if test="cityNum != null and cityNum != ''">
+                city_num = #{cityNum},
+            </if>
+            <if test="district != null and district != ''">
+                district = #{district},
+            </if>
+            <if test="industry != null and industry != ''">
+                industry = #{industry},
+            </if>
+            <if test="enterId != null">
+                enter_id = #{enterId},
+            </if>
+            <if test="isListed != null">
+                is_listed = #{isListed},
+            </if>
+            <if test="website != null and website != ''">
+                website = #{website},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="zipCode != null and zipCode != ''">
+                zip_code = #{zipCode},
+            </if>
+            <if test="telephone != null and telephone != ''">
+                telephone = #{telephone},
+            </if>
+            <if test="fax != null and fax != ''">
+                fax = #{fax},
+            </if>
+            <if test="contacts != null and contacts != ''">
+                contacts = #{contacts},
+            </if>
+            <if test="contactsDepart != null and contactsDepart != ''">
+                contacts_depart = #{contactsDepart},
+            </if>
+            <if test="contactsTelephone != null and contactsTelephone != ''">
+                contacts_telephone = #{contactsTelephone},
+            </if>
+            <if test="contactsEmail != null and contactsEmail != ''">
+                contacts_email = #{contactsEmail},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        <!-- delete from customer_info_share where id = #{id} -->
+        update
+          customer_info_share
+        set
+          is_delete = 1
+        where
+          id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteByIds">
+        <!--
+        delete from customer_info_share where customer_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+        -->
+
+        update
+          customer_info_share
+        set
+          is_delete = 1
+        where
+          customer_id in
+          <foreach collection="ids" item="id" open="(" separator="," close=")" >
+              #{id}
+          </foreach>
+    </delete>
+
+    <resultMap type="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO" id="CustomerInfoMaps">
+
+
+
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="countryNum" column="country_num" jdbcType="VARCHAR"/>
+        <result property="provinceNum" column="province_num" jdbcType="VARCHAR"/>
+        <result property="cityNum" column="city_num" jdbcType="VARCHAR"/>
+        <result property="district" column="district" jdbcType="VARCHAR"/>
+        <result property="industry" column="industry" jdbcType="VARCHAR"/>
+        <result property="enterId" column="enter_id" jdbcType="INTEGER"/>
+        <result property="isListed" column="is_listed" jdbcType="INTEGER"/>
+        <result property="website" column="website" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="zipCode" column="zip_code" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+        <result property="fax" column="fax" jdbcType="VARCHAR"/>
+        <result property="contacts" column="contacts" jdbcType="VARCHAR"/>
+        <result property="contactsDepart" column="contacts_depart" jdbcType="VARCHAR"/>
+        <result property="contactsTelephone" column="contacts_telephone" jdbcType="VARCHAR"/>
+        <result property="contactsEmail" column="contacts_email" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+
+        <result property="cowner" column="cowner" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="entername" column="enter_name" jdbcType="VARCHAR"/>
+
+        <collection property="contactList" ofType="com.sefonsoft.oa.entity.contact.ContactInfo">
+            <result property="ids" column="ids" jdbcType="INTEGER"/>
+            <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+            <result property="job" column="job" jdbcType="VARCHAR"/>
+            <result property="role" column="role" jdbcType="INTEGER"/>
+            <result property="contactName" column="contact_name" jdbcType="VARCHAR"/>
+            <result property="contactSex" column="contact_sex" jdbcType="INTEGER"/>
+            <result property="deptNames" column="deptNames" jdbcType="VARCHAR"/>
+            <result property="telphone" column="telphone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+        </collection>
+
+    </resultMap>
+    <!-- 按条件查询列表 -->
+    <select id="getCondition" resultMap="CustomerInfoMaps" parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry, a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart, a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time
+        ,b.cowner,c.employee_id,c.employee_name,d.dept_id,d.dept_name,m.enter_name
+        ,g.id as ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name as deptNames ,g.telphone,g.email
+
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>
+
+            <if test="deptId != null and deptId !=''">
+                ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                OR (c.employee_id = #{employeeId} OR  locate (#{employeeId},b.cowner) > 0))
+            </if>
+
+            <if test="deptName != null and deptName != ''">
+                AND d.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                AND c.employee_name LIKE CONCAT('%',#{employeeName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+     <!--   <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+-->
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        SELECT COUNT(distinct a.customer_id)
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        <where>
+
+            <if test="deptId != null and deptId !=''">
+                ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                OR (c.employee_id = #{employeeId} OR  locate (#{employeeId},b.cowner) > 0))
+            </if>
+
+            <if test="deptName != null and deptName !=''">
+                AND d.dept_name LIKE CONCAT('%',#{deptName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                AND c.employee_name LIKE CONCAT('%',#{employeeName, jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            and a.is_delete = 0
+        </where>
+
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditions" resultMap="CustomerInfoMaps" parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry, a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart, a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time
+        ,b.cowner,c.employee_id,c.employee_name,d.dept_id,d.dept_name,m.enter_name
+        ,g.id as ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name as deptNames,g.telphone,g.email
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>1=1
+            <if test="customerId != null and customerId != ''">
+               AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND (c.employee_id = #{employeeId} OR  locate (#{employeeId},b.cowner) > 0)
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time desc
+        <!--   <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+-->
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditions" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        SELECT COUNT(distinct a.customer_id)
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+
+        <where>1=1
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                AND (c.employee_id = #{employeeId} OR  locate (#{employeeId},b.cowner) > 0)
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time desc
+
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionx" resultMap="CustomerInfoMaps" parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry, a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart, a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time
+        ,b.cowner,c.employee_id,c.employee_name,d.dept_id,d.dept_name,m.enter_name
+        ,g.id as ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name as deptNames,g.telphone,g.email
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>
+            <if test="deptId != null and deptId !=''">
+               ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                OR (c.employee_id = #{employeeId} OR  locate (#{employeeId},b.cowner) > 0))
+            </if>
+
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+        <!--   <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+-->
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionx" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        SELECT COUNT(distinct a.customer_id)
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>
+            <if test="deptId != null and deptId !=''">
+                ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                OR (c.employee_id = #{employeeId} OR  locate (#{employeeId},b.cowner) > 0))
+            </if>
+
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionxx" resultMap="CustomerInfoMaps" parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry, a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart, a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time
+        ,b.cowner,c.employee_id,c.employee_name,d.dept_id,d.dept_name,m.enter_name
+        ,g.id as ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name as deptNames,g.telphone,g.email
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>
+            <if test="deptId != null and deptId !=''">
+                ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                )
+            </if>
+
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+        <!--   <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+-->
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionxx" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        SELECT COUNT(distinct a.customer_id)
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>
+            <if test="deptId != null and deptId !=''">
+                ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                )
+            </if>
+
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionss" resultMap="CustomerInfoMaps" parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry, a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart, a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time
+        ,b.cowner,c.employee_id,c.employee_name,d.dept_id,d.dept_name,m.enter_name
+        ,g.id as ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name as deptNames,g.telphone,g.email
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>
+            <if test="deptId != null and deptId !=''">
+                ( (
+                d.dept_id = #{deptId}
+                OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                OR
+                f.dept_id = #{deptId}
+                OR
+                f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+                )
+                )
+            </if>
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+        <!--   <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+-->
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findConditionss" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        SELECT COUNT(distinct a.customer_id)
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+
+        <where>
+         <if test="deptId != null and deptId !=''">
+            ( (
+            d.dept_id = #{deptId}
+            OR d.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+            OR
+            f.dept_id = #{deptId}
+            OR
+            f.dept_id in (select dept_id from sys_department where FIND_IN_SET(#{deptId}, ancestors))
+            )
+            )
+        </if>
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.last_time  desc
+
+    </select>
+
+
+
+    <!-- 获取最大客户编号-->
+    <select id="getMaxCustomerId"   resultType="String">
+       select Max(customer_id) max_code from customer_info_share
+    </select>
+
+    <select id="batchGetCustomerId" resultType="java.lang.String">
+        select customer_id from customer_info_share where id in
+        <foreach collection="idList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!-- 按条件查询条数 -->
+    <select id="customersCount" resultType="int"
+            parameterType="com.sefonsoft.oa.entity.customer.CustomerInfo">
+        SELECT
+            COUNT( 1 )
+        FROM
+            customer_info_share a
+        INNER JOIN contact_info_share b ON a.customer_id = b.customer_id
+        INNER JOIN sys_employee emp ON emp.employee_id = b.employee_id
+        where b.customer_id = #{customerId}
+        and a.is_delete = 0
+        <!--<choose>
+            <when test="dataDeptIdList==null">
+                AND emp.employee_id=#{employeeId}
+            </when>
+            <otherwise>
+                AND emp.dept_id IN
+                <foreach collection="dataDeptIdList" open="(" close=")" separator="," item="dept">
+                    '${dept}'
+                </foreach>
+            </otherwise>
+        </choose>-->
+    </select>
+
+    <!-- 查询是否有相同客户编号-->
+    <select id="checkUnique"   resultType="int">
+        select count(1) from customer_info_share
+        where  customer_id=#{customerId}
+    </select>
+
+    <!-- 查询是否是子部门-->
+    <select id="contain"   resultType="int">
+       select #{deptId} IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptIds},ancestors) )
+
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getConditionn" resultType="com.sefonsoft.oa.domain.customer.CustomerInfoExport">
+        select distinct
+         a.customer_name as customerName,
+         m.enter_name  as entername,
+         a.industry,
+         CONCAT(IFNULL(a.province_num,''),IFNULL(a.city_num,''),IFNULL(a.district,'')) as ssq ,
+         a.address,
+         a.website,
+         a.zip_code as zipCode,
+         a.telephone,
+         a.fax,
+         c.employee_id as employeeId,
+         c.employee_name as employeeName,
+         d.dept_name as deptName,
+         g.contact_name as contacts,
+         g.contact_sex as sex,
+         g.dept_name as contactsDepart,
+         g.job,
+         g.telphone as contactsTelephone,
+         g.email as contactsEmail,
+         a.create_time as createTime,
+         g.office_plane,
+         g.university,
+         g.major,
+         g.family_info,
+         g.birthday,
+         g.other
+        from customer_info_share a
+        <!-- left join  customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join  sys_employee c on a.operator = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  sys_employee e on (locate (e.employee_id,b.cowner) > 0)
+        left join  sys_department f on  e.dept_id = f.dept_id
+        left join  contact_info_share g on  a.customer_id = g.customer_id
+        left join  enterprise_type m on a.enter_id = m.enter_id
+        <where>1=1
+            <if test="customerId != null and customerId != ''">
+                AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName !=''">
+                AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+            </if>
+            and a.is_delete = 0
+        </where>
+        order by a.create_time  desc
+
+    </select>
+
+    <resultMap type="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO" id="customerInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="countryNum" column="country_num" jdbcType="VARCHAR"/>
+        <result property="provinceNum" column="province_num" jdbcType="VARCHAR"/>
+        <result property="cityNum" column="city_num" jdbcType="VARCHAR"/>
+        <result property="district" column="district" jdbcType="VARCHAR"/>
+        <result property="industry" column="industry" jdbcType="VARCHAR"/>
+        <result property="enterId" column="enter_id" jdbcType="INTEGER"/>
+        <result property="isListed" column="is_listed" jdbcType="INTEGER"/>
+        <result property="website" column="website" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="zipCode" column="zip_code" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+        <result property="fax" column="fax" jdbcType="VARCHAR"/>
+        <result property="contacts" column="contacts" jdbcType="VARCHAR"/>
+        <result property="contactsDepart" column="contacts_depart" jdbcType="VARCHAR"/>
+        <result property="contactsTelephone" column="contacts_telephone" jdbcType="VARCHAR"/>
+        <result property="contactsEmail" column="contacts_email" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+
+        <result property="cowner" column="cowner" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="entername" column="enter_name" jdbcType="VARCHAR"/>
+        <collection property="contactList" ofType="com.sefonsoft.oa.entity.contact.ContactInfo"
+                    select="selectContactList" column="{customerId=customer_id}">
+        </collection>
+    </resultMap>
+    <resultMap type="com.sefonsoft.oa.entity.contact.ContactInfo" id="customerContactInfoMap">
+        <result property="ids" column="ids" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="job" column="job" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="contactName" column="contact_name" jdbcType="VARCHAR"/>
+        <result property="contactSex" column="contact_sex" jdbcType="INTEGER"/>
+        <result property="deptNames" column="deptNames" jdbcType="VARCHAR"/>
+        <result property="telphone" column="telphone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="officePlane" column="office_plane" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.domain.customer.vo.CustomerInfoQueryVo" id="customerInfoVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="countryNum" column="country_num" jdbcType="VARCHAR"/>
+        <result property="provinceNum" column="province_num" jdbcType="VARCHAR"/>
+        <result property="cityNum" column="city_num" jdbcType="VARCHAR"/>
+        <result property="district" column="district" jdbcType="VARCHAR"/>
+        <result property="industry" column="industry" jdbcType="VARCHAR"/>
+        <result property="enterId" column="enter_id" jdbcType="INTEGER"/>
+        <result property="isListed" column="is_listed" jdbcType="INTEGER"/>
+        <result property="website" column="website" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="zipCode" column="zip_code" jdbcType="VARCHAR"/>
+        <result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+        <result property="fax" column="fax" jdbcType="VARCHAR"/>
+        <result property="contacts" column="contacts" jdbcType="VARCHAR"/>
+        <result property="contactsDepart" column="contacts_depart" jdbcType="VARCHAR"/>
+        <result property="contactsTelephone" column="contacts_telephone" jdbcType="VARCHAR"/>
+        <result property="contactsEmail" column="contacts_email" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+
+        <result property="cowner" column="cowner" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="entername" column="enter_name" jdbcType="VARCHAR"/>
+        <collection property="contactList" ofType="com.sefonsoft.oa.entity.contact.ContactInfo"
+                    select="selectContactList" column="{customerId=customer_id}">
+        </collection>
+    </resultMap>
+
+    <sql id="queryWhere">
+        <if test="customerId != null and customerId != ''">
+            AND a.customer_id=#{customerId, jdbcType=VARCHAR}
+        </if>
+        <if test="customerName != null and customerName !=''">
+            AND a.customer_name LIKE CONCAT('%',#{customerName, jdbcType=VARCHAR},'%')
+        </if>
+        <if test="year != null and year != ''">
+            and YEAR(a.create_time) = #{year}
+        </if>
+        <if test='halfYear == "1"'>
+            and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+        </if>
+        <if test='halfYear == "2"'>
+            and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+        </if>
+        <if test='quarter == "1"'>
+            and MONTH(a.create_time) in (1, 2, 3)
+        </if>
+        <if test='quarter == "2"'>
+            and MONTH(a.create_time) in (4, 5, 6)
+        </if>
+        <if test='quarter == "3"'>
+            and MONTH(a.create_time) in (7, 8, 9)
+        </if>
+        <if test='quarter == "4"'>
+            and MONTH(a.create_time) in (10, 11, 12)
+        </if>
+        <if test="month != null and month != ''">
+            and MONTH(a.create_time) = #{month}
+        </if>
+        <if test="industry != null and industry != ''">
+            and a.industry=#{industry}
+        </if>
+        <if test="countryNum != null and countryNum != ''">
+            and a.country_num=#{countryNum}
+        </if>
+        <if test="provinceNum != null and provinceNum != ''">
+            and a.province_num=#{provinceNum}
+        </if>
+        <if test="cityNum != null and cityNum != ''">
+            and a.city_num=#{cityNum}
+        </if>
+        <if test="district != null and district != ''">
+            and a.district=#{district}
+        </if>
+        <if test="createStartTime != null">
+            and a.create_time >= #{createStartTime}
+        </if>
+        <if test="createEndTime != null">
+            and a.create_time <![CDATA[<]]> DATE_ADD(#{createEndTime},INTERVAL 1 DAY)
+        </if>
+        and a.is_delete = 0
+    </sql>
+
+    <select id="customerInfoList" resultMap="customerInfoVoMap"
+            parameterType="com.sefonsoft.oa.domain.customer.CustomerInfoQueryDTO">
+        select distinct
+          a.id,
+          a.customer_id,
+          a.customer_name,
+          a.country_num,
+          a.province_num,
+          a.city_num,
+          a.district,
+          a.industry,
+          a.enter_id,
+          a.is_listed,
+          a.website,
+          a.address,
+          a.zip_code,
+          a.telephone,
+          a.fax,
+          a.contacts,
+          a.contacts_depart,
+          a.contacts_telephone,
+          a.contacts_email,
+          a.operator,
+          a.last_time,
+          a.create_time,
+          m.enter_name,
+          c.employee_id,
+          c.employee_name
+        <!--,b.cowner,c.employee_id,c.employee_name ,d.dept_id,d.dept_name-->
+        from
+          customer_info_share a
+          left join sys_employee c on a.operator = c.employee_id
+          <!-- left join sys_department d on c.dept_id = d.dept_id -->
+          left join enterprise_type m on a.enter_id = m.enter_id
+        <where>
+            <!-- 有数据角色权限通过拥有部门查询 -->
+<!--            <if test="dataDeptIdList != null and dataDeptIdList.size()>0">-->
+<!--                d.dept_id in-->
+<!--                <foreach item="dataDeptId" index="index" collection="dataDeptIdList" open="(" separator="," close=")">-->
+<!--                      '${dataDeptId}'-->
+<!--                </foreach>-->
+<!--            </if>-->
+
+
+            <!-- 没有数据角色权限通过只通过本人查询 -->
+<!--            <if test="!(dataDeptIdList != null and dataDeptIdList.size()>0)">-->
+<!--                and b.employee_id =#{employeeId}-->
+<!--            </if>-->
+            <include refid="queryWhere" />
+            <!-- if test="scope==1">
+                <choose>
+                    <when test="dataDeptIdList!=null and dataDeptIdList.size()>0">
+                        AND d.dept_id IN
+                        <foreach collection="dataDeptIdList" open="(" close=")" separator="," item="dept">
+                            '${dept}'
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        AND c.employee_id=#{employeeId}
+                    </otherwise>
+                </choose>
+                <include refid="queryWhere" />
+                    OR (
+                        b.employee_id=#{employeeId}
+                        <include refid="queryWhere" />
+                    )
+            </if>
+
+            <if test="scope==2">
+                <choose>
+                    <when test="dataDeptIdList!=null and dataDeptIdList.size()>0">
+                        AND d.dept_id IN
+                        <foreach collection="dataDeptIdList" open="(" close=")" separator="," item="dept">
+                            '${dept}'
+                        </foreach>
+                    </when>
+                </choose>
+            </if -->
+
+
+        </where>
+        order by a.last_time desc
+    </select>
+
+    <select id="getMaxTodayCustomerId" resultType="java.lang.String">
+        select max(customer_id)
+            from customer_info_share
+            where customer_id like CONCAT(#{toDayCustomerIdPrefix}, '%');
+    </select>
+    <select id="getCustomerNameId" resultType="com.sefonsoft.oa.domain.project.CustomerNameIdDTO">
+        select customer_id, customer_name from sefonoa.customer_info_share
+        <where>
+            <if test="customerName != null and customerName != ''">
+                and customer_name like concat('%', #{customerName}, '%')
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and customer_name =#{customerId}
+            </if>
+            and is_delete = 0
+        </where>
+    </select>
+
+    <resultMap type="com.sefonsoft.oa.entity.customer.CustomerInfo" id="ImportCustomerInfoMaps">
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <collection property="contactList" ofType="com.sefonsoft.oa.entity.contact.ContactInfo">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="contactName" column="contact_name" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryByCustomerId" resultType="com.sefonsoft.oa.domain.customer.vo.CustomerInfoQueryVo">
+        select distinct
+        a.id, a.customer_id, a.customer_name, a.country_num, a.province_num, a.city_num, a.district, a.industry,
+        a.enter_id, a.is_listed, a.website, a.address, a.zip_code, a.telephone, a.fax, a.contacts, a.contacts_depart,
+        a.contacts_telephone, a.contacts_email, a.operator, a.last_time, a.create_time,m.enter_name
+        <!--,b.cowner,c.employee_id,c.employee_name
+        ,d.dept_id,d.dept_name-->
+        from customer_info_share a
+        <!-- left join customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join sys_employee c on a.operator = c.employee_id
+        left join sys_department d on c.dept_id = d.dept_id
+        left join enterprise_type m on a.enter_id = m.enter_id
+        where a.customer_id = #{customerId}
+        and a.is_delete = 0
+    </select>
+
+    <select id="selectContactList" resultMap="customerContactInfoMap"
+            parameterType="com.sefonsoft.oa.domain.contact.ContactInfoQueryDTO">
+        select distinct g.id as ids,g.customer_id,g.job,g.role,g.contact_name,g.contact_sex,g.dept_name as
+        deptNames,g.telphone,g.email,g.office_plane
+        from contact_info_share g
+        <where>
+            g.customer_id=#{customerId}
+        </where>
+        order by g.contact_name
+
+    </select>
+
+
+    <insert id="batchInsert">
+    insert into sefonoa.contact_info_share(customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time, office_plane, university, major, birthday, family_info, other)
+    values
+        <foreach collection="contactInfoList" item="contactInfo" separator=",">
+            (#{contactInfo.customerId}, #{contactInfo.contactName}, #{contactInfo.contactSex}, #{contactInfo.role}, #{contactInfo.deptName}, #{contactInfo.job}, #{contactInfo.telphone}, #{contactInfo.email}, #{contactInfo.employeeId}, #{contactInfo.operator}, #{contactInfo.lastTime}, #{contactInfo.createTime}, #{contactInfo.officePlane}, #{contactInfo.university}, #{contactInfo.major}, #{contactInfo.birthday}, #{contactInfo.familyInfo}, #{contactInfo.other})
+        </foreach>
+    </insert>
+
+    <select id="queryByCustomerName" resultType="com.sefonsoft.oa.domain.customer.vo.CustomerInfoQueryVo">
+
+        select
+          a.id, a.customer_id,
+          a.customer_name,
+          a.country_num,
+          a.province_num,
+          a.city_num,
+          a.district,
+          a.industry,
+          a.enter_id,
+          a.is_listed,
+          a.website,
+          a.address,
+          a.zip_code,
+          a.telephone,
+          a.fax,
+          a.contacts,
+          a.contacts_depart,
+          a.contacts_telephone,
+          a.contacts_email,
+          a.operator,
+          a.last_time,
+          a.create_time,
+          m.enter_name
+        <!--,b.cowner,c.employee_id,c.employee_name
+        ,d.dept_id,d.dept_name-->
+        from customer_info_share a
+        <!-- left join customer_sale_ref b on a.customer_id=b.customer_id -->
+        left join sys_employee c on a.operator = c.employee_id
+        left join sys_department d on c.dept_id = d.dept_id
+        left join enterprise_type m on a.enter_id = m.enter_id
+        where a.customer_name = #{customerName}
+        and a.is_delete = 0
+    </select>
+
+
+    <select id="findCustomerInfo" resultType="com.sefonsoft.oa.entity.customer.CustomerInfo">
+        select * from customer_info_share where customer_name=#{customerName} and address=#{address} and industry=#{industry} and is_delete=0
+    </select>
+
+
+    <select id="findCustomerInfoByContact" resultType="com.sefonsoft.oa.entity.customer.CustomerInfo">
+        select
+            distinct cus.*
+        from
+            customer_info_share cus
+            inner join contact_info_share contact
+            on cus.customer_id = contact.customer_id
+        where customer_name=#{customerName}
+          and address=#{address}
+          and industry=#{industry}
+          and contact.contact_name=#{contactName}
+          and contact.telphone=#{telephone}
+          and cus.is_delete=0
+    </select>
+
+
+
+    <resultMap type="com.sefonsoft.oa.domain.customer.vo.ExportCustomerInfoQueryVo" id="exportVo">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="address" column="address"/>
+        <result property="birthday" column="birthday"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="contactName" column="contact_name"/>
+        <result property="contactTelphone" column="contact_telphone"  jdbcType="VARCHAR"/>
+        <result property="contactEmail" column="contact_email"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="enterName" column="enter_name"/>
+        <result property="fax" column="fax"  jdbcType="VARCHAR"/>
+        <result property="familyInfo" column="family_info" />
+        <result property="gender" column="gender"/>
+        <result property="industry" column="industry"/>
+        <result property="job" column="job"/>
+        <result property="major" column="major"/>
+        <result property="officePlane" column="office_plane"/>
+        <result property="other" column="officePlane" />
+        <result property="operator" column="operator"/>
+        <result property="provincial" column="provincial"/>
+        <result property="telephone" column="telephone"  jdbcType="VARCHAR"/>
+        <result property="university" column="university"/>
+        <result property="website" column="website"/>
+        <result property="zipCode" column="zip_code"/>
+        <collection property="employeeVoList" ofType="com.sefonsoft.oa.domain.customer.vo.ExportCustomerInfoQueryVo$EmployeeVo">
+          <result property="employeeId" column="ev_employee_id"/>
+          <result property="employeeName" column="ev_employee_name"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="exportCustomerInfoList" resultMap="exportVo">
+        SELECT DISTINCT
+            a.customer_id,
+            a.customer_name,
+            CONCAT( a.province_num, '/', a.city_num, '/', a.district ) provincial,
+            m.enter_name,
+            a.industry,
+            a.address,
+            c.employee_id ev_employee_id,
+            c.employee_name ev_employee_name,
+            a.telephone,
+            a.zip_code,
+            a.website,
+            a.fax,
+            con.contact_name,
+            CASE
+            con.contact_sex
+            WHEN 1 THEN
+            '男'
+            WHEN 2 THEN
+            '女' ELSE '未知'
+            END gender,
+            con.dept_name,
+            con.job,
+            con.telphone contact_telphone,
+            con.email contact_email,
+            con.office_plane,
+            con.university,
+            con.major,
+            DATE_FORMAT( con.birthday, '%Y-%m-%d' ) birthday,
+            con.family_info,
+            con.other
+        FROM
+            contact_info_share con
+        RIGHT JOIN customer_info_share a ON con.customer_id = a.customer_id
+        LEFT JOIN sys_employee c ON a.operator = c.employee_id
+        LEFT JOIN sys_department d ON c.dept_id = d.dept_id
+        LEFT JOIN enterprise_type m ON a.enter_id = m.enter_id
+        <where>
+
+            <!-- 删除标识 -->
+            AND a.is_delete = 0
+            <!-- <choose>
+                如果部门权限不为null
+                <when test="deptIds!=null and deptIds.size()>0">
+                    AND d.dept_id IN
+                    <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                        #{dept}
+                    </foreach>
+                    OR (
+                        c.employee_id=#{employeeId}
+                        AND a.is_delete = 0
+                    )
+                </when>
+            </choose> -->
+
+        </where>
+    </select>
+</mapper>

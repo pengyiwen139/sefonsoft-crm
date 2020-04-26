@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.project.ProductProjectRefDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.project.ProductProjectRef" id="ProductProjectRefMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productId" column="product_id" jdbcType="INTEGER"/>
+        <result property="saleCount" column="sale_count" jdbcType="INTEGER"/>
+        <result property="amount" column="amount" jdbcType="OTHER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProductProjectRefMap">
+        select
+          id, product_id, sale_count, amount, project_id, operator, last_time, create_time
+        from sefonoa.product_project_ref
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProductProjectRefMap">
+        select
+          id, product_id, sale_count, amount, project_id, operator, last_time, create_time
+        from sefonoa.product_project_ref
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProductProjectRefMap">
+        select
+          id, product_id, sale_count, amount, project_id, operator, last_time, create_time
+        from sefonoa.product_project_ref
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="productId != null">
+                and product_id = #{productId}
+            </if>
+            <if test="saleCount != null">
+                and sale_count = #{saleCount}
+            </if>
+            <if test="amount != null">
+                and amount = #{amount}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="querybyProjectId" resultType="com.sefonsoft.oa.entity.project.ProductProjectRef">
+        select
+            a.id, a.product_id, a.sale_count, cast(a.amount as decimal(10,4)) as amount, a.project_id, a.operator, a.last_time, a.create_time, b.product_name
+        from sefonoa.product_project_ref a left join sefonoa.product_info b on a.product_id = b.product_id
+        where a.project_id = #{projectId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.product_project_ref(product_id, sale_count, amount, project_id, operator, last_time, create_time)
+        values (#{productId}, #{saleCount}, #{amount}, #{projectId}, #{operator}, #{lastTime}, #{createTime})
+    </insert>
+
+    <insert id="batchInsert">
+        insert into sefonoa.product_project_ref(product_id, sale_count, amount, project_id, operator, last_time, create_time)
+        values
+        <foreach collection="list" item="bean" separator=",">
+            (#{bean.productId}, #{bean.saleCount}, #{bean.amount}, #{bean.projectId}, #{bean.operator}, #{bean.lastTime}, #{bean.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertByUpdate">
+        insert into sefonoa.product_project_ref(product_id, sale_count, amount, project_id, operator, last_time, create_time)
+        values
+            <foreach collection="list" item="bean" separator=",">
+                (#{bean.productId}, #{bean.saleCount}, #{bean.amount}, #{bean.projectId}, #{bean.operator}, #{bean.lastTime}, #{bean.createTime})
+            </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.product_project_ref
+        <set>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="saleCount != null">
+                sale_count = #{saleCount},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.product_project_ref where id = #{id}
+    </delete>
+
+    <!--projectId-->
+    <delete id="deleteByIds">
+        delete from product_project_ref where project_id = #{projectId}
+    </delete>
+
+</mapper>

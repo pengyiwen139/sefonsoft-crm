@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.role.SysRoleDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.role.SysRole" id="SysRoleMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="VARCHAR"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="roleType" column="role_type" jdbcType="INTEGER"/>
+        <result property="hasChecked" column="has_checked" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+        <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+        <result property="appName" column="app_name" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysRoleMap">
+        select
+          id, role_id, role_name, remark, order_num, modified_time, create_time
+        from sefonoa.sys_role
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysRoleMap">
+        select
+          id, role_id, role_name, remark, order_num, modified_time, create_time
+        from sefonoa.sys_role
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="list" resultMap="SysRoleMap">
+        select
+        a.id, a.role_id, a.role_name, a.remark, a.order_num, a.modified_time, a.create_time, a.has_checked, a.role_type
+        from sefonoa.sys_role a
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and a.role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and a.role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and a.remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and a.order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and a.role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and a.has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+            <if test="page != null and rows != null">
+                limit #{page}, #{rows}
+            </if>
+        </where>
+        order by role_id
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysRoleMap">
+        select
+        id, role_id, role_name, remark, order_num, modified_time, create_time, has_checked, role_type
+        from sefonoa.sys_role
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listCount" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_role a
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and a.role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and a.role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and a.remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and a.order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and a.role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and a.has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listApplication" resultType="com.sefonsoft.oa.entity.application.SysApplication">
+        select id, app_id, app_name, create_time, modified_time from sefonoa.sys_application
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="appId != null and appId != ''">
+                and app_id = #{appId}
+            </if>
+            <if test="appName != null and appName != ''">
+                and app_name = #{appName}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="countRoleByRoleId" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_role where role_id = #{roleId}
+    </select>
+
+    <select id="batchGetRoleIdById" resultType="java.lang.String">
+        select role_id from sefonoa.sys_role where id in
+            <foreach collection="idList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </select>
+
+    <select id="countInUsed" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_user_role where role_id in
+            <foreach collection="roleIdList" item="roleId" separator="," open="(" close=")">
+                #{roleId}
+            </foreach>
+    </select>
+
+    <select id="getMaxRoleId" resultType="java.lang.String">
+        select max(role_id) from sefonoa.sys_role;
+    </select>
+
+    <select id="queryDataRoleByRoleId" resultType="com.sefonsoft.oa.domain.role.SysDataRoleQueryDTO">
+        select
+            id, role_id, role_name, remark, role_type, has_checked, app_id, order_num, modified_time, create_time
+                from sefonoa.sys_role
+                where role_id = #{roleId}
+    </select>
+
+    <select id="batchQueryRoleDeptByRoleId" resultType="com.sefonsoft.oa.domain.role.SysRoleDeptQueryDTO">
+        select id, role_id, dept_id, create_time from sefonoa.sys_role_dept where role_id = #{roleId}
+    </select>
+
+    <select id="queryMenuRoleByRoleId" resultType="com.sefonsoft.oa.domain.role.SysMenuRoleQueryDTO">
+        select
+            id, role_id, role_name, remark, role_type, has_checked, app_id, order_num, modified_time, create_time
+                from sefonoa.sys_role
+                where role_id = #{roleId}
+    </select>
+
+    <select id="batchQueryRoleMenuByRoleId" resultType="com.sefonsoft.oa.domain.role.SysMenuRoleRefQueryDTO">
+        select id, role_id, menu_id, create_time from sefonoa.sys_role_permission where role_id = #{roleId}
+    </select>
+
+    <select id="queryUserRole" resultType="com.sefonsoft.oa.entity.role.SysRole">
+        select a.id, a.role_id, a.role_name, a.remark, a.order_num, a.modified_time, a.create_time, a.has_checked, a.role_type
+            from sefonoa.sys_role a left join sefonoa.sys_user_role b on a.role_id = b.role_id
+                where b.user_id = #{userId}
+    </select>
+
+    <select id="getUserDeptIdList" resultType="java.lang.String">
+        select distinct dept_id from sefonoa.sys_role_dept where role_id in
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </select>
+
+    <select id="getUserMenuList" resultType="java.lang.String">
+        select b.perms from sefonoa.sys_role_permission a
+            left join sefonoa.sys_permission b on a.menu_id = b.menu_id
+            where a.role_id in
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </select>
+
+    <select id="queryUserRoleByUserIdList" resultType="com.sefonsoft.oa.domain.role.SysRoleUserDTO">
+        select b.user_id, a.id, a.role_id, a.role_name, a.remark, a.order_num, a.modified_time, a.create_time, a.has_checked, a.role_type
+            from sefonoa.sys_role a left join sefonoa.sys_user_role b on a.role_id = b.role_id
+            where b.user_id in
+                <foreach collection="list" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+    </select>
+
+    <select id="listData" resultType="com.sefonsoft.oa.entity.role.SysRole" flushCache="true" useCache="false">
+        select
+        a.id, a.role_id, a.role_name, a.remark, a.order_num, a.modified_time, a.create_time, a.has_checked, a.role_type
+        from sefonoa.sys_role a
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and a.role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and a.role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and a.remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and a.order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and a.role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and a.has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+            <if test="page != null and rows != null">
+                limit #{page}, #{rows}
+            </if>
+        </where>
+        order by role_id
+    </select>
+
+    <select id="listMenu" resultType="com.sefonsoft.oa.entity.role.SysRole" flushCache="true" useCache="false">
+        select
+        a.id, a.role_id, a.role_name, a.remark, a.order_num, a.modified_time, a.create_time, a.has_checked, a.role_type
+        from sefonoa.sys_role a
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and a.role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and a.role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and a.remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and a.order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and a.role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and a.has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+            <if test="page != null and rows != null">
+                limit #{page}, #{rows}
+            </if>
+        </where>
+        order by role_id
+    </select>
+
+    <select id="listDataCount" resultType="java.lang.Integer" flushCache="true" useCache="false">
+        select count(1) from sefonoa.sys_role a
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and a.role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and a.role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and a.remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and a.order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and a.role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and a.has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listMenuCount" resultType="java.lang.Integer" flushCache="true" useCache="false">
+        select count(1) from sefonoa.sys_role a
+        <where>
+            <if test="id != null">
+                and a.id = #{id}
+            </if>
+            <if test="roleId != null and roleId != ''">
+                and a.role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and a.role_name = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and a.remark = #{remark}
+            </if>
+            <if test="orderNum != null">
+                and a.order_num = #{orderNum}
+            </if>
+            <if test="roleType != null">
+                and a.role_type = #{roleType}
+            </if>
+            <if test="hasChecked != null">
+                and a.has_checked = #{hasChecked}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.sys_role(role_id, role_name, remark, order_num, modified_time, create_time)
+        values (#{roleId}, #{roleName}, #{remark}, #{orderNum}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <insert id="batchAddRolePermissionRef">
+        insert into sefonoa.sys_role_permission(role_id, menu_id, create_time)
+            values
+            <foreach collection="permissionList" item="permission" separator=",">
+                (#{permission.roleId}, #{permission.menuId}, #{permission.createTime})
+            </foreach>
+    </insert>
+
+    <insert id="addDataRole">
+        insert into sefonoa.sys_role(role_id, role_name, role_type, has_checked, app_id, remark, order_num, modified_time, create_time)
+        values (#{roleId}, #{roleName}, #{roleType}, #{hasChecked}, #{appId}, #{remark}, #{orderNum}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <insert id="addMenuRole">
+        insert into sefonoa.sys_role(role_id, role_name, role_type, has_checked, app_id, remark, order_num, modified_time, create_time)
+        values (#{roleId}, #{roleName}, #{roleType}, #{hasChecked}, #{appId}, #{remark}, #{orderNum}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <insert id="batchAddRoleDeptRef">
+        insert into sefonoa.sys_role_dept(role_id, dept_id, create_time) values
+            <foreach collection="idList" item="bean" separator=",">
+                 (#{bean.roleId}, #{bean.deptId}, #{bean.createTime})
+            </foreach>
+    </insert>
+
+    <insert id="batchAddRoleDeptRefInUpdate">
+        insert into sefonoa.sys_role_dept(role_id, dept_id, create_time) values
+        <foreach collection="idList" item="bean" separator=",">
+             (#{bean.roleId}, #{bean.deptId}, #{bean.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="batchAddRolePermissionRefInUpdate">
+        insert into sefonoa.sys_role_permission(role_id, menu_id, create_time)
+        values
+        <foreach collection="permissionList" item="permission" separator=",">
+            (#{permission.roleId}, #{permission.menuId}, #{permission.createTime})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.sys_role
+        <set>
+            <if test="roleId != null and roleId != ''">
+                role_id = #{roleId},
+            </if>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+            <if test="hasChecked != null">
+                has_checked = #{hasChecked},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateDataRole">
+        update sefonoa.sys_role
+        <set>
+            remark = #{remark},
+            <if test="roleId != null and roleId != ''">
+                role_id = #{roleId},
+            </if>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+            <if test="hasChecked != null">
+                has_checked = #{hasChecked},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateMenuRole">
+        update sefonoa.sys_role
+        <set>
+            remark = #{remark},
+            <if test="roleId != null and roleId != ''">
+                role_id = #{roleId},
+            </if>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+            <if test="hasChecked != null">
+                has_checked = #{hasChecked},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.sys_role where id = #{id}
+    </delete>
+
+    <delete id="batchDelPermissionRef">
+        delete from sefonoa.sys_role_permission where role_id = #{roleId}
+    </delete>
+
+    <delete id="batchDeleteById">
+        delete from sefonoa.sys_role where role_id in
+           <foreach collection="idList" item="id" open="(" close=")" separator=",">
+               #{id}
+           </foreach>
+    </delete>
+
+    <delete id="batchDeleteRolePermissionRef">
+        delete from sefonoa.sys_role_permission where role_id in
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
+
+    <delete id="batchDeleteRoleDeptRef">
+        delete from sefonoa.sys_role_dept where role_id in
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
+
+</mapper>

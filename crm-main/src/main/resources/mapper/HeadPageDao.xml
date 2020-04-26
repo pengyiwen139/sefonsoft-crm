@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.head.HeadPageDao">
+
+    <select id="customersCount" resultType="java.lang.Integer">
+        select count(1) from sefonoa.customer_sale_ref a
+            left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+            left join sefonoa.sys_department c on b.dept_id = c.dept_id
+                <where>
+                    <if test="deptId != null and deptId != ''">
+                        (c.dept_id = #{deptId} or c.dept_id in
+                            select dept_id from sefonoa.sys_department where FIND_IN_SET(#{deptId}, ancestors)
+                        )
+                    </if>
+                    <if test="employeeId != null and employeeId != ''">
+                        and a.employee_id = #{employeeId}
+                    </if>
+                    <if test="year != null and year != ''">
+                        and YEAR(a.create_time) = #{year}
+                    </if>
+                    <if test='halfYear == "1"'>
+                        and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+                    </if>
+                    <if test='halfYear == "2"'>
+                        and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+                    </if>
+                    <if test='quarter == "1"'>
+                        and MONTH(a.create_time) in (3, 4, 5)
+                    </if>
+                    <if test='quarter == "2"'>
+                        and MONTH(a.create_time) in (6, 7, 8)
+                    </if>
+                    <if test='quarter == "3"'>
+                        and MONTH(a.create_time) in (9, 10, 11)
+                    </if>
+                    <if test='quarter == "4"'>
+                        and MONTH(a.create_time) in (12, 1, 2)
+                    </if>
+                    <if test="month != null and month != ''">
+                        and MONTH(a.create_time) = #{month}
+                    </if>
+                </where>
+    </select>
+
+    <select id="projectsCount" resultType="java.lang.Integer">
+        select count(1) from sefonoa.project_sale_ref a
+            left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+            left join sefonoa.sys_department c on b.dept_id = c.dept_id
+        <where>
+            <if test="deptId != null and deptId != ''">
+                (c.dept_id = #{deptId} or c.dept_id in
+                select dept_id from sefonoa.sys_department where FIND_IN_SET(#{deptId}, ancestors)
+                )
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and a.employee_id = #{employeeId}
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (3, 4, 5)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (6, 7, 8)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (9, 10, 11)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (12, 1, 2)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+    </select>
+
+    <select id="saleProjectsCount" resultType="java.lang.Integer">
+        select count(1) from sefonoa.project_sale_ref a
+        left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+        left join sefonoa.sys_department c on b.dept_id = c.dept_id
+        left join sefonoa.project_info d on a.project_id = d.project_id
+        left join sefonoa.project_status_info e on d.pros_id = e.pros_id
+        <where>
+            e.pros_id = 2
+            <if test="deptId != null and deptId != ''">
+                and (c.dept_id = #{deptId} or c.dept_id in
+                select dept_id from sefonoa.sys_department where FIND_IN_SET(#{deptId}, ancestors)
+                )
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and a.employee_id = #{employeeId}
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (3, 4, 5)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (6, 7, 8)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (9, 10, 11)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (12, 1, 2)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+    </select>
+
+    <select id="contractCount" resultType="java.lang.Integer">
+        select count(1) from sefonoa.project_sale_ref a
+        left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+        left join sefonoa.sys_department c on b.dept_id = c.dept_id
+        left join sefonoa.project_info d on a.project_id = d.project_id
+        left join sefonoa.project_status_info e on d.pros_id = e.pros_id
+        <where>
+            e.pros_id = 3
+            <if test="deptId != null and deptId != ''">
+                and (c.dept_id = #{deptId} or c.dept_id in
+                select dept_id from sefonoa.sys_department where FIND_IN_SET(#{deptId}, ancestors)
+                )
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and a.employee_id = #{employeeId}
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (3, 4, 5)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (6, 7, 8)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (9, 10, 11)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (12, 1, 2)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+        </where>
+    </select>
+
+</mapper>

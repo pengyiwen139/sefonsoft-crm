@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.workorder.WorkorderFeedBackDao">
+
+    <resultMap id="WorkorderFeedbackPreInfoMap" type="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackPreInfo">
+        <id column="id" property="id"/>
+        <result column="pgd_id" property="pgdId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="employee_name" property="employeeName"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="biz_opports_id" property="bizOpportsId"/>
+        <result column="spend_time" property="spendTime"/>
+        <result column="work_concent" property="workConcent"/>
+        <result column="require_consistency" property="requireConsistency"/>
+        <result column="capability_matching" property="capabilityMatching"/>
+        <result column="business_relation" property="businessRelation"/>
+        <result column="evaluation_desc" property="evaluationDesc"/>
+        <result column="pre_comment_status" property="preCommentStatus"/>
+        <result column="is_discard" property="isDiscard"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+
+    <resultMap id="WorkorderFeedbackSaleInfoMap" type="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+        <id column="id" property="id"/>
+        <result column="pgd_id" property="pgdId"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="target_employee_id" property="targetEmployeeId"/>
+        <result column="target_employee_name" property="targetEmployeeName"/>
+        <result column="time_comply" property="timeComply"/>
+        <result column="service" property="service"/>
+        <result column="technology" property="technology"/>
+        <result column="customer_lead" property="customerLead"/>
+        <result column="customer_feedback" property="customerFeedback"/>
+        <result column="other" property="other"/>
+        <result column="sale_comment_status" property="saleCommentStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+
+    <insert id="insertFeedbackPreInfo" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackPreInfo">
+        INSERT INTO sefonoa_order.workorder_feedback_pre_info
+        (
+         pgd_id,
+         employee_id,
+         spend_time,
+         work_concent,
+         require_consistency,
+         capability_matching,
+         business_relation,
+         evaluation_desc,
+         pre_comment_status,
+         is_discard,
+         create_time,
+         modified_time
+         )
+        VALUES(
+         #{pgdId},
+         #{employeeId},
+         #{spendTime},
+         #{workConcent},
+         #{requireConsistency},
+         #{capabilityMatching},
+         #{businessRelation},
+         #{evaluationDesc},
+         #{preCommentStatus},
+         #{isDiscard},
+         #{createTime},
+         #{modifiedTime}
+         );
+    </insert>
+
+
+    <insert id="insertFeedbackSaleInfo" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+        INSERT INTO sefonoa_order.workorder_feedback_sale_info
+        (
+         pgd_id,
+         employee_id,
+         target_employee_id,
+         target_employee_name,
+         time_comply,
+         service,
+         technology,
+         case_grasp,
+         customer_lead,
+         customer_feedback,
+         other,
+         sale_comment_status,
+         modified_time,
+         create_time
+         )VALUES(
+             #{pgdId},
+              #{employeeId},
+              #{targetEmployeeId},
+              #{targetEmployeeName},
+              #{timeComply},
+              #{service},
+              #{technology},
+              #{caseGrasp},
+              #{customerLead},
+              #{customerFeedback},
+              #{other},
+              #{saleCommentStatus},
+              #{createTime},
+              #{modifiedTime}
+        );
+    </insert>
+
+    <select id="queryPreFeedbackById" resultMap="WorkorderFeedbackPreInfoMap">
+        SELECT
+         feedbackInfo.id,
+         feedbackInfo.pgd_id,
+         feedbackInfo.employee_id,
+         feedbackInfo.spend_time,
+         feedbackInfo.work_concent,
+         feedbackInfo.require_consistency,
+         feedbackInfo.capability_matching,
+         feedbackInfo.business_relation,
+         feedbackInfo.evaluation_desc,
+         feedbackInfo.pre_comment_status,
+         feedbackInfo.is_discard,
+         feedbackInfo.modified_time,
+         feedbackInfo.create_time,
+         se.employee_name,
+         se.dept_id,
+         sd.dept_name
+        FROM sefonoa_order.workorder_feedback_pre_info feedbackInfo
+        left join sefonoa.sys_employee se on se.employee_id=feedbackInfo.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+         WHERE feedbackInfo.id =  #{id}
+    </select>
+
+    <select id="queryPreFeedbackByPgdId" parameterType="java.lang.String" resultMap="WorkorderFeedbackPreInfoMap">
+        SELECT
+         feedbackInfo.id,
+         feedbackInfo.pgd_id,
+         feedbackInfo.employee_id,
+         feedbackInfo.spend_time,
+         feedbackInfo.work_concent,
+         feedbackInfo.require_consistency,
+         feedbackInfo.capability_matching,
+         feedbackInfo.business_relation,
+         feedbackInfo.evaluation_desc,
+         feedbackInfo.pre_comment_status,
+         feedbackInfo.is_discard,
+         feedbackInfo.modified_time,
+         feedbackInfo.create_time,
+         se.employee_name,
+         se.dept_id,
+         sd.dept_name
+        FROM sefonoa_order.workorder_feedback_pre_info feedbackInfo
+        left join sefonoa.sys_employee se on se.employee_id=feedbackInfo.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+         WHERE feedbackInfo.is_discard = 0
+          and feedbackInfo.pgd_id =  #{pgdId}
+    </select>
+
+    <delete id="deletePreFeedbackByPrimaryKey" parameterType="java.lang.Long">
+    delete
+    from sefonoa_order.workorder_feedback_pre_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <update id="updatePreFeedback">
+        update sefonoa_order.workorder_feedback_pre_info
+        <set>
+            <if test="spendTime != null and spendTime != ''">
+                spend_time = #{spendTime},
+            </if>
+            <if test="workConcent != null and workConcent != ''">
+                work_concent = #{workConcent},
+            </if>
+            <if test="requireConsistency != null and requireConsistency != ''">
+                require_consistency = #{requireConsistency},
+            </if>
+            <if test="capabilityMatching != null and capabilityMatching != ''">
+                capability_matching = #{capabilityMatching},
+            </if>
+            <if test="businessRelation != null and businessRelation != ''">
+                `business_relation` = #{businessRelation},
+            </if>
+            <if test="evaluationDesc != null and evaluationDesc != ''">
+                evaluation_desc = #{evaluationDesc},
+            </if>
+            <if test="preCommentStatus != null and preCommentStatus != ''">
+                `pre_comment_status` = #{preCommentStatus},
+            </if>
+            <if test="isDiscard != null and isDiscard != ''">
+                is_discard = #{isDiscard},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getPreFeedbackList" parameterType="com.sefonsoft.oa.domain.workorder.WorkorderSearchDTO"
+            resultMap="WorkorderFeedbackPreInfoMap">
+        SELECT * from (
+        SELECT
+        ANY_VALUE(prefeedback.id) as id,
+        prefeedback.pgd_id as pgd_id,
+        ANY_VALUE(prefeedback.employee_id) as employee_id,
+        ANY_VALUE(prefeedback.spend_time) as spend_time,
+        ANY_VALUE(prefeedback.work_concent) as work_concent,
+        ANY_VALUE(prefeedback.require_consistency) as require_consistency,
+        ANY_VALUE(prefeedback.capability_matching) as capability_matching,
+        ANY_VALUE(prefeedback.business_relation) as business_relation,
+        ANY_VALUE(prefeedback.evaluation_desc) as evaluation_desc,
+        ANY_VALUE(prefeedback.pre_comment_status) as pre_comment_status,
+        ANY_VALUE(prefeedback.is_discard) as is_discard,
+        ANY_VALUE(prefeedback.modified_time) as modified_time,
+        ANY_VALUE(prefeedback.create_time) as create_time,
+        ANY_VALUE(se.employee_name) as employee_name,
+        ANY_VALUE(se.dept_id) as dept_id,
+        ANY_VALUE(sd.dept_name) as dept_name
+        FROM sefonoa_order.workorder_feedback_pre_info prefeedback
+        left join sefonoa.sys_employee se on se.employee_id=prefeedback.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+        left join sefonoa_order.workorder_info order_info on order_info.pgd_id = prefeedback.pgd_id
+        <where>
+            order_info.is_delete = 0
+            <if test="pgdId != null and pgdId != ''">
+                and prefeedback.pgd_id = #{pgdId},
+            </if>
+            <if test="deptIds != null and deptIds.size()>0">
+                and order_info.dept_id in
+                <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="saleEmployeeIdList != null  and saleEmployeeIdList.size()>0">
+                and order_info.employee_id in
+                <foreach item="employeeId" index="index" collection="saleEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="preEmployeeIdList != null and preEmployeeIdList.size()>0 ">
+                and prefeedback.employee_id in
+                <foreach item="employeeId" index="index" collection="preEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="projectPhaseList != null  and projectPhaseList.size()>0">
+                and order_info.project_phase in
+                <foreach item="projectPhase" index="index" collection="projectPhaseList" open="(" separator=","
+                         close=")">
+                    #{projectPhase}
+                </foreach>
+            </if>
+            <if test="projectIndustryList != null  and projectIndustryList.size()>0">
+                and order_info.project_industry in
+                <foreach item="projectIndustry" index="index" collection="projectIndustryList" open="(" separator=","
+                         close=")">
+                    #{projectIndustry}
+                </foreach>
+            </if>
+            <if test="productInfo != null and productInfo != ''">
+                and locate(#{productInfo},order_info.product_info_list)>0
+            </if>
+            <if test="approvalStatusList != null  and approvalStatusList.size()>0">
+                and order_info.approval_status in
+                <foreach item="status" index="index" collection="approvalStatusList" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="keyWord != null and keyWord != ''">
+                and locate(#{keyWord},order_info.project_name)>0
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time >= #{startDate}
+                  ]]>
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time <= #{endDate}
+                  ]]>
+            </if>
+        </where>
+        order by prefeedback.create_time desc limit ${(page-1)*limit},#{limit}
+        ) temp
+        group by
+        pgd_id
+
+    </select>
+
+
+    <select id="getPreFeedbackListTotal" parameterType="com.sefonsoft.oa.domain.workorder.WorkorderSearchDTO"
+            resultType="java.lang.Long">
+        SELECT COUNT(*) FROM(
+        SELECT
+        prefeedback.pgd_id
+        FROM sefonoa_order.workorder_feedback_pre_info prefeedback
+        left join sefonoa.sys_employee se on se.employee_id=prefeedback.employee_id
+        left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+        left join sefonoa_order.workorder_info order_info on order_info.pgd_id = prefeedback.pgd_id
+        <where>
+            order_info.is_delete = 0
+            <if test="pgdId != null and pgdId != ''">
+                and prefeedback.pgd_id = #{pgdId},
+            </if>
+            <if test="deptIds != null and deptIds.size()>0">
+                and order_info.dept_id in
+                <foreach item="deptId" index="index" collection="deptIds" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="saleEmployeeIdList != null  and saleEmployeeIdList.size()>0">
+                and order_info.employee_id in
+                <foreach item="employeeId" index="index" collection="saleEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="preEmployeeIdList != null and preEmployeeIdList.size()>0 ">
+                and prefeedback.employee_id in
+                <foreach item="employeeId" index="index" collection="preEmployeeIdList" open="(" separator=","
+                         close=")">
+                    #{employeeId}
+                </foreach>
+            </if>
+            <if test="projectPhaseList != null  and projectPhaseList.size()>0">
+                and order_info.project_phase in
+                <foreach item="projectPhase" index="index" collection="projectPhaseList" open="(" separator=","
+                         close=")">
+                    #{projectPhase}
+                </foreach>
+            </if>
+            <if test="projectIndustryList != null  and projectIndustryList.size()>0">
+                and order_info.project_industry in
+                <foreach item="projectIndustry" index="index" collection="projectIndustryList" open="(" separator=","
+                         close=")">
+                    #{projectIndustry}
+                </foreach>
+            </if>
+            <if test="productInfo != null and productInfo != ''">
+                and locate(#{productInfo},order_info.product_info_list)>0
+            </if>
+            <if test="approvalStatusList != null  and approvalStatusList.size()>0">
+                and order_info.approval_status in
+                <foreach item="status" index="index" collection="approvalStatusList" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="keyWord != null and keyWord != ''">
+                and locate(#{keyWord},order_info.project_name)>0
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time >= #{startDate}
+                  ]]>
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                 and order_info.create_time <= #{endDate}
+                  ]]>
+            </if>
+        </where>
+        group BY
+        prefeedback.pgd_id
+        ) temp
+    </select>
+
+
+</mapper>

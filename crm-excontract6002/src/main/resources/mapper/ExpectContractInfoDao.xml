@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.ExpectContractInfoDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.contract.ExpectContractInfo" id="ExpectContractInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="signCustomerId" column="sign_customer_id" jdbcType="VARCHAR"/>
+        <result property="signCustomerName" column="sign_customer_name" jdbcType="VARCHAR"/>
+        <result property="industry" column="industry" jdbcType="VARCHAR"/>
+        <result property="contractNatureType" column="contract_nature_type" jdbcType="INTEGER"/>
+        <result property="employeeLocation" column="employee_location" jdbcType="VARCHAR"/>
+        <result property="location" column="location" jdbcType="VARCHAR"/>
+        <result property="finalCustomerId" column="final_customer_id" jdbcType="VARCHAR"/>
+        <result property="finalCustomerName" column="final_customer_name" jdbcType="VARCHAR"/>
+        <result property="estimateTime" column="estimate_time" jdbcType="VARCHAR"/>
+        <result property="estimateMoney" column="estimate_money" jdbcType="NUMERIC"/>
+        <result property="expectContractType" column="expect_contract_type" jdbcType="OTHER"/>
+        <result property="estimateSuccess" column="estimate_success" jdbcType="INTEGER"/>
+        <result property="hasImportant" column="has_important" jdbcType="INTEGER"/>
+        <result property="otherSupport" column="other_support" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ExpectContractInfoMap">
+        select
+          id, project_id, project_name, employee_id, employee_name, dept_id, dept_name, sign_customer_id, sign_customer_name, industry, contract_nature_type,employee_location, location, final_customer_id, final_customer_name, estimate_time, estimate_money, expect_contract_type, estimate_success, has_important, other_support, operator, create_time, last_time
+        from sefonoa.expect_contract_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ExpectContractInfoMap">
+        select
+          id, project_id, project_name, employee_id, employee_name, dept_id, dept_name, sign_customer_id, sign_customer_name, industry, contract_nature_type,employee_location, location, final_customer_id, final_customer_name, estimate_time, estimate_money, expect_contract_type, estimate_success, has_important, other_support, operator, create_time, last_time
+        from sefonoa.expect_contract_info
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ExpectContractInfoMap">
+        select
+          id, project_id, project_name, employee_id, employee_name, dept_id, dept_name, sign_customer_id, sign_customer_name, industry, contract_nature_type,employee_location, location, final_customer_id, final_customer_name, estimate_time, estimate_money, expect_contract_type, estimate_success, has_important, other_support, operator, create_time, last_time
+        from sefonoa.expect_contract_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                and employee_name = #{employeeName}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="signCustomerId != null and signCustomerId != ''">
+                and sign_customer_id = #{signCustomerId}
+            </if>
+            <if test="signCustomerName != null and signCustomerName != ''">
+                and sign_customer_name = #{signCustomerName}
+            </if>
+            <if test="industry != null and industry != ''">
+                and industry = #{industry}
+            </if>
+            <if test="contractNatureType != null">
+                and contract_nature_type = #{contractNatureType}
+            </if>
+            <if test="employeeLocation != null and employeeLocation != ''">
+                and employee_location = #{employeeLocation}
+            </if>
+            <if test="location != null and location != ''">
+                and location = #{location}
+            </if>
+            <if test="finalCustomerId != null and finalCustomerId != ''">
+                and final_customer_id = #{finalCustomerId}
+            </if>
+            <if test="finalCustomerName != null and finalCustomerName != ''">
+                and final_customer_name = #{finalCustomerName}
+            </if>
+            <if test="estimateTime != null">
+                and estimate_time = #{estimateTime}
+            </if>
+            <if test="estimateMoney != null">
+                and estimate_money = #{estimateMoney}
+            </if>
+            <if test="expectContractType != null">
+                and expect_contract_type = #{expectContractType}
+            </if>
+            <if test="estimateSuccess != null">
+                and estimate_success = #{estimateSuccess}
+            </if>
+            <if test="hasImportant != null">
+                and has_important = #{hasImportant}
+            </if>
+            <if test="otherSupport != null and otherSupport != ''">
+                and other_support = #{otherSupport}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getNeedProjectParams" resultType="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractNeedProjectDTO">
+        select
+           a.project_id,
+           a.project_name,
+           a.customer_id signCustomerId,
+           b.customer_name signCustomerName,
+           a.customer_id finalCustomerId,
+           b.customer_name finalCustomerName,
+           a.industry,
+           a.location,
+           a.estimate_time,
+           a.estimate_money,
+           a.estimate_success,
+           a.has_important
+               from sefonoa.project_info a
+                    left join customer_info b on a.customer_id = b.customer_id
+                    left join project_sale_ref c on a.project_id = c.project_id
+                        where c.employee_id = #{userId}
+    </select>
+
+    <select id="getNeedCustomerParams" resultType="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractNeedCustomerDTO">
+        select a.id,
+               a.customer_id,
+               a.customer_name
+                    from sefonoa.customer_info a left join sefonoa.customer_sale_ref b on a.customer_id = b.customer_id
+                        where b.employee_id = #{userId}
+    </select>
+
+    <resultMap type="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractQueryDTO" id="expectContractQueryMap">
+        <id column="id" property="id"/>
+        <result column="project_id" property="projectId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="employee_name" property="employeeName"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="sign_customer_id" property="signCustomerId"/>
+        <result column="sign_customer_name" property="signCustomerName"/>
+        <result column="industry" property="industry"/>
+        <result column="contract_nature_type" property="contractNatureType"/>
+        <result column="employee_location" property="employeeLocation"/>
+        <result column="location" property="location"/>
+        <result column="final_customer_id" property="finalCustomerId"/>
+        <result column="final_customer_name" property="finalCustomerName"/>
+        <result column="estimate_time" property="estimateTime"/>
+        <result column="estimate_money" property="estimateMoney"/>
+        <result column="expect_contract_type" property="expectContractType"/>
+        <result column="estimate_success" property="estimateSuccess"/>
+        <result column="has_important" property="hasImportant"/>
+        <result column="other_support" property="otherSupport"/>
+        <result column="operator" property="operator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="last_time" property="lastTime"/>
+        <collection property="contractProductRefList" ofType="com.sefonsoft.oa.entity.contract.ExpectContractProductRef">
+            <result column="product_id" property="productId"/>
+            <result column="product_name" property="productName"/>
+            <result column="sale_count" property="saleCount"/>
+            <result column="amount" property="amount"/>
+            <result column="operator" property="operator"/>
+            <result column="last_time" property="lastTime"/>
+            <result column="create_time" property="createTime"/>
+        </collection>
+    </resultMap>
+
+    <select id="listPage" resultMap="expectContractQueryMap">
+        SELECT
+            a.id,
+            a.project_id,
+            a.project_name,
+            a.employee_id,
+            a.employee_name,
+            a.dept_id,
+            a.dept_name,
+            a.sign_customer_id,
+            a.sign_customer_name,
+            a.industry,
+            a.contract_nature_type,
+            a.employee_location,
+            a.location,
+            a.final_customer_id,
+            a.final_customer_name,
+            a.estimate_time,
+            a.estimate_money,
+            a.expect_contract_type,
+            a.estimate_success,
+            a.has_important,
+            a.other_support,
+            a.operator,
+            a.create_time,
+            a.last_time,
+            b.id,
+            b.product_id,
+            b.product_name,
+            b.sale_count,
+            b.amount,
+            b.operator,
+            b.last_time,
+            b.create_time
+                FROM sefonoa.expect_contract_info a
+                left join sefonoa.expect_contract_product_ref b on a.id = b.expect_contract_id
+                    <where>
+                        (
+                        1=1
+                            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                                and a.dept_id in
+                                <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                                    #{deptId}
+                                </foreach>
+                            </if>
+                            <if test="employeeId != null and employeeId != ''">
+                                or a.employee_id = #{employeeId}
+                            </if>
+                        )
+                        <if test="uniQueryName != null and uniQueryName != ''">
+                        and (
+                                locate (#{uniQueryName},a.project_name) > 0
+                             or locate (#{uniQueryName},a.employee_name) > 0
+                             or locate (#{uniQueryName},a.sign_customer_name) > 0
+                             or locate (#{uniQueryName},a.final_customer_name) > 0
+                            )
+                        </if>
+                        <if test="year != null and year != ''">
+                            and YEAR(a.create_time) = #{year}
+                        </if>
+                        <if test='halfYear == "1"'>
+                            and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+                        </if>
+                        <if test='halfYear == "2"'>
+                            and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+                        </if>
+                        <if test='quarter == "1"'>
+                            and MONTH(a.create_time) in (1, 2, 3)
+                        </if>
+                        <if test='quarter == "2"'>
+                            and MONTH(a.create_time) in (4, 5, 6)
+                        </if>
+                        <if test='quarter == "3"'>
+                            and MONTH(a.create_time) in (7, 8, 9)
+                        </if>
+                        <if test='quarter == "4"'>
+                            and MONTH(a.create_time) in (10, 11, 12)
+                        </if>
+                        <if test="month != null and month != ''">
+                            and MONTH(a.create_time) = #{month}
+                        </if>
+                        <if test="contractNatureType != null">
+                            and a.contract_nature_type = #{contractNatureType}
+                        </if>
+                        <if test="expectContractType != null">
+                            and a.expect_contract_type = #{expectContractType}
+                        </if>
+                        <if test="hasImportant != null">
+                            and a.has_important = #{hasImportant}
+                        </if>
+                    </where>
+                    order by a.last_time  desc
+                    <if test="page != null and rows != null">
+                        limit #{page}, #{rows}
+                    </if>
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT
+            count(distinct(a.id))
+        FROM sefonoa.expect_contract_info a
+        left join sefonoa.expect_contract_product_ref b on a.id = b.expect_contract_id
+        <where>
+            (
+            1=1
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                and a.dept_id in
+                <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                or a.employee_id = #{employeeId}
+            </if>
+            )
+            <if test="uniQueryName != null and uniQueryName != ''">
+                and (
+                locate (#{uniQueryName},a.project_name) > 0
+                or locate (#{uniQueryName},a.employee_name) > 0
+                or locate (#{uniQueryName},a.sign_customer_name) > 0
+                or locate (#{uniQueryName},a.final_customer_name) > 0
+                )
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="contractNatureType != null">
+                and a.contract_nature_type = #{contractNatureType}
+            </if>
+            <if test="expectContractType != null">
+                and a.expect_contract_type = #{expectContractType}
+            </if>
+            <if test="hasImportant != null">
+                and a.has_important = #{hasImportant}
+            </if>
+        </where>
+    </select>
+
+    <resultMap type="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractChartDTO" id="expectContractChartMap">
+        <result column="expectSumAmount" property="expectSumAmount"/>
+        <collection property="expectContractRealConstractPairs" ofType="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractRealConstractPair">
+            <result column="estimate_money" property="expectContractAmount"/>
+            <result column="contract_amount" property="realContractAmount"/>
+        </collection>
+    </resultMap>
+
+    <select id="getExpectContractChartAllSum" resultType="java.math.BigDecimal">
+        select sum(estimate_money) expectSumAmount from
+            sefonoa.expect_contract_info a
+            left join sefonoa.contract_info b on a.project_id = b.project_id
+            <where>
+                (
+                1=1
+                <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                    and a.dept_id in
+                    <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                        #{deptId}
+                    </foreach>
+                </if>
+                <if test="employeeId != null and employeeId != ''">
+                    or a.employee_id = #{employeeId}
+                </if>
+                )
+                <if test="uniQueryName != null and uniQueryName != ''">
+                    and (
+                    locate (#{uniQueryName},a.project_name) > 0
+                    or locate (#{uniQueryName},a.employee_name) > 0
+                    or locate (#{uniQueryName},a.sign_customer_name) > 0
+                    or locate (#{uniQueryName},a.final_customer_name) > 0
+                    )
+                </if>
+                <if test="year != null and year != ''">
+                    and YEAR(a.create_time) = #{year}
+                </if>
+                <if test='halfYear == "1"'>
+                    and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+                </if>
+                <if test='halfYear == "2"'>
+                    and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+                </if>
+                <if test='quarter == "1"'>
+                    and MONTH(a.create_time) in (1, 2, 3)
+                </if>
+                <if test='quarter == "2"'>
+                    and MONTH(a.create_time) in (4, 5, 6)
+                </if>
+                <if test='quarter == "3"'>
+                    and MONTH(a.create_time) in (7, 8, 9)
+                </if>
+                <if test='quarter == "4"'>
+                    and MONTH(a.create_time) in (10, 11, 12)
+                </if>
+                <if test="month != null and month != ''">
+                    and MONTH(a.create_time) = #{month}
+                </if>
+                <if test="contractNatureType != null">
+                    and a.contract_nature_type = #{contractNatureType}
+                </if>
+                <if test="expectContractType != null">
+                    and a.expect_contract_type = #{expectContractType}
+                </if>
+                <if test="hasImportant != null">
+                    and a.has_important = #{hasImportant}
+                </if>
+            </where>
+    </select>
+
+    <select id="getExpectContractChartSumMonth" resultType="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractRealConstractPair">
+        select sum(a.estimate_money) expectSumAmount, sum(b.contract_amount) realContractAmount,concat(year(a.create_time),month(a.create_time)) from
+        sefonoa.expect_contract_info a
+        left join sefonoa.contract_info b on a.project_id = b.project_id
+        <where>
+            (
+            1=1
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                and a.dept_id in
+                <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                or a.employee_id = #{employeeId}
+            </if>
+            )
+            <if test="uniQueryName != null and uniQueryName != ''">
+                and (
+                locate (#{uniQueryName},a.project_name) > 0
+                or locate (#{uniQueryName},a.employee_name) > 0
+                or locate (#{uniQueryName},a.sign_customer_name) > 0
+                or locate (#{uniQueryName},a.final_customer_name) > 0
+                )
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="contractNatureType != null">
+                and a.contract_nature_type = #{contractNatureType}
+            </if>
+            <if test="expectContractType != null">
+                and a.expect_contract_type = #{expectContractType}
+            </if>
+            <if test="hasImportant != null">
+                and a.has_important = #{hasImportant}
+            </if>
+        </where>
+        group by month(a.create_time), year(a.create_time);
+    </select>
+    <select id="listExportPage" resultType="com.sefonsoft.oa.domain.contract.dto.expect.ExpectContractExportDTO">
+        SELECT
+        a.id,
+        a.project_id,
+        a.project_name,
+        a.employee_id,
+        a.employee_name,
+        a.dept_id,
+        a.dept_name,
+        a.sign_customer_id,
+        a.sign_customer_name,
+        a.industry,
+        a.contract_nature_type,
+        a.employee_location,
+        a.location,
+        a.final_customer_id,
+        a.final_customer_name,
+        a.estimate_time,
+        a.estimate_money,
+        a.expect_contract_type,
+        a.estimate_success,
+        a.has_important,
+        a.other_support,
+        a.operator,
+        a.create_time,
+        a.last_time,
+        b.id,
+        b.product_id,
+        b.product_name,
+        b.sale_count,
+        b.amount,
+        b.operator,
+        b.last_time,
+        b.create_time
+        FROM sefonoa.expect_contract_info a
+        left join sefonoa.expect_contract_product_ref b on a.id = b.expect_contract_id
+        <where>
+            (
+            1=1
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0 ">
+                and a.dept_id in
+                <foreach collection="dataDeptIdList" item="deptId" separator="," open="(" close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                or a.employee_id = #{employeeId}
+            </if>
+            )
+            <if test="uniQueryName != null and uniQueryName != ''">
+                and (
+                locate (#{uniQueryName},a.project_name) > 0
+                or locate (#{uniQueryName},a.employee_name) > 0
+                or locate (#{uniQueryName},a.sign_customer_name) > 0
+                or locate (#{uniQueryName},a.final_customer_name) > 0
+                )
+            </if>
+            <if test="year != null and year != ''">
+                and YEAR(a.create_time) = #{year}
+            </if>
+            <if test='halfYear == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3, 4, 5, 6)
+            </if>
+            <if test='halfYear == "2"'>
+                and MONTH(a.create_time) in (7, 8, 9, 10, 11, 12)
+            </if>
+            <if test='quarter == "1"'>
+                and MONTH(a.create_time) in (1, 2, 3)
+            </if>
+            <if test='quarter == "2"'>
+                and MONTH(a.create_time) in (4, 5, 6)
+            </if>
+            <if test='quarter == "3"'>
+                and MONTH(a.create_time) in (7, 8, 9)
+            </if>
+            <if test='quarter == "4"'>
+                and MONTH(a.create_time) in (10, 11, 12)
+            </if>
+            <if test="month != null and month != ''">
+                and MONTH(a.create_time) = #{month}
+            </if>
+            <if test="contractNatureType != null">
+                and a.contract_nature_type = #{contractNatureType}
+            </if>
+            <if test="expectContractType != null">
+                and a.expect_contract_type = #{expectContractType}
+            </if>
+            <if test="hasImportant != null">
+                and a.has_important = #{hasImportant}
+            </if>
+        </where>
+        order by a.last_time  desc
+        <if test="page != null and rows != null">
+            limit #{page}, #{rows}
+        </if>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into sefonoa.expect_contract_info(project_id, project_name, employee_id, employee_name, dept_id, dept_name, sign_customer_id, sign_customer_name, industry, contract_nature_type, employee_location, location, final_customer_id, final_customer_name, estimate_time, estimate_money, expect_contract_type, estimate_success, has_important, other_support, operator, create_time, last_time)
+        values (#{projectId}, #{projectName}, #{employeeId}, #{employeeName}, #{deptId}, #{deptName}, #{signCustomerId}, #{signCustomerName}, #{industry}, #{contractNatureType}, #{employeeLocation}, #{location}, #{finalCustomerId}, #{finalCustomerName}, #{estimateTime}, #{estimateMoney}, #{expectContractType}, #{estimateSuccess}, #{hasImportant}, #{otherSupport}, #{operator}, #{createTime}, #{lastTime})
+    </insert>
+
+    <insert id="batchInsertExpectContractProducts">
+        insert into sefonoa.expect_contract_product_ref(product_id, product_name, sale_count, amount, expect_contract_id, operator, last_time, create_time)
+        values
+            <foreach collection="list" item="productRef" separator=",">
+                (#{productRef.productId}, #{productRef.productName}, #{productRef.saleCount}, #{productRef.amount}, #{productRef.expectContractId}, #{productRef.operator}, #{productRef.lastTime}, #{productRef.createTime})
+            </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.expect_contract_info
+        <set>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                employee_name = #{employeeName},
+            </if>
+            <if test="deptId != null and deptId != ''">
+                dept_id = #{deptId},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="signCustomerId != null and signCustomerId != ''">
+                sign_customer_id = #{signCustomerId},
+            </if>
+            <if test="signCustomerName != null and signCustomerName != ''">
+                sign_customer_name = #{signCustomerName},
+            </if>
+            <if test="industry != null and industry != ''">
+                industry = #{industry},
+            </if>
+            <if test="contractNatureType != null">
+                contract_nature_type = #{contractNatureType},
+            </if>
+            <if test="employeeLocation != null and employeeLocation != ''">
+                employee_location = #{employeeLocation},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location},
+            </if>
+            <if test="finalCustomerId != null and finalCustomerId != ''">
+                final_customer_id = #{finalCustomerId},
+            </if>
+            <if test="finalCustomerName != null and finalCustomerName != ''">
+                final_customer_name = #{finalCustomerName},
+            </if>
+            <if test="estimateTime != null">
+                estimate_time = #{estimateTime},
+            </if>
+            <if test="estimateMoney != null">
+                estimate_money = #{estimateMoney},
+            </if>
+            <if test="expectContractType != null">
+                expect_contract_type = #{expectContractType},
+            </if>
+            <if test="estimateSuccess != null">
+                estimate_success = #{estimateSuccess},
+            </if>
+            <if test="hasImportant != null">
+                has_important = #{hasImportant},
+            </if>
+            <if test="otherSupport != null and otherSupport != ''">
+                other_support = #{otherSupport},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.expect_contract_info where id = #{id}
+    </delete>
+
+    <delete id="batchDeleteById">
+        delete from sefonoa.expect_contract_info
+            where id in
+                <foreach collection="idArray" item="id" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+    </delete>
+
+    <delete id="batchdeleteProductRefByLojiFkId">
+        delete from sefonoa.expect_contract_product_ref where expect_contract_id = #{id}
+    </delete>
+
+    <delete id="batchDeleteProductRefByExpectId">
+        delete from sefonoa.expect_contract_product_ref
+            where expect_contract_id in
+            <foreach collection="idArray" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </delete>
+
+</mapper>

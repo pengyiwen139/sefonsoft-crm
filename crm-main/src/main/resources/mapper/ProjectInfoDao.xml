@@ -1,0 +1,1269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.project.ProjectInfoDao">
+
+    <select id="getMaxProjectId" resultType="java.lang.String">
+        select MAX(project_id) from sefonoa.project_info where length(project_id) = 16
+    </select>
+
+    <select id="getCownerPairs" resultType="com.sefonsoft.oa.domain.project.StringMapKeyDTO">
+        select employee_id id, employee_name name from sefonoa.sys_employee where employee_id in
+            <foreach collection="cownerList" item="employeeId" open="(" close=")" separator=",">
+                #{employeeId}
+            </foreach>
+    </select>
+
+    <select id="getStagePairs" resultType="com.sefonsoft.oa.domain.project.IntegerMapKeyDTO">
+        select stage_id id, stage_name name from sefonoa.custome_stage;
+    </select>
+
+    <select id="getSpstagePairs" resultType="com.sefonsoft.oa.domain.project.IntegerMapKeyDTO">
+        select spstage_id id, spstage_name name from sefonoa.sales_project_stage;
+    </select>
+
+    <select id="getProsPairs" resultType="com.sefonsoft.oa.domain.project.IntegerMapKeyDTO">
+        select pros_id id, pros_name name from sefonoa.project_status_info;
+    </select>
+
+    <select id="countProject" resultType="java.lang.Integer">
+        select
+            count(1)
+                from sefonoa.project_info a
+    </select>
+
+    <!--查询单个-->
+    <select id="getCustomerByCid" resultType="com.sefonsoft.oa.domain.project.CustomerInfoInProjectDTO">
+        select
+            id,
+            customer_id,
+            customer_name,
+            country_num,
+            province_num,
+            city_num,
+            district,
+            industry,
+            enter_id,
+            is_listed,
+            website,
+            address,
+            zip_code,
+            telephone,
+            fax,
+            contacts,
+            contacts_depart,
+            contacts_telephone,
+            contacts_email,
+            operator,
+            last_time,
+            create_time
+        from sefonoa.customer_info
+        where customer_id = #{customerId}
+    </select>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        <!-- delete from sefonoa.project_info where id = #{id} -->
+        
+                <!-- delete from project_info where project_id = #{projectId} -->
+        update 
+          project_info 
+        set
+          is_delete = 1 
+        where 
+          id = #{id}
+    </delete>
+
+    <resultMap type="com.sefonsoft.oa.entity.project.ProjectInfo" id="ProjectInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="hasImportant" column="has_important" jdbcType="INTEGER"/>
+        <result property="industry" column="industry" jdbcType="VARCHAR"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="totalInvestment" column="total_investment" jdbcType="OTHER"/>
+        <result property="customerProjectPhase" column="customer_project_phase" jdbcType="VARCHAR"/>
+        <result property="location" column="location" jdbcType="VARCHAR"/>
+        <result property="contactId" column="contact_id" jdbcType="INTEGER"/>
+        <result property="partnerId" column="partner_id" jdbcType="VARCHAR"/>
+        <result property="partnerContactId" column="partner_contact_id" jdbcType="INTEGER"/>
+        <result property="estimateMoney" column="estimate_money" jdbcType="OTHER"/>
+        <result property="estimateTime" column="estimate_time" jdbcType="OTHER"/>
+        <result property="estimateSuccess" column="estimate_success" jdbcType="INTEGER"/>
+        <result property="projectSituation" column="project_situation" jdbcType="VARCHAR"/>
+        <result property="userRelationAnalysis" column="user_relation_analysis" jdbcType="VARCHAR"/>
+        <result property="integratorSituation" column="integrator_situation" jdbcType="VARCHAR"/>
+        <result property="competeOpponentAnalysis" column="compete_opponent_analysis" jdbcType="VARCHAR"/>
+        <result property="projectRunStrategy" column="project_run_strategy" jdbcType="VARCHAR"/>
+        <result property="spstageId" column="spstage_id" jdbcType="INTEGER"/>
+        <result property="prosId" column="pros_id" jdbcType="INTEGER"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProjectInfoMap">
+        select
+            id, project_id, project_name, has_important, industry, customer_id, total_investment, customer_project_phase, location, contact_id, partner_id, partner_contact_id, estimate_money, estimate_time, estimate_success, project_situation, user_relation_analysis, integrator_situation, compete_opponent_analysis, project_run_strategy, spstage_id, pros_id, operator, last_time, create_time
+        from sefonoa.project_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <!-- 废弃了，似乎没有使用了 -->
+    <select id="queryAllByLimit" resultMap="ProjectInfoMap">
+        select
+            id, project_id, project_name, has_important, industry, customer_id, total_investment, customer_project_phase, location, contact_id, partner_id, partner_contact_id, estimate_money, estimate_time, estimate_success, project_situation, user_relation_analysis, integrator_situation, compete_opponent_analysis, project_run_strategy, spstage_id, pros_id, operator, last_time, create_time
+        from sefonoa.project_info
+                 limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <!-- 废弃了，似乎没有使用了 -->
+    <select id="queryAll" resultMap="ProjectInfoMap">
+        select
+        id, project_id, project_name, has_important, industry, customer_id, total_investment, customer_project_phase, location, contact_id, partner_id, partner_contact_id, estimate_money, estimate_time, estimate_success, project_situation, user_relation_analysis, integrator_situation, compete_opponent_analysis, project_run_strategy, spstage_id, pros_id, operator, last_time, create_time
+        from sefonoa.project_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName}
+            </if>
+            <if test="hasImportant != null">
+                and has_important = #{hasImportant}
+            </if>
+            <if test="industry != null and industry != ''">
+                and industry = #{industry}
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and customer_id = #{customerId}
+            </if>
+            <if test="totalInvestment != null and totalInvestment != ''">
+                and total_investment = #{totalInvestment}
+            </if>
+            <if test="customerProjectPhase != null and customerProjectPhase != ''">
+                and customer_project_phase = #{customerProjectPhase}
+            </if>
+            <if test="location != null and location != ''">
+                and location = #{location}
+            </if>
+            <if test="contactId != null">
+                and contact_id = #{contactId}
+            </if>
+            <if test="partnerId != null and partnerId != ''">
+                and partner_id = #{partnerId}
+            </if>
+            <if test="partnerContactId != null and partnerContactId != ''">
+                partner_contact_id = #{partnerContactId},
+            </if>
+            <if test="estimateMoney != null">
+                and estimate_money = #{estimateMoney}
+            </if>
+            <if test="estimateTime != null">
+                and estimate_time = #{estimateTime}
+            </if>
+            <if test="estimateSuccess != null">
+                and estimate_success = #{estimateSuccess}
+            </if>
+            <if test="projectSituation != null and projectSituation != ''">
+                and project_situation = #{projectSituation}
+            </if>
+            <if test="userRelationAnalysis != null and userRelationAnalysis != ''">
+                and user_relation_analysis = #{userRelationAnalysis}
+            </if>
+            <if test="integratorSituation != null and integratorSituation != ''">
+                and integrator_situation = #{integratorSituation}
+            </if>
+            <if test="competeOpponentAnalysis != null and competeOpponentAnalysis != ''">
+                and compete_opponent_analysis = #{competeOpponentAnalysis}
+            </if>
+            <if test="projectRunStrategy != null and projectRunStrategy != ''">
+                and project_run_strategy = #{projectRunStrategy}
+            </if>
+            <if test="spstageId != null">
+                and spstage_id = #{spstageId}
+            </if>
+            <if test="prosId != null">
+                and pros_id = #{prosId}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getSalesProjectStageList" resultType="com.sefonsoft.oa.domain.project.SalesProjectStageDTO">
+        select spstage_id, spstage_name from sefonoa.sales_project_stage
+    </select>
+
+    <select id="getProductInfoList" resultType="com.sefonsoft.oa.entity.product.ProductInfo">
+        select product_id, product_name, product_abbreviation, product_version from sefonoa.product_info;
+    </select>
+
+    <select id="getPartnersExludeByCustomerId" resultType="com.sefonsoft.oa.entity.customer.CustomerInfo">
+        select a.customer_id, a.customer_name, a.province_num, a.city_num
+            from sefonoa.customer_info a
+            left join sefonoa.customer_sale_ref b
+                on a.customer_id = b.customer_id
+            where b.employee_id = #{employeeId}
+            and a.enter_id in (2,3)
+            <if test="customerId != null and customerId != ''">
+                and a.customer_id != #{customerId}
+            </if>
+    </select>
+
+    <select id="queryByProjectId" resultType="com.sefonsoft.oa.domain.project.ProjectInfoGetOneDTO">
+        select
+            p.location, 
+            p.contact_name, 
+            p.contact_job, 
+            p.contact_dept_name, 
+            p.contact_tel, 
+            p.id, 
+            p.partner_contact_name, 
+            p.partner_contact_dept_name, 
+            p.partner_contact_tel, 
+            p.customer_name, 
+            p.partner_name, 
+            p.over_time_flag, 
+            p.has_similar_type, 
+            p.project_id, 
+            p.project_name, 
+            p.has_important, 
+            p.industry, 
+            p.customer_id, 
+            p.total_investment, 
+            p.customer_project_phase, 
+            p.location, contact_id, 
+            p.partner_id, 
+            p.partner_contact_id, 
+            p.estimate_money, 
+            p.estimate_time, 
+            p.estimate_success, 
+            p.project_situation, 
+            p.user_relation_analysis, 
+            p.integrator_situation, 
+            p.compete_opponent_analysis, 
+            p.project_run_strategy, 
+            p.spstage_id, 
+            p.pros_id, 
+            p.operator, 
+            p.last_time, 
+            p.create_time,
+            p.biz_opport_id,
+            pci.check_status,
+            psr.employee_id
+        from sefonoa.project_info p
+        left join project_check_info pci on pci.project_id = p.project_id
+        left join project_sale_ref psr on psr.project_id = p.project_id
+        where p.project_id = #{projectId}
+    </select>
+
+    <select id="countByProjectName" resultType="java.lang.Integer">
+        select count(1)
+            from sefonoa.project_info
+            where project_name = #{projectName}
+            <!-- 删除标识 -->
+            and is_delete = 0
+    </select>
+
+    <resultMap type="com.sefonsoft.oa.domain.project.ProjectSimilarDTO" id="SimilarProject">
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <collection property="productInfoList" ofType="com.sefonsoft.oa.entity.product.ProductInfo">
+            <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+            <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="searchSimilarProjectName" resultMap="SimilarProject">
+        select a.project_id, a.project_name, a.customer_id, c.customer_name, b.product_id, d.product_name from
+        sefonoa.project_info a
+        left join sefonoa.product_project_ref b on a.project_id = b.project_id
+        left join sefonoa.product_info d on b.product_id = d.product_id
+        left join sefonoa.customer_info c on a.customer_id = c.customer_id
+        where
+            <!-- 删除标识 -->
+            a.is_delete = 0
+              
+            <if test="projectId!=null">
+                AND a.project_id != #{projectId}
+            </if>
+            
+            <choose>
+              <when test="useStrict">
+                AND <foreach collection="list" item="projectName" separator="or" open="(" close=")">
+                    a.project_name = #{projectName}
+                </foreach>
+              </when>
+              
+              <otherwise>
+                AND <foreach collection="list" item="projectName" separator="or" open="(" close=")">
+                    locate(#{projectName}, a.project_name)
+                </foreach>
+              </otherwise>
+            </choose>
+    </select>
+    
+    <select id="searchSimilarProjectV2" resultType="java.lang.String">
+        select 
+          DISTINCT a.project_id
+        from
+          sefonoa.project_info a
+          left join sefonoa.product_project_ref b on a.project_id = b.project_id
+          left join sefonoa.product_info d on b.product_id = d.product_id
+          left join sefonoa.customer_info c on a.customer_id = c.customer_id
+        where
+            <!-- 删除标识 -->
+            a.is_delete = 0
+            
+            <!-- 排除项目 -->
+            <if test="projectId!=null">
+                AND a.project_id != #{projectId}
+            </if>
+            
+            <!-- 产品有交叉 -->
+            AND b.product_id in
+            <foreach collection="products" item="product" separator="," open="(" close=")">
+                #{product}
+            </foreach>
+            
+            <!-- 客户名称一样 -->
+            AND c.customer_name = #{customerName}
+    </select>
+    
+    <select id="getSimilarProjects" resultMap="SimilarProject">
+        select 
+          a.project_id, 
+          a.project_name, 
+          a.customer_id, 
+          c.customer_name, 
+          b.product_id, 
+          d.product_name
+        from
+          sefonoa.project_info a
+          left join sefonoa.product_project_ref b on a.project_id = b.project_id
+          left join sefonoa.product_info d on b.product_id = d.product_id
+          left join sefonoa.customer_info c on a.customer_id = c.customer_id
+        where
+            <!-- 删除标识 -->
+            a.is_delete = 0
+            <!-- 产品有交叉 -->
+            AND a.project_id in
+            <foreach collection="projects" item="project" separator="," open="(" close=")">
+                #{project}
+            </foreach>
+    </select>
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.project_info(
+          import_type, 
+          has_similar_type, 
+          over_time_flag, 
+          project_id, 
+          project_name, 
+          has_important, 
+          industry, 
+          customer_id, 
+          customer_name,
+          total_investment, 
+          customer_project_phase, 
+          location, contact_id, 
+          partner_id, 
+          partner_contact_id, 
+          estimate_money, 
+          estimate_time, 
+          estimate_success, 
+          project_situation, 
+          user_relation_analysis, 
+          integrator_situation, 
+          compete_opponent_analysis, 
+          project_run_strategy, 
+          spstage_id, 
+          pros_id, 
+          operator, last_time, 
+          create_time, 
+          biz_opport_id,
+          is_delete
+        )
+        values (
+          #{importType}, 
+          #{hasSimilarType}, 
+          #{overTimeFlag}, 
+          #{projectId}, 
+          #{projectName}, 
+          #{hasImportant},
+          #{industry}, 
+          #{customerId},
+          #{customerName},
+          #{totalInvestment}, 
+          #{customerProjectPhase}, 
+          #{location}, 
+          #{contactId}, 
+          #{partnerId}, 
+          #{partnerContactId}, 
+          #{estimateMoney}, 
+          #{estimateTime}, 
+          #{estimateSuccess}, 
+          #{projectSituation}, 
+          #{userRelationAnalysis}, 
+          #{integratorSituation}, 
+          #{competeOpponentAnalysis}, 
+          #{projectRunStrategy}, 
+          #{spstageId}, 
+          #{prosId}, 
+          #{operator}, 
+          #{lastTime}, 
+          #{createTime}, 
+          #{bizOpportId},
+          #{isDelete})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.project_info
+        <set>
+            <if test="partnerId != null">
+                 partner_id = #{partnerId},
+            </if>
+            <if test="partnerContactId != null">
+                partner_contact_id = #{partnerContactId},
+            </if>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="hasImportant != null">
+                has_important = #{hasImportant},
+            </if>
+            <if test="industry != null and industry != ''">
+                industry = #{industry},
+            </if>
+            <if test="customerId != null and customerId != ''">
+                customer_id = #{customerId},
+            </if>
+            <if test="totalInvestment != null and totalInvestment != ''">
+                total_investment = #{totalInvestment},
+            </if>
+            <if test="customerProjectPhase != null and customerProjectPhase != ''">
+                customer_project_phase = #{customerProjectPhase},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location},
+            </if>
+            <if test="contactId != null">
+                contact_id = #{contactId},
+            </if>
+            <if test="estimateMoney != null">
+                estimate_money = #{estimateMoney},
+            </if>
+            <if test="estimateTime != null">
+                estimate_time = #{estimateTime},
+            </if>
+            <if test="estimateSuccess != null">
+                estimate_success = #{estimateSuccess},
+            </if>
+            <if test="projectSituation != null and projectSituation != ''">
+                project_situation = #{projectSituation},
+            </if>
+            <if test="userRelationAnalysis != null and userRelationAnalysis != ''">
+                user_relation_analysis = #{userRelationAnalysis},
+            </if>
+            <if test="integratorSituation != null and integratorSituation != ''">
+                integrator_situation = #{integratorSituation},
+            </if>
+            <if test="competeOpponentAnalysis != null and competeOpponentAnalysis != ''">
+                compete_opponent_analysis = #{competeOpponentAnalysis},
+            </if>
+            <if test="projectRunStrategy != null and projectRunStrategy != ''">
+                project_run_strategy = #{projectRunStrategy},
+            </if>
+            <if test="spstageId != null">
+                spstage_id = #{spstageId},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="hasSimilarType != null">
+                has_similar_type = #{hasSimilarType},
+            </if>
+<!--            <if test="customerName != null">-->
+<!--                customer_name = #{customerName},-->
+<!--            </if>-->
+<!--            <if test="partnerName != null">-->
+<!--                partner_name = #{partnerName},-->
+<!--            </if>-->
+
+<!--            <if test="contactName != null">-->
+<!--                contact_name = #{contactName},-->
+<!--            </if>-->
+<!--            <if test="contactJob != null">-->
+<!--                contact_job = #{contactJob},-->
+<!--            </if>-->
+<!--            <if test="contactDeptName != null">-->
+<!--                contact_dept_name = #{contactDeptName},-->
+<!--            </if>-->
+<!--            <if test="contactTel != null">-->
+<!--                contact_tel = #{contactTel},-->
+<!--            </if>-->
+<!--            <if test="partnerContactName != null">-->
+<!--                partner_contact_name = #{partnerContactName},-->
+<!--            </if>-->
+<!--            <if test="partnerContactDeptName != null">-->
+<!--                partner_contact_dept_name = #{partnerContactDeptName},-->
+<!--            </if>-->
+<!--            <if test="partnerContactTel != null">-->
+<!--                partner_contact_tel = #{partnerContactTel},-->
+<!--            </if>-->
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where project_id = #{projectId}
+    </update>
+    <!-- 默认6个月超期立项的项目列表 -->
+    <select id="projectOverdueList" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT
+            p.id,
+            p.project_id,
+            p.project_name,
+            p.create_time,
+            pci.last_time checkDate,
+            p.spstage_id,
+            cstage.stage_name spstageName,
+            p.customer_id,
+            csinfo.customer_name,
+            p.customer_project_phase,
+            p.has_important,
+            pci.last_time checkDate
+        FROM
+			project_info p,
+			project_sale_ref psr,
+			project_check_info pci,
+			custome_stage cstage,
+			customer_info csinfo
+        WHERE
+            p.project_id = pci.project_id
+            <!-- 删除标识 -->
+        AND p.is_delete = 0
+        AND p.project_id = psr.project_id
+        AND cstage.stage_id = p.spstage_id
+        AND csinfo.customer_id = p.customer_id
+        <!-- 阶段没有完成 -->
+        AND p.spstage_id != 6
+        <if test="overTimeFlag!=null">
+          AND p.over_time_flag = #{overTimeFlag}
+        </if>
+        <if test="checkStatuses!=null">
+            and pci.check_status in
+            <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                 #{checkStatus}
+            </foreach>
+        </if>
+        <if test="projectCreateTime!=null ">
+            and pci.last_time <![CDATA[<]]>#{projectCreateTime}
+        </if>
+        <if test="employeeId!=null and employeeId !='' ">
+            and psr.employee_id = #{employeeId}
+        </if>
+        order by  p.create_time
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+    <!-- 默认6个月超期立项的项目总数 -->
+    <select id="projectOverdueCount" resultType="java.lang.Integer">
+        SELECT count(p.project_id)
+        FROM
+        project_info p,
+        project_sale_ref psr,
+        project_check_info pci,
+        custome_stage cstage,
+        customer_info csinfo
+        WHERE
+            p.project_id = pci.project_id
+        <!-- 删除标识 -->
+        AND p.is_delete = 0
+        AND p.project_id = psr.project_id
+        AND cstage.stage_id = p.spstage_id
+        AND csinfo.customer_id = p.customer_id
+        <!-- 阶段没有完成 -->
+        AND p.spstage_id != 6
+        <if test="overTimeFlag!=null">
+          AND p.over_time_flag = #{overTimeFlag}
+        </if>
+        <if test="checkStatuses!=null">
+            and pci.check_status in
+            <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                 #{checkStatus}
+            </foreach>
+        </if>
+        <if test="projectCreateTime!=null ">
+            and pci.last_time <![CDATA[<]]>#{projectCreateTime}
+        </if>
+        <if test="employeeId!=null and employeeId !='' ">
+            and psr.employee_id = #{employeeId}
+        </if>
+    </select>
+    <update id="projectOverdueUpdate">
+        update sefonoa.project_info
+        <set>
+            last_time = now(),
+            over_time_flag=#{overTimeFlag},
+            last_time = #{lastTime}
+        </set>
+        where project_id = #{projectId} AND spstage_id != 6
+        <if test="checkOverTimeFlag != null">
+          AND over_time_flag = #{checkOverTimeFlag}
+        </if>
+    </update>
+
+    <!-- 逾期项目列表 -->
+    <select id="projectTerminatedOverdueList" resultType="com.sefonsoft.oa.entity.project.ProjectInfo">
+        SELECT
+            p.id,
+            p.project_id,
+            p.project_name,
+            p.create_time,
+            pci.last_time checkDate
+        FROM
+            project_info p,
+            project_sale_ref psr,
+            project_check_info pci
+        WHERE
+            p.project_id = pci.project_id
+        <!-- 删除标识 -->
+        AND p.is_delete = 0
+        AND p.project_id = psr.project_id
+        <!-- 阶段没有完成 -->
+        AND p.spstage_id != 6
+        <!-- 逾期类型 -->
+        and p.over_time_flag = #{overTimeFlag}
+        <!-- 时间点判断 -->
+        <choose>
+          <when test="overTimeFlag == 0">
+             AND pci.last_time <![CDATA[<]]>#{checkDate}
+          </when>
+          <when test="overTimeFlag == 1">
+             AND p.last_time <![CDATA[<]]>#{projectCreateTime}
+          </when>
+          <otherwise>
+            1 = 0
+          </otherwise>
+        </choose>
+        <!-- 审核状态 -->
+        <if test="checkStatuses!=null">
+            and pci.check_status in
+            <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                 #{checkStatus}
+            </foreach>
+        </if>
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+    <select id="projectTerminatedOverdueCount" resultType="java.lang.Integer">
+        SELECT
+        count(p.id)
+        FROM
+            project_info p,
+            project_sale_ref psr,
+            project_check_info pci
+        WHERE
+            p.project_id = pci.project_id
+        <!-- 删除标识 -->
+        AND p.is_delete = 0
+        AND p.project_id = psr.project_id
+        <!-- 阶段没有完成 -->
+        AND p.spstage_id != 6
+        <!-- 逾期类型 -->
+        and p.over_time_flag = #{overTimeFlag}
+        <!-- 时间点判断 -->
+        <choose>
+          <when test="overTimeFlag == 0">
+             AND pci.last_time <![CDATA[<]]>#{checkDate}
+          </when>
+          <when test="overTimeFlag == 1">
+             AND p.last_time <![CDATA[<]]>#{projectCreateTime}
+          </when>
+          <otherwise>
+            1 = 0
+          </otherwise>
+        </choose>
+        <!-- 审核状态 -->
+        <if test="checkStatuses!=null">
+            and pci.check_status in
+            <foreach collection="checkStatuses" item="checkStatus" open="(" separator="," close=")">
+                 #{checkStatus}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="countByprojectId" resultType="java.lang.Integer">
+        select 
+          count(1) 
+        from 
+          sefonoa.project_info 
+        where 
+          project_id = #{projectId}
+          <!-- 删除标识 -->
+          AND is_delete = 0
+    </select>
+    <!-- 按条件查询列表，控制数据权限 离职人员未过期项目立项列表-->
+    <select id="terminatedNotOverdueList" resultType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO" >
+        select distinct
+        a.id,
+        a.project_id as projectId,
+        a.project_name as projectName,
+        a.pros_id as prosId,
+        g.pros_name as prosName,
+        i.check_status as checkStatus,
+        a.customer_id as customerId,
+        a.customer_name as customerName,
+        a.industry,
+        a.has_important as hasImportant,
+        cast(a.total_investment as decimal(10,4)) as totalInvestment,
+        a.customer_project_phase as customerProjectPhase,
+        a.location,
+        a.contact_id as contactId,
+        a.contact_name as contacts,
+        a.contact_dept_name as contactDeptName,
+        a.contact_job as contactJob,
+        a.contact_tel as contactTel,
+
+        a.partner_id as partnerId,
+        a.partner_name as partnerName,
+        a.partner_contact_dept_name as customerDeptName,
+        a.partner_contact_id as partnerContactId,
+        a.partner_contact_name as customerContact,
+        a.partner_contact_tel as customerContactTel,
+
+        c.employee_id as employeeId,
+        c.employee_name as employeeName,
+        a.spstage_id as spstageId,
+        h.spstage_name as spstageName,
+        d.dept_id as deptId,
+        d.dept_name as deptName,
+        cast(a.estimate_money as decimal(10,4)) as estimateMoney,
+        a.estimate_time as estimateTime,
+        a.estimate_success as estimateSuccess,
+        a.last_time as lastTime,
+        a.create_time as createTime,
+        a.project_situation as projectSituation,
+        a.user_relation_analysis as userRelationAnalysis ,
+        a.integrator_situation as integratorSituation,
+        a.compete_opponent_analysis as competeOpponentAnalysis,
+        a.project_run_strategy as projectRunStrategy,
+        a.operator,
+        a.has_similar_type as hasSimilarType,
+        a.over_time_flag as overTimeFlag,
+        i.opinion
+
+        from project_info a
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+            a.is_delete = 0
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0">
+                and d.dept_id  in
+                <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                    #{dataDeptIdList}
+                </foreach>
+            </if>
+            <if test="projectCreateTime != null">
+                and i.last_time <![CDATA[>=]]>#{projectCreateTime}
+            </if>
+            <if test="jobStatus != null and jobStatus != ''">
+                and c.job_status =#{jobStatus}
+            </if>
+        </where>
+        order by i.check_status asc,a.last_time desc
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+    <!-- 按条件查询总条数 -->
+    <select id="terminatedNotOverdueCount" resultType="java.lang.Integer"
+            parameterType="com.sefonsoft.oa.domain.project.ProjectInfoQueryDTO">
+        SELECT COUNT(distinct a.project_id)
+        from project_info a
+        left join  project_sale_ref b on a.project_id=b.project_id
+        left join  sys_employee c on b.employee_id = c.employee_id
+        left join  sys_department d on c.dept_id = d.dept_id
+        left join  project_status_info g on a.pros_id = g.pros_id
+        left join  sales_project_stage  h on a.spstage_id = h.spstage_id
+        left join  project_check_info i  on a.project_id = i.project_id
+        <where>
+            <!-- 删除标识 -->
+            a.is_delete = 0
+            <if test="dataDeptIdList!=null and dataDeptIdList.size()>0">
+                and d.dept_id  in
+                <foreach collection="dataDeptIdList" item="dataDeptIdList" open="(" separator="," close=")" >
+                    #{dataDeptIdList}
+                </foreach>
+            </if>
+            <if test="projectCreateTime != null">
+                and i.last_time <![CDATA[>=]]>#{projectCreateTime}
+            </if>
+            <if test="jobStatus != null and jobStatus != ''">
+                and c.job_status =#{jobStatus}
+            </if>
+        </where>
+    </select>
+  <select id="findProjectInfoByBizOpportsId" resultType="com.sefonsoft.oa.entity.project.ProjectInfo">
+      select 
+        * 
+      from 
+        project_info 
+      where 
+        biz_opport_id=#{bizOpportsId}
+        <!-- 删除标识 -->
+        AND is_delete = 0
+  </select>
+  
+  
+  <resultMap type="com.sefonsoft.oa.domain.project.vo.ProjectExcelVO" id="exportMap">
+    
+    <result property="projectId" column="project_id" />
+    <result property="projectName" column="project_name" />
+    <result property="location" column="location" />
+    <result property="industry" column="industry" />
+    <result property="checkTime" column="check_time" />
+    <result property="employeeName" column="employee_name" />
+    <result property="employeeId" column="employee_id" />
+    <result property="deptName" column="dept_name" />
+    <result property="customerProjectPhase" column="customer_project_phase" />
+    <result property="spstageName" column="spstage_name" />
+    <result property="estimateTime" column="estimate_time" />
+    <result property="estimateSuccess" column="estimate_success" />
+    <result property="totalInvestment" column="total_investment" />
+    <result property="estimateMoney" column="estimate_money" />
+    <result property="projectSituation" column="project_situation" />
+    <result property="hasImportant" column="has_important" />
+    <result  property="dvi" column="dvi" />
+    
+    <association property="ue" 
+      columnPrefix="ue_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="ueGis" 
+      columnPrefix="ue_gis_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="ueW3d" 
+      columnPrefix="ue_w3d_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="ueAi" 
+      columnPrefix="ue_ai_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO"/>
+    
+    <association property="be" 
+      columnPrefix="be_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="me"
+      columnPrefix="me_"
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="miner" 
+      columnPrefix="miner_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="ds" 
+      columnPrefix="ds_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="govern" 
+      columnPrefix="govern_"
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="hdp" 
+      columnPrefix="hdp_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="cdb" 
+      columnPrefix="cdb_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="ae" 
+      columnPrefix="ae_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="etl" 
+      columnPrefix="etl_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="bc" 
+      columnPrefix="bc_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="deploy" 
+      columnPrefix="deploy_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO"/>
+    
+    <association property="srv" 
+      columnPrefix="srv_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="other" 
+      columnPrefix="other_" 
+      autoMapping="true"
+      javaType="com.sefonsoft.oa.domain.project.vo.ProductExcelVO" />
+    
+    <association property="biz" 
+      columnPrefix="biz_" 
+      autoMapping="true" 
+      javaType="com.sefonsoft.oa.domain.bizopports.BizOpportsExport" />
+      
+    <association property="cust" 
+      columnPrefix="cust_"
+      autoMapping="true" 
+      javaType="com.sefonsoft.oa.domain.customer.vo.ExportCustomerInfoQueryVo" />
+      
+    <association property="patn"
+      columnPrefix="patn_"
+      autoMapping="true" 
+      javaType="com.sefonsoft.oa.domain.customer.vo.ExportCustomerInfoQueryVo" />
+      
+   <association property="apply"
+      columnPrefix="apply_"
+      autoMapping="true" 
+      javaType="com.sefonsoft.oa.domain.project.vo.ProjectExcelApplyVO" />
+  </resultMap>
+  
+  <select id="getExportDatas" resultMap="exportMap">
+    SELECT  
+      p.project_id                                                      project_id,
+      p.project_name                                                    project_name,
+      p.location                                                        location,
+      p.industry                                                        industry,
+      pci.last_time                                                     check_time,
+      pemp.employee_name                                                employee_name,
+      pemp.employee_id                                                  employee_id,
+      pdpt.dept_name                                                    dept_name,
+      p.customer_project_phase                                          customer_project_phase,
+      stg.spstage_name                                                  spstage_name,
+      p.estimate_time                                                   estimate_time,
+      p.estimate_success                                                estimate_success,
+      p.estimate_money                                                  estimate_money,
+      p.total_investment                                                total_investment,
+      
+      prd.ue_sale_count                                                 ue_sale_count,
+      prd.ue_amount                                                     ue_amount,
+      prd.ue_sale_amount                                                ue_sale_amount,
+      
+      prd.ue_gis_sale_count                                             ue_gis_sale_count,
+      prd.ue_gis_amount                                                 ue_gis_amount,
+      prd.ue_gis_sale_amount                                            ue_gis_sale_amount,
+      
+      prd.ue_w3d_sale_count                                             ue_w3d_sale_count,
+      prd.ue_w3d_amount                                                 ue_w3d_amount,
+      prd.ue_w3d_sale_amount                                            ue_w3d_sale_amount,
+      
+      prd.ue_ai_sale_count                                              ue_ai_sale_count,
+      prd.ue_ai_amount                                                  ue_ai_amount,
+      prd.ue_ai_sale_amount                                             ue_ai_sale_amount,
+      
+      prd.be_sale_count                                                 be_sale_count,
+      prd.be_amount                                                     be_amount,
+      prd.be_sale_amount                                                be_sale_amount,
+      
+      prd.me_sale_count                                                 me_sale_count,
+      prd.me_amount                                                     me_amount,
+      prd.me_sale_amount                                                me_sale_amount,
+      
+      prd.miner_sale_count                                              miner_sale_count,
+      prd.miner_amount                                                  miner_amount,
+      prd.miner_sale_amount                                             miner_sale_amount,
+      
+      prd.ds_sale_count                                                 ds_sale_count,
+      prd.ds_amount                                                     ds_amount,
+      prd.ds_sale_amount                                                ds_sale_amount,
+      
+      prd.govern_sale_count                                             govern_sale_count,
+      prd.govern_amount                                                 govern_amount,
+      prd.govern_sale_amount                                            govern_sale_amount,
+      
+      prd.hdp_sale_count                                                hdp_sale_count,
+      prd.hdp_amount                                                    hdp_amount,
+      prd.hdp_sale_amount                                               hdp_sale_amount,
+      
+      prd.cdb_sale_count                                                cdb_sale_count,
+      prd.cdb_amount                                                    cdb_amount,
+      prd.cdb_sale_amount                                               cdb_sale_amount,
+      
+      prd.ae_sale_count                                                 ae_sale_count,
+      prd.ae_amount                                                     ae_amount,
+      prd.ae_sale_amount                                                ae_sale_amount,
+      
+      prd.etl_sale_count                                                etl_sale_count,
+      prd.etl_amount                                                    etl_amount,
+      prd.etl_sale_amount                                               etl_sale_amount,
+      
+      prd.bc_sale_count                                                 bc_sale_count,
+      prd.bc_amount                                                     bc_amount,
+      prd.bc_sale_amount                                                bc_sale_amount,
+      
+      prd.deploy_sale_count                                             deploy_sale_count,
+      prd.deploy_amount                                                 deploy_amount,
+      prd.deploy_sale_amount                                            deploy_sale_amount,
+      
+      prd.srv_sale_count                                                srv_sale_count,
+      prd.srv_amount                                                    srv_amount,
+      prd.srv_sale_amount                                               srv_sale_amount,
+      
+      prd.other_sale_count                                              other_sale_count,
+      prd.other_amount                                                  other_amount,
+      prd.other_sale_amount                                             other_sale_amount,
+      
+      dvi.dvi                                                           dvi,
+      p.project_situation                                               project_situation,
+      case p.has_important WHEN 1 THEN '是' ELSE '否' END               has_important,
+      
+      p.project_situation                                               apply_project_situation,
+      p.user_relation_analysis                                          apply_user_relation_analysis,
+      p.integrator_situation                                            apply_integrator_situation,
+      p.compete_opponent_analysis                                       apply_compete_opponent_analysis,
+      p.project_run_strategy                                            apply_project_run_strategy,
+      
+      
+      biz.biz_id                                                        biz_biz_id,
+      biz.bizopports_name                                               biz_name,
+      bemp.employee_name                                                biz_employee_name,
+      bemp.employee_id                                                  biz_employee_id,
+      bdpt.dept_name                                                    biz_employee_dept_name,
+      bstate.state_name                                                 biz_state_name,
+      biz.keywords                                                      biz_keywords,
+      biz.`desc`                                                        biz_desc,
+      
+      cust.customer_name                                                cust_customer_name,
+      CONCAT_WS("/",cust.country_num, cust.city_num, cust.district)     cust_provincial,
+      custe.enter_name                                                  cust_enter_name,
+      cust.industry                                                     cust_industry,
+      cust.address                                                      cust_address,
+      cust.telephone                                                    cust_telephone,
+      cust.zip_code                                                     cust_zip_code,
+      cust.website                                                      cust_website,
+      cust.fax                                                          cust_fax,
+      custci.contact_name                                               cust_contact_name,
+      case custci.contact_sex WHEN 2 THEN '女' ELSE '男' END            cust_gender,
+      custci.dept_name                                                  cust_dept_name,
+      custci.job                                                        cust_job,
+      custci.telphone                                                   cust_contact_telphone,
+      custci.office_plane                                               cust_office_plane,
+      custci.email                                                      cust_contact_email,
+      custci.university                                                 cust_university,
+      custci.major                                                      cust_major,
+      custci.birthday                                                   cust_birthday,
+      custci.family_info                                                cust_family_info,
+      custci.other                                                      cust_other,
+      
+      patn.customer_name                                                patn_customer_name,
+      CONCAT_WS("/",patn.country_num, patn.city_num, patn.district)     patn_provincial,
+      patne.enter_name                                                  patn_enter_name,
+      patn.industry                                                     patn_industry,
+      patn.address                                                      patn_address,
+      patn.telephone                                                    patn_telephone,
+      patn.zip_code                                                     patn_zip_code,
+      patn.website                                                      patn_website,
+      patn.fax                                                          patn_fax,
+      patnci.contact_name                                               patn_contact_name,
+      case patnci.contact_sex WHEN 2 THEN '女' ELSE '男' END            patn_gender,
+      patnci.dept_name                                                  patn_dept_name,
+      patnci.job                                                        patn_job,
+      patnci.telphone                                                   patn_contact_telphone,
+      patnci.office_plane                                               patn_office_plane,
+      patnci.email                                                      patn_contact_email,
+      patnci.university                                                 patn_university,
+      patnci.major                                                      patn_major,
+      patnci.birthday                                                   patn_birthday,
+      patnci.family_info                                                patn_family_info,
+      patnci.other                                                      patn_other
+      
+      FROM project_info p
+      
+      
+      LEFT JOIN project_check_info pci on pci.project_id = p.project_id
+      LEFT JOIN project_sale_ref sale on sale.project_id = p.project_id
+      LEFT JOIN sys_employee pemp on pemp.employee_id = sale.employee_id
+      LEFT JOIN sys_department pdpt on pdpt.dept_id = pemp.dept_id
+      LEFT JOIN sales_project_stage stg on stg.spstage_id = p.spstage_id
+      
+      left join (
+      
+      SELECT 
+      
+        project_id,
+        
+        sum(CASE product_id WHEN 1 THEN sale_count          ELSE 0 END ) ue_sale_count,
+        sum(CASE product_id WHEN 1 THEN amount              ELSE 0 END ) ue_amount,
+        sum(CASE product_id WHEN 1 THEN sale_count * amount ELSE 0 END ) ue_sale_amount,
+        
+        sum(CASE product_id WHEN 2 THEN sale_count          ELSE 0 END ) ue_gis_sale_count,
+        sum(CASE product_id WHEN 2 THEN amount              ELSE 0 END ) ue_gis_amount,
+        sum(CASE product_id WHEN 2 THEN sale_count * amount ELSE 0 END ) ue_gis_sale_amount,
+        
+        sum(CASE product_id WHEN 3 THEN sale_count          ELSE 0 END ) ue_w3d_sale_count,
+        sum(CASE product_id WHEN 3 THEN amount              ELSE 0 END ) ue_w3d_amount,
+        sum(CASE product_id WHEN 3 THEN sale_count * amount ELSE 0 END ) ue_w3d_sale_amount,
+
+        sum(CASE product_id WHEN 4 THEN sale_count          ELSE 0 END ) ue_ai_sale_count,
+        sum(CASE product_id WHEN 4 THEN amount              ELSE 0 END ) ue_ai_amount,
+        sum(CASE product_id WHEN 4 THEN sale_count * amount ELSE 0 END ) ue_ai_sale_amount,
+
+        sum(CASE product_id WHEN 5 THEN sale_count          ELSE 0 END ) be_sale_count,
+        sum(CASE product_id WHEN 5 THEN amount              ELSE 0 END ) be_amount,
+        sum(CASE product_id WHEN 5 THEN sale_count * amount ELSE 0 END ) be_sale_amount,
+
+        sum(CASE product_id WHEN 6 THEN sale_count          ELSE 0 END ) me_sale_count,
+        sum(CASE product_id WHEN 6 THEN amount              ELSE 0 END ) me_amount,
+        sum(CASE product_id WHEN 6 THEN sale_count * amount ELSE 0 END ) me_sale_amount,
+
+        sum(CASE product_id WHEN 7 THEN sale_count          ELSE 0 END ) miner_sale_count,
+        sum(CASE product_id WHEN 7 THEN amount              ELSE 0 END ) miner_amount,
+        sum(CASE product_id WHEN 7 THEN sale_count * amount ELSE 0 END ) miner_sale_amount,
+
+        sum(CASE product_id WHEN 8 THEN sale_count          ELSE 0 END ) ds_sale_count,
+        sum(CASE product_id WHEN 8 THEN amount              ELSE 0 END ) ds_amount,
+        sum(CASE product_id WHEN 8 THEN sale_count * amount ELSE 0 END ) ds_sale_amount,
+
+        sum(CASE product_id WHEN 9 THEN sale_count          ELSE 0 END ) govern_sale_count,
+        sum(CASE product_id WHEN 9 THEN amount              ELSE 0 END ) govern_amount,
+        sum(CASE product_id WHEN 9 THEN sale_count * amount ELSE 0 END ) govern_sale_amount,
+
+        sum(CASE product_id WHEN 10 THEN sale_count          ELSE 0 END ) hdp_sale_count,
+        sum(CASE product_id WHEN 10 THEN amount              ELSE 0 END ) hdp_amount,
+        sum(CASE product_id WHEN 10 THEN sale_count * amount ELSE 0 END ) hdp_sale_amount,
+
+        sum(CASE product_id WHEN 11 THEN sale_count          ELSE 0 END ) cdb_sale_count,
+        sum(CASE product_id WHEN 11 THEN amount              ELSE 0 END ) cdb_amount,
+        sum(CASE product_id WHEN 11 THEN sale_count * amount ELSE 0 END ) cdb_sale_amount,
+
+        sum(CASE product_id WHEN 12 THEN sale_count          ELSE 0 END ) ae_sale_count,
+        sum(CASE product_id WHEN 12 THEN amount              ELSE 0 END ) ae_amount,
+        sum(CASE product_id WHEN 12 THEN sale_count * amount ELSE 0 END ) ae_sale_amount,
+
+        sum(CASE product_id WHEN 13 THEN sale_count          ELSE 0 END ) etl_sale_count,
+        sum(CASE product_id WHEN 13 THEN amount              ELSE 0 END ) etl_amount,
+        sum(CASE product_id WHEN 13 THEN sale_count * amount ELSE 0 END ) etl_sale_amount,
+
+        sum(CASE product_id WHEN 14 THEN sale_count          ELSE 0 END ) bc_sale_count,
+        sum(CASE product_id WHEN 14 THEN amount              ELSE 0 END ) bc_amount,
+        sum(CASE product_id WHEN 14 THEN sale_count * amount ELSE 0 END ) bc_sale_amount,
+
+        sum(CASE product_id WHEN 15 THEN sale_count          ELSE 0 END ) deploy_sale_count,
+        sum(CASE product_id WHEN 15 THEN amount              ELSE 0 END ) deploy_amount,
+        sum(CASE product_id WHEN 15 THEN sale_count * amount ELSE 0 END ) deploy_sale_amount,
+
+        sum(CASE product_id WHEN 16 THEN sale_count          ELSE 0 END ) srv_sale_count,
+        sum(CASE product_id WHEN 16 THEN amount              ELSE 0 END ) srv_amount,
+        sum(CASE product_id WHEN 16 THEN sale_count * amount ELSE 0 END ) srv_sale_amount,
+
+        sum(CASE product_id WHEN 17 THEN sale_count          ELSE 0 END ) other_sale_count,
+        sum(CASE product_id WHEN 17 THEN amount              ELSE 0 END ) other_amount,
+        sum(CASE product_id WHEN 17 THEN sale_count * amount ELSE 0 END ) other_sale_amount
+      
+      FROM 
+        product_project_ref
+      GROUP BY 
+        project_id
+      
+      ) prd on prd.project_id = p.project_id
+
+      LEFT JOIN (
+        SELECT
+          dvi.project_id project_id,
+          GROUP_CONCAT( CONCAT_WS( "，", emp.employee_name, emp.employee_id, dvi.performance_division ) SEPARATOR '；' ) dvi 
+        FROM
+          project_amount_devide_ref dvi
+          LEFT JOIN sys_employee emp ON emp.employee_id = dvi.employee_id 
+        GROUP BY
+          dvi.project_id
+      ) dvi on dvi.project_id = p.project_id
+      
+
+      LEFT JOIN biz_opports biz on biz.id = p.biz_opport_id
+      LEFT JOIN sys_employee bemp on bemp.employee_id = biz.employee_id
+      LEFT JOIN sys_department bdpt on bdpt.dept_id = bemp.dept_id
+      LEFT JOIN biz_opports_state bstate on biz.state = bstate.state
+      
+
+      LEFT JOIN customer_info cust on p.customer_id = cust.customer_id
+      LEFT JOIN enterprise_type custe on custe.enter_id = cust.enter_id
+      LEFT JOIN contact_info custci on custci.id = p.contact_id
+      
+
+      LEFT JOIN customer_info patn on patn.customer_id = p.partner_id
+      LEFT JOIN enterprise_type patne on patne.enter_id = patn.enter_id
+      LEFT JOIN contact_info patnci on patnci.id = p.partner_contact_id
+      
+       <where>
+            <!-- 删除标识 -->
+            p.is_delete = 0
+            AND p.over_time_flag = 0
+            <choose>
+                <!-- 如果部门权限不为null -->
+                <when test="deptIds!=null and deptIds.size()>0">
+                    AND pemp.dept_id IN
+                    <foreach collection="deptIds" open="(" close=")" separator="," item="dept">
+                        #{dept}
+                    </foreach>
+                    OR (
+                        pemp.employee_id=#{employeeId}
+                    )
+                </when>
+                <otherwise>
+                  AND pemp.employee_id=#{employeeId}
+                </otherwise>
+            </choose>
+        </where>
+  </select>
+  
+  
+  <select id="isExists" resultType="java.lang.Boolean">
+  
+    select count(*) from project_info where project_id = #{projectId}
+  </select>
+</mapper>

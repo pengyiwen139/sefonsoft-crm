@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.project.ProjectSaleRefDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.project.ProjectSaleRef" id="ProjectSaleRefMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="cowner" column="cowner" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProjectSaleRefMap">
+        select
+          id, project_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.project_sale_ref
+        where id = #{id}
+    </select>
+
+    <!--查询单个 根据项目名称-->
+    <select id="queryByProjectId" resultMap="ProjectSaleRefMap">
+        select
+          id, project_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.project_sale_ref
+        where project_id = #{projectId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProjectSaleRefMap">
+        select
+          id, project_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.project_sale_ref
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProjectSaleRefMap">
+        select
+          id, project_id, employee_id, cowner, operator, last_time, create_time
+        from sefonoa.project_sale_ref
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="cowner != null and cowner != ''">
+                and cowner = #{cowner}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.project_sale_ref(project_id, employee_id, cowner, operator, last_time, create_time)
+        values (#{projectId}, #{employeeId}, #{cowner}, #{operator}, #{lastTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.project_sale_ref
+        <set>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="cowner != null and cowner != ''">
+                cowner = #{cowner},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+        </set>
+        where project_id = #{projectId}
+    </update>
+
+    <update id="batchUpdate">
+        update sefonoa.project_sale_ref
+        <set>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="cowner != null and cowner != ''">
+                cowner = #{cowner},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+        </set>
+        where project_id in
+              <foreach collection="projectIdList" item="projectId" separator="," open="(" close=")">
+                #{projectId}
+              </foreach>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.project_sale_ref where project_id = #{projectId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.project.ProjectAmountDevideRefDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.project.ProjectAmountDevideRef" id="ProjectAmountDevideRefMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="performanceDivision" column="performance_division" jdbcType="INTEGER"/>
+        <result property="divisionAmount" column="division_amount" jdbcType="OTHER"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProjectAmountDevideRefMap">
+        select
+          id, project_id, employee_id, performance_division, division_amount, operator, last_time, create_time
+        from sefonoa.project_amount_devide_ref
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProjectAmountDevideRefMap">
+        select
+          id, project_id, employee_id, performance_division, division_amount, operator, last_time, create_time
+        from sefonoa.project_amount_devide_ref
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ProjectAmountDevideRefMap">
+        select
+          id, project_id, employee_id, performance_division, division_amount, operator, last_time, create_time
+        from sefonoa.project_amount_devide_ref
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and project_id = #{projectId}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="performanceDivision != null">
+                and performance_division = #{performanceDivision}
+            </if>
+            <if test="divisionAmount != null">
+                and division_amount = #{divisionAmount}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="querybyProjectId" resultType="com.sefonsoft.oa.entity.project.ProjectAmountDevideRef">
+        select
+            b.employee_name, a.id, a.project_id, a.employee_id, a.performance_division, cast(a.division_amount as decimal(10,4)) as division_amount, a.operator, a.last_time, a.create_time
+        from sefonoa.project_amount_devide_ref a left join sefonoa.sys_employee b on a.employee_id = b.employee_id
+        where a.project_id = #{projectId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.project_amount_devide_ref(project_id, employee_id, performance_division, division_amount, operator, last_time, create_time)
+        values (#{projectId}, #{employeeId}, #{performanceDivision}, #{divisionAmount}, #{operator}, #{lastTime}, #{createTime})
+    </insert>
+
+    <insert id="batchInsert">
+        insert into sefonoa.project_amount_devide_ref(project_id, employee_id, performance_division, division_amount, operator, last_time, create_time)
+        values
+               <foreach collection="list" item="bean" separator=",">
+                    (#{bean.projectId}, #{bean.employeeId}, #{bean.performanceDivision}, #{bean.divisionAmount}, #{bean.operator}, #{bean.lastTime}, #{bean.createTime})
+               </foreach>
+    </insert>
+
+    <insert id="batchInsertByUpdate">
+        insert into sefonoa.project_amount_devide_ref(project_id, employee_id, performance_division, division_amount, operator, last_time, create_time)
+        values
+            <foreach collection="list" item="bean" separator=",">
+                (#{bean.projectId}, #{bean.employeeId}, #{bean.performanceDivision}, #{bean.divisionAmount}, #{bean.operator}, #{bean.lastTime}, #{bean.createTime})
+            </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.project_amount_devide_ref
+        <set>
+            <if test="projectId != null and projectId != ''">
+                project_id = #{projectId},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="performanceDivision != null">
+                performance_division = #{performanceDivision},
+            </if>
+            <if test="divisionAmount != null">
+                division_amount = #{divisionAmount},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.project_amount_devide_ref where id = #{id}
+    </delete>
+
+    <!--通过projectId删除-->
+    <delete id="deleteByIds">
+        delete from project_amount_devide_ref where project_id = #{projectId}
+    </delete>
+
+</mapper>

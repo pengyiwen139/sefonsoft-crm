@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.report.WeeklyReportDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.report.WeeklyReport" id="WeeklyReportMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <result property="employeeCount" column="employee_count" jdbcType="INTEGER"/>
+        <result property="reportCount" column="report_count" jdbcType="INTEGER"/>
+        <result property="readCount" column="read_count" jdbcType="INTEGER"/>
+        <result property="reportTime" column="report_time" jdbcType="TIMESTAMP"/>
+        <result property="startDate" column="start_date" jdbcType="TIMESTAMP"/>
+        <result property="endDate" column="end_date" jdbcType="TIMESTAMP"/>
+        <result property="digest" column="digest" jdbcType="VARCHAR"/>
+        <result property="desc" column="report_desc" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="employeeName" column="employee_name" jdbcType="VARCHAR"/>
+        <!--一对多关系的时候，一方使用collection标签映射多方，属性就是Teacher对象中的集合属性名称。因为是集合类型，所以不能再直接使用column属性，需要使用另一个映射对象结果集合，该结果集合也是通过namespace.id指定。当然也可以不引用其他结果集合，在标签内部可以自己在定义临时的resultMap标签对象，比如id,result标签 -->
+
+        <!--        <collection property="dailyReportList"-->
+        <!--                    resultMap="com.sefonsoft.oa.dao.report.DailyReportDao.DailyReportMap"/>-->
+    </resultMap>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.weekly_report(employee_id, dept_id, employee_count, report_count, read_count, report_time, start_date, end_date, digest ,report_desc , last_time, create_time)
+        values (#{employeeId},#{deptId}, #{employeeCount},  #{reportCount},  #{readCount},  #{reportTime}, #{startDate}, #{endDate}, #{digest}, #{desc}, #{lastTime}, #{createTime})
+    </insert>
+
+
+    <select id="queryById" parameterType="long" resultMap="WeeklyReportMap">
+        <!-- 对于相同的属性名称s.id和t.id以及s.name和t.name，一定要注意起别名，不然会冲突 -->
+        SELECT
+        report.id,
+        report.employee_id,
+        report.dept_id,
+        report.employee_count,
+        report.report_count,
+        report.read_count,
+        report.report_time,
+        report.start_date,
+        report.end_date,
+        report.digest,
+        report.report_desc,
+        report.last_time,
+        report.create_time,
+        se.employee_name,
+        sd.dept_name
+        FROM weekly_report report
+        left join sys_employee se on se.employee_id=report.employee_id
+        left join sys_department sd on sd.dept_id = report.dept_id
+        WHERE report.id = #{id}
+    </select>
+
+
+    <select id="queryDailyReportIds" parameterType="long" resultType="java.lang.Long">
+        SELECT info.employee_report_id
+        FROM weekly_report_info info
+        WHERE info.weekly_report_id = #{id}
+    </select>
+
+
+    <insert id="insertWeeklyInfo">
+        insert into sefonoa.weekly_report_info(weekly_report_id, employee_report_id)
+        values (#{weeklyReportId}, #{dailyReportId})
+    </insert>
+
+    <select id="getCondition" resultMap="WeeklyReportMap">
+        <!-- 对于相同的属性名称s.id和t.id以及s.name和t.name，一定要注意起别名，不然会冲突 -->
+        SELECT
+        report.id,
+        report.employee_id,
+        report.dept_id,
+        report.employee_count,
+        report.report_count,
+        report.read_count,
+        report.report_time,
+        report.start_date,
+        report.end_date,
+        report.digest,
+        report.report_desc,
+        report.last_time,
+        report.create_time,
+        se.employee_name,
+        sd.dept_name
+        FROM weekly_report report
+        left join sys_employee se on se.employee_id=report.employee_id
+        left join sys_department sd on sd.dept_id = report.dept_id
+        <where>
+            <if test="startday != null and startday != ''">
+                <![CDATA[
+                and report.start_date >= #{startday}
+                  ]]>
+            </if>
+            <if test="endday != null and endday != ''">
+                <![CDATA[
+                 and report.start_date <= #{endday}
+                     ]]>
+            </if>
+
+
+            <if test="keyword != null and keyword != ''">
+                and locate(#{keyword},report.report_desc)>0
+            </if>
+
+            <if test="depIds != null  and depIds.size()>0">
+                and report.dept_id in
+                <foreach item="deptId" index="index" collection="depIds" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+
+        </where>
+        order by report.create_time desc limit ${(page-1)*limit},#{limit}
+    </select>
+
+
+    <select id="getConditionTotal" resultType="java.lang.Long">
+        <!-- 对于相同的属性名称s.id和t.id以及s.name和t.name，一定要注意起别名，不然会冲突 -->
+        SELECT count(*)
+        FROM weekly_report report
+        left join sys_employee se on se.employee_id=report.employee_id
+        left join sys_department sd on se.dept_id = sd.dept_id
+        <where>
+            <if test="startday != null and startday != ''">
+                <![CDATA[
+                and report.start_date >= #{startday}
+                  ]]>
+            </if>
+            <if test="endday != null and endday != ''">
+                <![CDATA[
+                 and report.start_date <= #{endday}
+                     ]]>
+            </if>
+
+
+            <if test="keyword != null and keyword != ''">
+                and locate(#{keyword},report.report_desc)>0
+            </if>
+
+            <if test="depIds != null  and depIds.size()>0">
+                and report.dept_id in
+                <foreach item="deptId" index="index" collection="depIds" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.workorder.WorkorderDeptConfigDao">
+
+    <resultMap type="com.sefonsoft.oa.domain.workorder.deptconfig.WorkorderDeptConfigQueryDTO" id="WorkorderDeptConfigMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="deptType" column="dept_type" jdbcType="INTEGER"/>
+        <result property="deptSource" column="dept_source" jdbcType="VARCHAR"/>
+        <result property="deptDes" column="dept_des" jdbcType="VARCHAR"/>
+        <result property="deptSourceName" column="dept_source_name" jdbcType="VARCHAR"/>
+        <result property="deptDesName" column="dept_des_name" jdbcType="VARCHAR"/>
+        <result property="operatorEmployeeId" column="operator_employee_id" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WorkorderDeptConfigMap">
+        SELECT
+            a.id,
+            a.dept_type,
+            a.dept_source,
+            a.dept_des,
+            a.operator_employee_id,
+            a.modified_time,
+            a.create_time,
+            b.dept_name dept_source_name,
+            c.dept_name dept_des_name
+        FROM
+            sefonoa_order.workorder_dept_config a
+            left join sefonoa.sys_department b on a.dept_source = b.dept_id
+            left join sefonoa.sys_department c on a.dept_des = b.dept_id
+        WHERE
+            a.id = #{id} and a.is_delete = 0
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="WorkorderDeptConfigMap">
+        select
+          id, dept_type, dept_source, dept_des, operator_employee_id, modified_time, create_time
+        from sefonoa_order.workorder_dept_config where a.is_delete = 0
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="WorkorderDeptConfigMap">
+        select
+          id, dept_type, dept_source, dept_des, operator_employee_id, modified_time, create_time
+        from sefonoa_order.workorder_dept_config
+        <where>
+            a.is_delete = 0
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deptType != null">
+                and dept_type = #{deptType}
+            </if>
+            <if test="deptSource != null and deptSource != ''">
+                and dept_source = #{deptSource}
+            </if>
+            <if test="deptDes != null and deptDes != ''">
+                and dept_des = #{deptDes}
+            </if>
+            <if test="operatorEmployeeId != null and operatorEmployeeId != ''">
+                and operator_employee_id = #{operatorEmployeeId}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryAllPage" resultMap="WorkorderDeptConfigMap">
+        select
+              a.id,
+              a.dept_type,
+              a.dept_source,
+              a.dept_des,
+              a.operator_employee_id,
+              a.modified_time,
+              a.create_time,
+              b.dept_name dept_source_name,
+              c.dept_name dept_des_name
+            from sefonoa_order.workorder_dept_config a
+            left join sefonoa.sys_department b on a.dept_source = b.dept_id
+            left join sefonoa.sys_department c on a.dept_des = c.dept_id
+            <where>
+                a.is_delete = 0
+                <if test="id != null">
+                    and a.id = #{id}
+                </if>
+                <if test="deptType != null">
+                    and a.dept_type = #{deptType}
+                </if>
+                <if test="deptSource != null and deptSource != ''">
+                    and a.dept_source = #{deptSource}
+                </if>
+                <if test="deptDes != null and deptDes != ''">
+                    and a.dept_des = #{deptDes}
+                </if>
+                <if test="operatorEmployeeId != null and operatorEmployeeId != ''">
+                    and a.operator_employee_id = #{operatorEmployeeId}
+                </if>
+                <if test="modifiedTime != null">
+                    and a.modified_time = #{modifiedTime}
+                </if>
+                <if test="deptDesName != null">
+                    and (locate(#{deptDesName}, c.dept_name) or locate(#{deptDesName}, b.dept_name))
+                </if>
+                <if test="createTime != null">
+                    and a.create_time = #{createTime}
+                </if>
+            </where>
+            <if test="page != null and rows != null">
+                limit #{page}, #{rows}
+            </if>
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select
+            count(1)
+            from sefonoa_order.workorder_dept_config a
+            left join sefonoa.sys_department b on a.dept_source = b.dept_id
+            left join sefonoa.sys_department c on a.dept_des = c.dept_id
+            <where>
+                a.is_delete = 0
+                <if test="id != null">
+                    and a.id = #{id}
+                </if>
+                <if test="deptType != null">
+                    and a.dept_type = #{deptType}
+                </if>
+                <if test="deptSource != null and deptSource != ''">
+                    and a.dept_source = #{deptSource}
+                </if>
+                <if test="deptDes != null and deptDes != ''">
+                    and a.dept_des = #{deptDes}
+                </if>
+                <if test="operatorEmployeeId != null and operatorEmployeeId != ''">
+                    and a.operator_employee_id = #{operatorEmployeeId}
+                </if>
+                <if test="modifiedTime != null">
+                    and a.modified_time = #{modifiedTime}
+                </if>
+                <if test="deptDesName != null">
+                    and locate(#{deptDesName}, c.dept_name)
+                </if>
+                <if test="deptSourceName != null">
+                    and locate(#{deptSourceName}, b.dept_name)
+                </if>
+                <if test="createTime != null">
+                    and a.create_time = #{createTime}
+                </if>
+            </where>
+    </select>
+
+    <select id="getDeptListByParentDeptId" resultType="com.sefonsoft.oa.domain.workorder.deptconfig.DeptNamePair">
+        select dept_id, dept_name from sefonoa.sys_department where locate(#{deptId}, ancestors);
+    </select>
+
+    <select id="getResourceDeptListByParentDeptId" resultType="com.sefonsoft.oa.domain.workorder.deptconfig.DeptNamePair">
+        SELECT
+            dept_id,
+            dept_name,
+            parent_id
+        FROM
+            sefonoa.sys_department
+        WHERE
+            locate('BM0006', ancestors)
+        AND dept_id NOT IN (
+            SELECT
+                dept_source
+            FROM
+                sefonoa_order.workorder_dept_config where is_delete = 0
+        );
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa_order.workorder_dept_config(dept_type, dept_source, dept_des, operator_employee_id, modified_time, create_time)
+        values (#{workorderDeptConfig.deptType}, #{workorderDeptConfig.deptSource}, #{workorderDeptConfig.deptDes}, #{userId}, #{workorderDeptConfig.modifiedTime}, #{workorderDeptConfig.createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa_order.workorder_dept_config
+        <set>
+            <if test="workorderDeptConfig.deptType != null">
+                dept_type = #{workorderDeptConfig.deptType},
+            </if>
+            <if test="workorderDeptConfig.deptSource != null and workorderDeptConfig.deptSource != ''">
+                dept_source = #{workorderDeptConfig.deptSource},
+            </if>
+            <if test="workorderDeptConfig.deptDes != null and workorderDeptConfig.deptDes != ''">
+                dept_des = #{workorderDeptConfig.deptDes},
+            </if>
+            <if test="userId != null and userId != ''">
+                operator_employee_id = #{userId},
+            </if>
+            <if test="workorderDeptConfig.modifiedTime != null">
+                modified_time = #{workorderDeptConfig.modifiedTime},
+            </if>
+            <if test="workorderDeptConfig.createTime != null">
+                create_time = #{workorderDeptConfig.createTime}
+            </if>
+        </set>
+        where id = #{workorderDeptConfig.id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        update sefonoa_order.workorder_dept_config set is_delete = 1 where id in
+            <foreach collection="idArray" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </delete>
+
+</mapper>

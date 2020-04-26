@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.station.StationInfoDao">
+
+    <resultMap type="com.sefonsoft.oa.domain.station.StationInfoQueryDTO" id="StationInfoDTOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="stationId" column="station_id" jdbcType="INTEGER"/>
+        <result property="stationName" column="station_name" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="gradeId" column="grade_id" jdbcType="INTEGER"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.domain.station.StationInfoReturnDTO" id="StationInfoReturnMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="stationId" column="station_id" jdbcType="INTEGER"/>
+        <result property="stationName" column="station_name" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="gradeId" column="grade_id" jdbcType="INTEGER"/>
+        <result property="gradeName" column="grade_name" jdbcType="VARCHAR"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.domain.station.GradeInfoReturnDTO" id="GradeInfoReturnMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gradeId" column="grade_id" jdbcType="VARCHAR"/>
+        <result property="gradeName" column="grade_name" jdbcType="VARCHAR"/>
+        <collection property="stationList" ofType="com.sefonsoft.oa.entity.station.StationInfo">
+            <id property="id" column="sid" jdbcType="INTEGER"/>
+            <result property="stationId" column="station_id" jdbcType="VARCHAR"/>
+            <result property="gradeId" column="stationGradeId" jdbcType="VARCHAR"/>
+            <result property="stationName" column="station_name" jdbcType="VARCHAR"/>
+            <result property="sort" column="sort" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+
+    <resultMap type="com.sefonsoft.oa.entity.grade.GradeInfo" id="GradeInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gradeId" column="grade_id" jdbcType="VARCHAR"/>
+        <result property="gradeName" column="grade_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="StationInfoDTOMap">
+        select
+          a.id, a.station_id, a.station_name, a.sort, a.grade_id, a.modified_time, a.create_time, b.dept_name
+        from sefonoa.station_info a left join sefonoa.sys_department b on a.sort = b.dept_id
+        where a.station_id = #{stationId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="list" resultMap="StationInfoReturnMap">
+        select sort
+        a.id, a.station_id, a.station_name, a.dept_id, a.grade_id, a.modified_time, a.create_time, b.dept_name, c.grade_name
+        from sefonoa.station_info a
+            left join sefonoa.sys_department b on a.sort = b.dept_id
+            left join sefonoa.grade_info c on a.grade_id = c.grade_id
+        <where>
+            <if test="stationId != null">
+                and a.station_id = #{stationId}
+            </if>
+            <if test="stationName != null and stationName != ''">
+                and a.station_name = #{stationName}
+            </if>
+            <if test="sort != null">
+                and a.sort = #{sort}
+            </if>
+            <if test="gradeId != null">
+                and a.grade_id = #{gradeId}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="StationInfoDTOMap">
+        select
+            a.id, a.station_id, a.station_name, a.sort, a.grade_id, a.modified_time, a.create_time
+        from sefonoa.station_info a
+        <where>
+            <if test="stationId != null">
+                and a.station_id = #{stationId}
+            </if>
+            <if test="stationName != null and stationName != ''">
+                and a.station_name = #{stationName}
+            </if>
+            <if test="sort != null">
+                and a.sort = #{sort}
+            </if>
+            <if test="gradeId != null">
+                and a.grade_id = #{gradeId}
+            </if>
+            <if test="modifiedTime != null">
+                and a.modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and a.create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(1) from sefonoa.station_info a
+             left join sefonoa.grade_info c on a.grade_id = c.grade_id
+    </select>
+
+    <select id="listGrade" resultMap="GradeInfoReturnMap">
+        select  a.id,
+                a.grade_id,
+                a.grade_name,
+                b.station_name
+                    from sefonoa.grade_info a left join sefonoa.station_info b on a.grade_id = b.grade_id
+                    where del_flag = 0
+                    order by b.sort
+                    limit #{page}, #{rows}
+    </select>
+
+    <select id="countGrade" resultType="java.lang.Integer">
+        select count(1)
+            from sefonoa.grade_info where del_flag = 0;
+    </select>
+
+    <select id="getGradeById" resultType="com.sefonsoft.oa.domain.station.GradeInfoReturnDTO">
+        select  a.id id,
+                a.grade_id,
+                a.grade_name,
+                a.del_flag
+        from sefonoa.grade_info a
+        where a.id = #{id}
+    </select>
+
+    <select id="countGradeByGradeId" resultType="java.lang.Integer">
+        select count(1)
+            from sefonoa.grade_info
+            where grade_id = #{gradeId} and del_flag = 0
+    </select>
+
+    <select id="getStationListByGradeId" resultType="com.sefonsoft.oa.entity.station.StationInfo">
+        select id, grade_id, station_id, station_name, sort from sefonoa.station_info where grade_id = #{gradeId} order by sort;
+    </select>
+
+    <select id="batchGetGradeIdById" resultType="java.lang.String">
+        select grade_id from sefonoa.grade_info where id in
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </select>
+
+    <select id="countInUsed" resultType="java.lang.Integer">
+        select count(1) from sefonoa.sys_employee where grade_id in
+            <foreach collection="gradeIdList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="stationId" useGeneratedKeys="true">
+        insert into sefonoa.station_info(station_id, station_name, sort, grade_id, modified_time, create_time)
+        values (#{stationId}, #{stationName}, #{deptId}, #{gradeId}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <insert id="insertGradeInfo">
+        insert into sefonoa.grade_info(grade_id, grade_name, modified_time, create_time)
+        values (#{gradeId}, #{gradeName}, #{modifiedTime}, #{createTime});
+    </insert>
+
+    <insert id="batchInsertStation">
+            insert into sefonoa.station_info(station_id, station_name, sort, grade_id, modified_time, create_time)
+            values
+        <foreach collection="stationInfoList" item="station" separator=",">
+            (#{station.stationId}, #{station.stationName}, #{station.sort}, #{station.gradeId}, #{station.modifiedTime}, #{station.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertStationInUpdate">
+        insert into sefonoa.station_info(station_id, station_name, sort, grade_id, modified_time, create_time)
+            values
+            <foreach collection="stationList" item="station" separator=",">
+                (#{station.stationId}, #{station.stationName}, #{station.sort}, #{station.gradeId}, #{station.modifiedTime}, #{station.createTime})
+            </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.station_info
+        <set>
+            <if test="stationName != null and stationName != ''">
+                station_name = #{stationName},
+            </if>
+            <if test="stationId != null">
+                station_id = #{stationId},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="gradeId != null">
+                grade_id = #{gradeId},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateGradeInfo">
+        update sefonoa.grade_info set grade_id = #{gradeId}, grade_name = #{gradeName}, modified_time = #{modifiedTime} where id = #{id}
+    </update>
+
+    <update id="batchUpdateStationInfo">
+        <foreach collection="stationList" item="station" separator=";">
+            update sefonoa.station_info
+                <set>
+                    <if test="station.stationId != null and station.stationId != ''">
+                        station_id = #{station.stationId},
+                    </if>
+                    <if test="station.stationName != null and station.stationName != ''">
+                        station_name = #{station.stationName},
+                    </if>
+                    <if test="station.sort != null and station.sort != ''">
+                        sort = #{station.sort},
+                    </if>
+                    <if test="station.gradeId != null and station.gradeId != ''">
+                        grade_id = #{station.gradeId},
+                    </if>
+                    <if test="station.modifiedTime != null">
+                        modified_time = #{station.modifiedTime}
+                    </if>
+                </set>
+                where id = #{station.id}
+        </foreach>
+    </update>
+
+    <update id="batchGradeInfo">
+        update sefonoa.grade_info set del_flag = 1 where id in
+            <foreach collection="idList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sefonoa.station_info where id = #{id}
+    </delete>
+
+    <delete id="delByGradeId">
+        delete from sefonoa.station_info where grade_id = #{gradeId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.workorder.WorkorderFeedbackSaleInfoDao">
+    <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="pgd_id" jdbcType="VARCHAR" property="pgdId"/>
+        <result column="employee_id" jdbcType="VARCHAR" property="employeeId"/>
+        <result column="target_employee_id" jdbcType="VARCHAR" property="targetEmployeeId"/>
+        <result column="target_employee_name" jdbcType="VARCHAR" property="targetEmployeeName"/>
+        <result column="target_employee_dept_id" jdbcType="VARCHAR" property="targetEmployeeDeptId"/>
+        <result column="target_employee_dept_name" jdbcType="VARCHAR" property="targetEmployeeDeptName"/>
+        <result column="time_comply" jdbcType="INTEGER" property="timeComply"/>
+        <result column="service" jdbcType="INTEGER" property="service"/>
+        <result column="technology" jdbcType="INTEGER" property="technology"/>
+        <result column="case_grasp" jdbcType="INTEGER" property="caseGrasp"/>
+        <result column="customer_lead" jdbcType="INTEGER" property="customerLead"/>
+        <result column="customer_feedback" jdbcType="INTEGER" property="customerFeedback"/>
+        <result column="other" jdbcType="VARCHAR" property="other"/>
+        <result column="sale_comment_status" jdbcType="INTEGER" property="saleCommentStatus"/>
+        <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,
+    pgd_id,
+    employee_id,
+    target_employee_id,
+    target_employee_name,
+    time_comply,
+    service,
+    technology,
+    case_grasp, customer_lead,
+    customer_feedback,
+    other,
+    sale_comment_status,
+    modified_time,
+    create_time
+  </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sefonoa_order.workorder_feedback_sale_info
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="selectByPgdId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    se.employee_name as target_employee_name,
+    se.dept_id as target_employee_dept_id,
+    sd.dept_name as target_employee_dept_name,
+    feedbackInfo.id,
+    feedbackInfo.pgd_id,
+    feedbackInfo.employee_id,
+    feedbackInfo.target_employee_id,
+--     feedbackInfo.target_employee_name,
+    feedbackInfo.time_comply,
+    feedbackInfo.service,
+    feedbackInfo.technology,
+    feedbackInfo.case_grasp, customer_lead,
+    feedbackInfo.customer_feedback,
+    feedbackInfo.other,
+    feedbackInfo.sale_comment_status,
+    feedbackInfo.modified_time,
+    feedbackInfo.create_time
+    from sefonoa_order.workorder_feedback_sale_info feedbackInfo
+    left join sefonoa.sys_employee se on se.employee_id = feedbackInfo.target_employee_id
+    left join sefonoa.sys_department sd on sd.dept_id = se.dept_id
+    where pgd_id = #{pgd_id}
+  </select>
+
+    <select id="findAll" resultType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from sefonoa_order.workorder_feedback_sale_info
+    </select>
+    <select id="findSaleFeedbackByPgdId"
+            resultType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from sefonoa_order.workorder_feedback_sale_info
+        where pgd_id=#{pgdId}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete
+    from sefonoa_order.workorder_feedback_sale_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo" useGeneratedKeys="true">
+    insert
+    into sefonoa_order.workorder_feedback_sale_info
+    (pgd_id,
+     employee_id,
+     target_employee_id,
+     target_employee_name,
+     time_comply,
+     service,
+     technology,
+     case_grasp,
+     customer_lead,
+     customer_feedback,
+     other,
+     sale_comment_status,
+     modified_time,
+     create_time)
+    values (#{pgdId,jdbcType=VARCHAR},
+            #{employeeId,jdbcType=VARCHAR},
+            #{targetEmployeeId,jdbcType=VARCHAR},
+            #{targetEmployeeName,jdbcType=VARCHAR},
+            #{timeComply,jdbcType=INTEGER},
+            #{service,jdbcType=INTEGER},
+            #{technology,jdbcType=INTEGER},
+            #{caseGrasp,jdbcType=INTEGER},
+            #{customerLead,jdbcType=INTEGER},
+            #{customerFeedback,jdbcType=INTEGER},
+            #{other,jdbcType=VARCHAR},
+            #{saleCommentStatus,jdbcType=INTEGER},
+            #{modifiedTime,jdbcType=TIMESTAMP},
+            #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+    <insert id="insertBatch">
+        insert into
+        sefonoa_order.workorder_feedback_sale_info
+        (
+        pgd_id,
+        employee_id,
+        target_employee_id,
+        target_employee_name,
+        time_comply,
+        service,
+        technology,
+        case_grasp,
+        customer_lead,
+        customer_feedback,
+        other,
+        sale_comment_status,
+        modified_time,
+        create_time
+        )
+        values
+        <foreach collection="records" separator="," item="record">
+            (
+            #{pgdId,jdbcType=VARCHAR},
+            #{employeeId,jdbcType=VARCHAR},
+            #{targetEmployeeId,jdbcType=VARCHAR},
+            #{targetEmployeeName,jdbcType=VARCHAR},
+            #{timeComply,jdbcType=INTEGER},
+            #{service,jdbcType=INTEGER},
+            #{technology,jdbcType=INTEGER},
+            #{caseGrasp,jdbcType=INTEGER},
+            #{customerLead,jdbcType=INTEGER},
+            #{customerFeedback,jdbcType=INTEGER},
+            #{other,jdbcType=VARCHAR},
+            #{saleCommentStatus,jdbcType=INTEGER},
+            #{modifiedTime,jdbcType=TIMESTAMP},
+            #{createTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+
+    </insert>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo" useGeneratedKeys="true">
+        insert into
+        sefonoa_order.workorder_feedback_sale_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pgdId != null">
+                pgd_id,
+            </if>
+            <if test="employeeId != null">
+                employee_id,
+            </if>
+            <if test="targetEmployeeId != null">
+                target_employee_id,
+            </if>
+            <if test="targetEmployeeName != null">
+                target_employee_name,
+            </if>
+            <if test="timeComply != null">
+                time_comply,
+            </if>
+            <if test="service != null">
+                service,
+            </if>
+            <if test="technology != null">
+                technology,
+            </if>
+            <if test="caseGrasp != null">
+                case_grasp,
+            </if>
+            <if test="customerLead != null">
+                customer_lead,
+            </if>
+            <if test="customerFeedback != null">
+                customer_feedback,
+            </if>
+            <if test="other != null">
+                other,
+            </if>
+            <if test="saleCommentStatus != null">
+                sale_comment_status,
+            </if>
+            <if test="modifiedTime != null">
+                modified_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pgdId != null">
+                #{pgdId,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeId != null">
+                #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="targetEmployeeId != null">
+                #{targetEmployeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="targetEmployeeName != null">
+                #{targetEmployeeName,jdbcType=VARCHAR},
+            </if>
+            <if test="timeComply != null">
+                #{timeComply,jdbcType=INTEGER},
+            </if>
+            <if test="service != null">
+                #{service,jdbcType=INTEGER},
+            </if>
+            <if test="technology != null">
+                #{technology,jdbcType=INTEGER},
+            </if>
+            <if test="caseGrasp != null">
+                #{caseGrasp,jdbcType=INTEGER},
+            </if>
+            <if test="customerLead != null">
+                #{customerLead,jdbcType=INTEGER},
+            </if>
+            <if test="customerFeedback != null">
+                #{customerFeedback,jdbcType=INTEGER},
+            </if>
+            <if test="other != null">
+                #{other,jdbcType=VARCHAR},
+            </if>
+            <if test="saleCommentStatus != null">
+                #{saleCommentStatus,jdbcType=INTEGER},
+            </if>
+            <if test="modifiedTime != null">
+                #{modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+        update sefonoa_order.workorder_feedback_sale_info
+        <set>
+            <if test="pgdId != null">
+                pgd_id = #{pgdId,jdbcType=VARCHAR},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="targetEmployeeId != null">
+                target_employee_id = #{targetEmployeeId,jdbcType=VARCHAR},
+            </if>
+            <if test="targetEmployeeName != null">
+                target_employee_name = #{targetEmployeeName,jdbcType=VARCHAR},
+            </if>
+            <if test="timeComply != null">
+                time_comply = #{timeComply,jdbcType=INTEGER},
+            </if>
+            <if test="service != null">
+                service = #{service,jdbcType=INTEGER},
+            </if>
+            <if test="technology != null">
+                technology = #{technology,jdbcType=INTEGER},
+            </if>
+            <if test="caseGrasp != null">
+                case_grasp = #{caseGrasp,jdbcType=INTEGER},
+            </if>
+            <if test="customerLead != null">
+                customer_lead = #{customerLead,jdbcType=INTEGER},
+            </if>
+            <if test="customerFeedback != null">
+                customer_feedback = #{customerFeedback,jdbcType=INTEGER},
+            </if>
+            <if test="other != null">
+                other = #{other,jdbcType=VARCHAR},
+            </if>
+            <if test="saleCommentStatus != null">
+                sale_comment_status = #{saleCommentStatus,jdbcType=INTEGER},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <update id="updateBatchByPrimaryKeySelective"
+            parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+
+        <foreach collection="records" separator=";" item="record" index="idx">
+            update sefonoa_order.workorder_feedback_sale_info
+            <set>
+<!--                <if test="record.pgdId != null">-->
+<!--                    pgd_id = #{record.pgdId,jdbcType=VARCHAR},-->
+<!--                </if>-->
+                <if test="record.employeeId != null">
+                    employee_id = #{record.employeeId,jdbcType=VARCHAR},
+                </if>
+                <if test="record.targetEmployeeId != null">
+                    target_employee_id = #{record.targetEmployeeId,jdbcType=VARCHAR},
+                </if>
+                <if test="record.targetEmployeeName != null">
+                    target_employee_name = #{record.targetEmployeeName,jdbcType=VARCHAR},
+                </if>
+                <if test="record.timeComply != null">
+                    time_comply = #{record.timeComply,jdbcType=INTEGER},
+                </if>
+                <if test="record.service != null">
+                    service = #{record.service,jdbcType=INTEGER},
+                </if>
+                <if test="record.technology != null">
+                    technology = #{record.technology,jdbcType=INTEGER},
+                </if>
+                <if test="record.caseGrasp != null">
+                    case_grasp = #{record.caseGrasp,jdbcType=INTEGER},
+                </if>
+                <if test="record.customerLead != null">
+                    customer_lead = #{record.customerLead,jdbcType=INTEGER},
+                </if>
+                <if test="record.customerFeedback != null">
+                    customer_feedback = #{record.customerFeedback,jdbcType=INTEGER},
+                </if>
+                <if test="record.other != null">
+                    other = #{record.other,jdbcType=VARCHAR},
+                </if>
+                <if test="record.saleCommentStatus != null">
+                    sale_comment_status = #{record.saleCommentStatus,jdbcType=INTEGER},
+                </if>
+                <if test="record.modifiedTime != null">
+                    modified_time = #{record.modifiedTime,jdbcType=TIMESTAMP},
+                </if>
+
+            </set>
+            where id = #{record.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.entity.workorder.WorkorderFeedbackSaleInfo">
+
+    update sefonoa_order.workorder_feedback_sale_info
+    set pgd_id               = #{pgdId,jdbcType=VARCHAR},
+        employee_id          = #{employeeId,jdbcType=VARCHAR},
+        target_employee_id   = #{targetEmployeeId,jdbcType=VARCHAR},
+        target_employee_name = #{targetEmployeeName,jdbcType=VARCHAR},
+        time_comply          = #{timeComply,jdbcType=INTEGER},
+        service              = #{service,jdbcType=INTEGER},
+        technology           = #{technology,jdbcType=INTEGER},
+        case_grasp           = #{caseGrasp,jdbcType=INTEGER},
+        customer_lead        = #{customerLead,jdbcType=INTEGER},
+        customer_feedback    = #{customerFeedback,jdbcType=INTEGER},
+        other                = #{other,jdbcType=VARCHAR},
+        sale_comment_status  = #{saleCommentStatus,jdbcType=INTEGER},
+        modified_time        = #{modifiedTime,jdbcType=TIMESTAMP},
+        create_time          = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.user.SysUserDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.user.SysUser" id="SysUserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="wechatAccount" column="wechat_account" jdbcType="VARCHAR"/>
+        <result property="enabled" column="enabled" jdbcType="INTEGER"/>
+        <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysUserMap">
+        select
+          id, user_id, password, nick_name, avatar, wechat_account, enabled, last_login_time, modified_time, create_time
+        from sefonoa.sys_user
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysUserMap">
+        select
+          id, user_id, password, nick_name, avatar, wechat_account, enabled, last_login_time, modified_time, create_time
+        from sefonoa.sys_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysUserMap">
+        select
+          id, user_id, password, nick_name, avatar, wechat_account, enabled, last_login_time, modified_time, create_time
+        from sefonoa.sys_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="nickName != null and nickName != ''">
+                and nick_name = #{nickName}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and avatar = #{avatar}
+            </if>
+            <if test="wechatAccount != null and wechatAccount != ''">
+                and wechat_account = #{wechatAccount}
+            </if>
+            <if test="enabled != null">
+                and enabled = #{enabled}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sefonoa.sys_user(user_id,password, nick_name, avatar, wechat_account, enabled, last_login_time, modified_time, create_time)
+        values (#{userId},#{password}, #{nickName}, #{avatar}, #{wechatAccount}, #{enabled}, #{lastLoginTime}, #{modifiedTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.sys_user
+        <set>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="nickName != null and nickName != ''">
+                nick_name = #{nickName},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar},
+            </if>
+            <if test="wechatAccount != null and wechatAccount != ''">
+                wechat_account = #{wechatAccount},
+            </if>
+            <if test="enabled != null">
+                enabled = #{enabled},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="resetPwd">
+        update sefonoa.sys_user set password = #{password} where user_id = #{userId}
+    </update>
+
+    <update id="setLoginTime">
+        update sefonoa.sys_user set last_login_time = #{date} where user_id = #{userId}
+    </update>
+
+    <update id="updateUserIdById">
+        update sefonoa.sys_user set user_id = #{employeeId}, modified_time = now() where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sys_user where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteByIds">
+        delete from sys_user where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 查询是否有相同员工编号-->
+    <select id="checkUnique"   resultType="int">
+        select count(1) from sys_user
+        where  user_id=#{employeeId}
+    </select>
+
+    <!-- 按条件查询列表 -->
+    <select id="getCondition" resultType="com.sefonsoft.oa.domain.user.SysUserQueryDTO" parameterType="com.sefonsoft.oa.domain.user.SysUserQueryDTO">
+        select
+        a.id, a.user_id, a.password, a.nick_name, a.avatar, a.wechat_account, a.enabled, a.last_login_time, a.modified_time, a.create_time
+        from sys_user a
+
+        <where>
+            <if test="nickName != null">
+                AND a.nick_name LIKE CONCAT('%',#{nickName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="userId != null">
+                AND a.user_id = #{userId}
+            </if>
+
+        </where>
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.user.SysUserQueryDTO">
+        SELECT COUNT(1)
+        from sys_user a
+        <where>
+
+            <if test="nickName != null">
+                AND a.nick_name LIKE CONCAT('%',#{nickName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="userId != null">
+                AND a.user_id = #{userId}
+            </if>
+
+        </where>
+
+    </select>
+
+    <insert id="batchUserRole"  keyProperty="id" useGeneratedKeys="true">
+        insert into sys_user_role(user_id, role_id,create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.userId},#{item.roleId},now())
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertUserRoleRef">
+        insert into sefonoa.sys_user_role(user_id, role_id,create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{userId},#{item},now())
+        </foreach>
+    </insert>
+
+    <delete id="deleteUserRoleByUserId" parameterType="String">
+		delete from sys_user_role where user_id=#{userId}
+	</delete>
+
+    <delete id="deleteByUserId">
+        delete from sefonoa.sys_user where user_id=#{userId}
+    </delete>
+
+    <select id="getSimpleLoginInfo" resultType="com.sefonsoft.oa.domain.user.LoginUserDTO">
+        select b.id, b.user_id, b.password, a.grade_id, a.employee_name, a.dept_id, c.dept_name, a.job_status, a.sex from sefonoa.sys_employee a
+            left join sefonoa.sys_user b on a.employee_id = b.user_id
+            left join sefonoa.sys_department c on a.dept_id = c.dept_id
+        where employee_id = #{userId}
+    </select>
+
+    <select id="getDbPwdByUserId" resultType="java.lang.String">
+        select password from sefonoa.sys_user where user_id = #{employeeId}
+    </select>
+
+    <select id="getUserIdByUserName" resultType="java.lang.String">
+        select user_id from sefonoa.sys_user where nick_name = #{name}
+    </select>
+
+    <select id="getIdByUserId" resultType="java.lang.Long">
+        select id from sefonoa.sys_user where user_id = #{historyEmployeeId}
+    </select>
+
+    <select id="getUserIdByUserNameAndDeptId" resultType="java.lang.String">
+        select a.employee_id from sefonoa.sys_employee a
+            left join sys_department b on a.dept_id = b.dept_id
+            where a.employee_name = #{employeeName} and b.dept_id = #{deptId}
+    </select>
+
+    <select id="getUserIdListByUserName" resultType="java.lang.String">
+        select user_id from sefonoa.sys_user where nick_name = #{userName}
+    </select>
+
+    <select id="getDataDeptUser" parameterType="string" resultType="string">
+        SELECT DISTINCT ur.user_id FROM sys_role r
+        INNER JOIN  sys_role_dept rd ON r.role_id = rd.role_id
+        LEFT JOIN sys_user_role ur ON rd.role_id = ur.role_id
+        WHERE rd.dept_id = #{deptId};
+    </select>
+
+    <select id="getPermissionUser" resultType="string" parameterType="string">
+        SELECT DISTINCT r.user_id FROM sys_permission sp
+        INNER JOIN sys_role_permission rp ON sp.menu_id=rp.menu_id
+        LEFT JOIN sys_user_role r ON rp.role_id=r.role_id
+        WHERE sp.perms = #{per};
+    </select>
+    
+    <select id="getPretask" resultType="com.sefonsoft.oa.domain.user.vo.Pretask">
+      select 
+        id,
+        task_type,
+        block,
+        args
+      from 
+        sys_pretask 
+      where 
+        user_id = #{userId}
+    </select>
+    
+    <delete id="deletePretask">
+      delete from sys_pretask where user_id = #{userId} and task_type = #{taskType}
+    </delete>
+    
+    <update id="checkProfile">
+      
+      update 
+        sys_employee 
+      set 
+        email = #{email}, 
+        tel = #{tel}
+      where
+        employee_id = #{userId}
+        
+    </update>
+    
+    <insert id="insertPretask" parameterType="com.sefonsoft.oa.domain.user.vo.Pretask">
+      
+      INSERT INTO `sefonoa`.`sys_pretask`(
+        `task_type`,
+        `block`, 
+        `args`, 
+        `user_id`) 
+      VALUES (
+        #{taskType}, 
+        #{block}, 
+        #{args},
+        #{userId})
+    </insert>
+</mapper>

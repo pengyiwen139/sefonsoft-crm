@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sefonsoft.oa.dao.trans.TransExtTransmatnDao">
+    <resultMap id="BaseResultMap" type="com.sefonsoft.oa.domain.trans.TransDto">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="orgId" property="orgId" jdbcType="BIGINT"/>
+        <result column="transCode" property="transCode" jdbcType="CHAR"/>
+        <result column="assetCode" property="assetCode" jdbcType="CHAR"/>
+        <result column="transName" property="transName" jdbcType="VARCHAR"/>
+        <result column="transStatus" property="transStatus" jdbcType="CHAR"/>
+        <result column="instalTime" property="instalTime" jdbcType="TIMESTAMP"/>
+        <result column="pubSpeFlag" property="pubSpeFlag" jdbcType="CHAR"/>
+        <result column="dataStatus" property="dataStatus" jdbcType="TINYINT"/>
+    </resultMap>
+    <!-- 按条件查询列表 -->
+    <select id="selectTransByCondition" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        id, orgId, transCode, assetCode, transName, transStatus, instalTime, pubSpeFlag, dataStatus
+        from br_trans
+        <where>
+            <if test="transName != null">
+                AND bt.transName LIKE CONCAT('%',#{transName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startTime != null">
+                <![CDATA[
+					AND #{startTime} <= bt.instalTime
+				]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[
+					AND bt.instalTime <= #{endTime}
+				]]>
+            </if>
+        </where>
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="selectTransTotalByCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.trans.TransCondition">
+        SELECT COUNT(id) FROM br_trans bt
+        <where>
+            <if test="transName != null">
+                AND bt.transName LIKE CONCAT('%',#{transName, jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startTime != null">
+                <![CDATA[
+					AND #{startTime} <= bt.instalTime
+				]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[
+					AND bt.instalTime <= #{endTime}
+				]]>
+            </if>
+        </where>
+    </select>
+</mapper>

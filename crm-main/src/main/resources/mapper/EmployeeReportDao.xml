@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.report.EmployeeReportDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.report.EmployeeReportInfo" id="EmployeeReportInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="reportType" column="report_type" jdbcType="INTEGER"/>
+        <result property="reportTime" column="report_time" jdbcType="OTHER"/>
+        <result property="operationType" column="operation_type" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="VARCHAR"/>
+        <result property="contactId" column="contact_id" jdbcType="INTEGER"/>
+        <result property="followDetails" column="follow_details" jdbcType="VARCHAR"/>
+        <result property="nextStepPlan" column="next_step_plan" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeReportInfoMap">
+        select
+          id, employee_id, report_type, report_time, operation_type, project_id, contact_id, follow_details, next_step_plan, operator, last_time, create_time
+        from sefonoa.employee_report_info
+        where id = #{id}
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="noFillReport" resultType="com.sefonsoft.oa.domain.report.EmployeeReportQueryDTO" parameterType="com.sefonsoft.oa.domain.report.EmployeeReportQueryDTO">
+
+        select
+        a.employee_id as employeeId,
+        a.employee_name as employeeName,
+        b.dept_id as deptId,
+        b.dept_name as deptName
+        from sys_employee a
+        left join  sys_department b on a.dept_id = b.dept_id
+        <where>
+            b.dept_id not in ("BM0001","BM0002","BM0005")
+            <if test="deptId != null and deptId !=''">
+                and
+                ( (
+                b.dept_id = #{deptId}
+                OR b.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                ) )
+            </if>
+            <if test="reportTime != null">
+                and employee_id not in(select  employee_id  from  employee_report_info where report_time = #{reportTime} and report_type=1)
+            </if>
+        </where>
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="noFillReportTotal" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.report.EmployeeReportQueryDTO">
+        SELECT COUNT(1)
+        from sys_employee a
+        left join  sys_department b on a.dept_id = b.dept_id
+        <where>
+            b.dept_id not in ("BM0001","BM0002","BM0005")
+            <if test="deptId != null and deptId !=''">
+                and
+                ( (
+                b.dept_id = #{deptId}
+                OR b.dept_id IN (SELECT dept_id FROM sys_department WHERE FIND_IN_SET (#{deptId},ancestors) )
+                ) )
+            </if>
+            <if test="reportTime != null">
+                and employee_id not in(select  employee_id  from  employee_report_info where report_time = #{reportTime} and report_type=1)
+            </if>
+        </where>
+
+    </select>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="noFillReports" resultType="com.sefonsoft.oa.domain.report.EmployeeReportQueryDTO" parameterType="com.sefonsoft.oa.domain.report.EmployeeReportQueryDTO">
+
+        select distinct
+        a.employee_id as employeeId,
+        a.employee_name as employeeName,
+        b.dept_id as deptId,
+        b.dept_name as deptName
+        from sys_employee a
+        left join  sys_department b on a.dept_id = b.dept_id
+        <where>
+            <!-- 有数据角色权限通过拥有部门查询 -->
+            <if test="dataDeptIdList != null and dataDeptIdList.size()>0">
+                a.dept_id in
+                <foreach item="dataDeptId" index="index" collection="dataDeptIdList" open="(" separator="," close=")">
+                    #{dataDeptId}
+                </foreach>
+            </if>
+            <if test="reportTime != null">
+                and employee_id not in(select  employee_id  from  employee_report_info where report_time = #{reportTime} and report_type=1)
+            </if>
+             and a.job_status=1
+        </where>
+
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="noFillReportTotals" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.report.EmployeeReportQueryDTO">
+        SELECT COUNT(distinct a.employee_id )
+        from sys_employee a
+        left join  sys_department b on a.dept_id = b.dept_id
+        <where>
+            <!-- 有数据角色权限通过拥有部门查询 -->
+            <if test="dataDeptIdList != null and dataDeptIdList.size()>0">
+                a.dept_id in
+                <foreach item="dataDeptId" index="index" collection="dataDeptIdList" open="(" separator="," close=")">
+                    #{dataDeptId}
+                </foreach>
+            </if>
+            <if test="reportTime != null">
+                and employee_id not in(select  employee_id  from  employee_report_info where report_time = #{reportTime} and report_type=1)
+            </if>
+            and a.job_status=1
+        </where>
+
+    </select>
+
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.common.IndustryInfoDao">
+  <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.IndustryInfo">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="industry_name" jdbcType="VARCHAR" property="industryName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, industry_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from industry_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="findAllIndustry" resultType="com.sefonsoft.oa.domain.common.IndustryVo">
+    select *
+    from industry_info;
+  </select>
+  <select id="findIndustryByName" resultType="com.sefonsoft.oa.entity.IndustryInfo">
+    select *
+    from industry_info
+    where industry_name = #{industryName}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete
+    from industry_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sefonsoft.oa.entity.IndustryInfo"
+          useGeneratedKeys="true">
+    insert into industry_info (industry_name)
+    values (#{industryName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.sefonsoft.oa.entity.IndustryInfo"
+          useGeneratedKeys="true">
+    insert into industry_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="industryName != null">
+        industry_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="industryName != null">
+        #{industryName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sefonsoft.oa.entity.IndustryInfo">
+    update industry_info
+    <set>
+      <if test="industryName != null">
+        industry_name = #{industryName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.entity.IndustryInfo">
+    update industry_info
+    set industry_name = #{industryName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

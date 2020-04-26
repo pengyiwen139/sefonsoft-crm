@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.customer.EnterpriseTypeDao">
+  <resultMap id="BaseResultMap" type="com.sefonsoft.oa.dao.customer.EnterpriseType">
+    <id column="enter_id" jdbcType="TINYINT" property="enterId"/>
+    <result column="enter_name" jdbcType="VARCHAR" property="enterName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    enter_id, enter_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from enterprise_type
+    where enter_id = #{enterId,jdbcType=TINYINT}
+  </select>
+  <select id="selectByEnterpriseName" resultType="com.sefonsoft.oa.dao.customer.EnterpriseType">
+    select *
+    from enterprise_type where enter_name = #{enterpriseName}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
+    delete
+    from enterprise_type
+    where enter_id = #{enterId,jdbcType=TINYINT}
+  </delete>
+  <insert id="insert" keyColumn="enter_id" keyProperty="enterId"
+          parameterType="com.sefonsoft.oa.dao.customer.EnterpriseType" useGeneratedKeys="true">
+    insert into enterprise_type (enter_name)
+    values (#{enterName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="enter_id" keyProperty="enterId"
+          parameterType="com.sefonsoft.oa.dao.customer.EnterpriseType" useGeneratedKeys="true">
+    insert into enterprise_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="enterName != null">
+        enter_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="enterName != null">
+        #{enterName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sefonsoft.oa.dao.customer.EnterpriseType">
+    update enterprise_type
+    <set>
+      <if test="enterName != null">
+        enter_name = #{enterName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where enter_id = #{enterId,jdbcType=TINYINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.dao.customer.EnterpriseType">
+    update enterprise_type
+    set enter_name = #{enterName,jdbcType=VARCHAR}
+    where enter_id = #{enterId,jdbcType=TINYINT}
+  </update>
+</mapper>

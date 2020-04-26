@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/crm-excontract/crm-excontract.iml" filepath="$PROJECT_DIR$/crm-excontract/crm-excontract.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crm-excontract6002/crm-excontract6002.iml" filepath="$PROJECT_DIR$/crm-excontract6002/crm-excontract6002.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crm-getway9527/crm-getway9527.iml" filepath="$PROJECT_DIR$/crm-getway9527/crm-getway9527.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crm-main/crm-main.iml" filepath="$PROJECT_DIR$/crm-main/crm-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sefonsoft-crm.iml" filepath="$PROJECT_DIR$/sefonsoft-crm.iml" />
+    </modules>
+  </component>
+</project>

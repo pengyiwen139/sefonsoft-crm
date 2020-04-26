@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.contact.ContactInfoDao">
+
+    <resultMap type="com.sefonsoft.oa.entity.contact.ContactInfo" id="ContactInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="importType" column="import_type" jdbcType="INTEGER"/>
+        <result property="contactName" column="contact_name" jdbcType="VARCHAR"/>
+        <result property="contactSex" column="contact_sex" jdbcType="INTEGER"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="job" column="job" jdbcType="VARCHAR"/>
+        <result property="telphone" column="telphone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ContactInfoMap">
+        select
+          id, customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time
+        from sefonoa.contact_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ContactInfoMap">
+        select
+          id, customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time
+        from sefonoa.contact_info
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ContactInfoMap">
+        select
+          id, customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time
+        from sefonoa.contact_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and customer_id = #{customerId}
+            </if>
+            <if test="contactName != null and contactName != ''">
+                and contact_name = #{contactName}
+            </if>
+            <if test="contactSex != null">
+                and contact_sex = #{contactSex}
+            </if>
+            <if test="role != null">
+                and role = #{role}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="job != null and job != ''">
+                and job = #{job}
+            </if>
+            <if test="telphone != null and telphone != ''">
+                and telphone = #{telphone}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="operator != null and operator != ''">
+                and operator = #{operator}
+            </if>
+            <if test="lastTime != null">
+                and last_time = #{lastTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+         <selectKey  keyProperty="id" order="AFTER" resultType="long">
+             select LAST_INSERT_ID()
+         </selectKey>
+        insert into sefonoa.contact_info(
+        id,
+        customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time, office_plane, university, major, birthday, family_info, other,import_type)
+        values (
+        #{id},
+        #{customerId}, #{contactName}, #{contactSex}, #{role}, #{deptName}, #{job}, #{telphone}, #{email}, #{employeeId}, #{operator}, #{lastTime}, #{createTime}, #{officePlane}, #{university}, #{major}, #{birthday}, #{familyInfo}, #{other}, #{importType})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sefonoa.contact_info
+        <set>
+
+            <if test="officePlane != null and officePlane != ''">
+                office_plane = #{officePlane},
+            </if>
+            <if test="university != null and university != ''">
+                university = #{university},
+            </if>
+            <if test="major != null and major != ''">
+                major = #{major},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="familyInfo != null and familyInfo != ''">
+                family_info = #{familyInfo},
+            </if>
+            <if test="other != null and other != ''">
+                other = #{other},
+            </if>
+
+            <if test="customerId != null and customerId != ''">
+                customer_id = #{customerId},
+            </if>
+            <if test="contactName != null and contactName != ''">
+                contact_name = #{contactName},
+            </if>
+            <if test="contactSex != null">
+                contact_sex = #{contactSex},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="job != null and job != ''">
+                job = #{job},
+            </if>
+            <if test="telphone != null and telphone != ''">
+                telphone = #{telphone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                employee_id = #{employeeId},
+            </if>
+            <if test="operator != null and operator != ''">
+                operator = #{operator},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from contact_info where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteByIds">
+        delete from contact_info where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!-- 按条件查询列表 -->
+    <select id="getCondition" resultType="com.sefonsoft.oa.domain.contact.ContactInfoQueryDTO" parameterType="com.sefonsoft.oa.domain.contact.ContactInfoQueryDTO">
+        select
+        a.id, a.customer_id, a.contact_name, a.contact_sex, a.role, a.dept_name, a.job, a.telphone, a.email, a.employee_id, a.employee_id as operator, a.last_time, a.create_time,
+        a.office_plane, a.university, a.major, a.birthday, a.family_info, a.other,
+        CASE role
+        WHEN '1' THEN '关键决策人'
+        WHEN '2' THEN '技术负责人'
+        WHEN '3' THEN '直接用户'
+        WHEN '4' THEN '核心支持者'
+        ELSE '其他' END as roleName
+        from contact_info a,sys_employee emp
+        WHERE a.employee_id = emp.employee_id
+
+        <if test="customerId != null and customerId != ''">
+            and customer_id = #{customerId}
+        </if>
+        <!--<choose>
+            <when test="dataDeptIdList==null">
+                AND emp.employee_id=#{employeeId}
+            </when>
+            <otherwise>
+                AND emp.dept_id IN
+                <foreach collection="dataDeptIdList" open="(" close=")" separator="," item="dept">
+                    '${dept}'
+                </foreach>
+            </otherwise>
+        </choose>-->
+
+        order by a.last_time  desc
+        <if test="offset != null and rows != null">
+            limit #{offset}, #{rows}
+        </if>
+
+    </select>
+
+    <!-- 按条件查询总条数 -->
+    <select id="findCondition" resultType="int"
+            parameterType="com.sefonsoft.oa.domain.contact.ContactInfoQueryDTO">
+        SELECT COUNT(1)
+        from contact_info a
+
+        <where>
+            <if test="customerId != null and customerId != ''">
+                and customer_id = #{customerId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByCustomerId" resultType="com.sefonsoft.oa.entity.contact.ContactInfo">
+        select
+            id, customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time
+        from sefonoa.contact_info
+        where customer_id = #{customerId}
+    </select>
+    <select id="findContactInfo" resultType="com.sefonsoft.oa.entity.contact.ContactInfo">
+        select * from contact_info where customer_id=#{customerId} and contact_name=#{contactName} 
+        AND 
+          <choose>
+          <when test="telephone == null">
+          telphone is null
+          </when>
+          <otherwise>
+          telphone=#{telephone}
+          </otherwise>
+        </choose>
+        
+         and employee_id=#{employeeId}
+    </select>
+
+    <insert id="batchInsert">
+        insert into sefonoa.contact_info(customer_id, contact_name, contact_sex, role, dept_name, job, telphone, email, employee_id, operator, last_time, create_time, office_plane, university, major, birthday, family_info, other)
+        values
+            <foreach collection="contactInfoList" item="contactInfo" separator=",">
+                (#{contactInfo.customerId}, #{contactInfo.contactName}, #{contactInfo.contactSex}, #{contactInfo.role}, #{contactInfo.deptName}, #{contactInfo.job}, #{contactInfo.telphone}, #{contactInfo.email}, #{contactInfo.employeeId}, #{contactInfo.operator}, #{contactInfo.lastTime}, #{contactInfo.createTime}, #{contactInfo.officePlane}, #{contactInfo.university}, #{contactInfo.major}, #{contactInfo.birthday}, #{contactInfo.familyInfo}, #{contactInfo.other})
+            </foreach>
+    </insert>
+
+
+</mapper>

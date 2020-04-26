@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.contract.ContractInfoDao">
+  
+  
+  <!-- 基础 MAP -->
+  <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.contract.ContractInfo">
+    <id column="contract_id" jdbcType="VARCHAR" property="contractId"/>
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName"/>
+    <result column="contract_date" jdbcType="DATE" property="contractDate"/>
+    <result column="employee_pk" jdbcType="BIGINT" property="employeePk"/>
+    <result column="employee_id" jdbcType="VARCHAR" property="employeeId"/>
+    <result column="employee_name" jdbcType="VARCHAR" property="employeeName"/>
+    <result column="dept_id" jdbcType="VARCHAR" property="deptId"/>
+    <result column="customer_pk" jdbcType="BIGINT" property="customerPk"/>
+    <result column="customer_id" jdbcType="VARCHAR" property="customerId"/>
+    <result column="customer_contact_id" jdbcType="BIGINT" property="customerContactId"/>
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName"/>
+    <result column="industry" jdbcType="VARCHAR" property="industry"/>
+    <result column="address" jdbcType="VARCHAR" property="address"/>
+    <result column="final_customer_id" jdbcType="VARCHAR" property="finalCustomerId"/>
+    <result column="final_customer_contact_id" jdbcType="BIGINT" property="finalCustomerContactId"/>
+    <result column="product_type" jdbcType="VARCHAR" property="productType"/>
+    <result column="project_id" jdbcType="VARCHAR" property="projectId"/>
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount"/>
+    <result column="accept_condition" jdbcType="VARCHAR" property="acceptCondition" />
+    <result column="b2b" jdbcType="INTEGER" property="b2b"/>
+    <result column="contract_type" jdbcType="VARCHAR" property="contractType"/>
+    <result column="creator" jdbcType="VARCHAR" property="creator"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="operator" jdbcType="VARCHAR" property="operator"/>
+    <result column="last_time" jdbcType="TIMESTAMP" property="lastTime"/>
+  </resultMap>
+  
+  <!-- 列表 VO -->
+  <resultMap id="ListVOMap" type="com.sefonsoft.oa.domain.contract.vo.ContractListVO">
+    <id column="contract_id" jdbcType="VARCHAR" property="contractId"/>
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName"/>
+    <result column="contract_date" jdbcType="DATE" property="contractDate"/>
+    <result column="employee_id" jdbcType="VARCHAR" property="employeeId"/>
+    <result column="employee_name" jdbcType="VARCHAR" property="employeeName"/>
+    <result column="dept_id" jdbcType="VARCHAR" property="deptId"/>
+    <result column="dept_name" jdbcType="VARCHAR" property="deptName"/>
+    <result column="customer_id" jdbcType="VARCHAR" property="customerId"/>
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName"/>
+    <result column="address" jdbcType="VARCHAR" property="address"/>
+    <result column="product_type" jdbcType="VARCHAR" property="productType"/>
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount"/>
+    <result column="pay_amount" jdbcType="DECIMAL" property="payAmount"/>
+    <result column="invoice_amount" jdbcType="DECIMAL" property="invoiceAmount"/>
+    <result column="operator" jdbcType="VARCHAR" property="operator"/>
+    <result column="operator_name" jdbcType="VARCHAR" property="operatorName"/>
+    <result column="last_time" jdbcType="VARCHAR" property="lastTime"/>
+  </resultMap>
+  
+  <!-- 基础列 -->
+  <sql id="Base_Column_List">
+     contract_id,
+     contract_name,
+     contract_date,
+     employee_pk,
+     employee_id,
+     employee_name,
+     dept_id,
+     customer_pk,
+     customer_id,
+     customer_name,
+     industry,
+     address,
+     final_customer_id,
+     product_type,
+     project_id,
+     contract_amount,
+     accept_condition,
+     b2b,
+     contract_type,
+     creator,
+     create_time,
+     operator,
+     last_time
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from contract_info
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    update
+      contract_info
+    set 
+      contract_id = MD5(RAND()),
+      del_contract_id = #{contractId,jdbcType=VARCHAR},
+      is_delete = 1
+    where 
+      contract_id = #{contractId,jdbcType=VARCHAR}
+      AND is_delete = 0
+  </delete>
+  
+  <delete id="clearDelete" parameterType="java.lang.String">
+    update
+      contract_info
+    set 
+      contract_id = MD5(RAND()),
+      del_contract_id = #{contractId,jdbcType=VARCHAR},
+      is_delete = 1
+    where 
+      contract_id = #{contractId,jdbcType=VARCHAR}
+      AND is_delete = 1
+  </delete>
+  
+  <!-- 插入所有 -->
+  <insert id="insert" keyColumn="contract_id" keyProperty="contractId"
+          parameterType="com.sefonsoft.oa.entity.contract.ContractInfo" useGeneratedKeys="true">
+    insert into contract_info (
+           contract_id,
+           contract_name,
+           contract_date,
+           employee_pk,
+           employee_id,
+           employee_name,
+           dept_id,
+           customer_pk,
+           customer_id,
+           customer_name,
+           customer_contact_id,
+           industry,
+           address,
+           final_customer_id,
+           final_customer_contact_id,
+           product_type,
+           project_id,
+           contract_amount,
+           accept_condition,
+           b2b,
+           contract_type,
+           creator,
+           create_time,
+           operator,
+           last_time)
+    values (
+           #{contractId,jdbcType=VARCHAR},
+           #{contractName,jdbcType=VARCHAR},
+           #{contractDate,jdbcType=DATE},
+           #{employeePk,jdbcType=BIGINT},
+           #{employeeId,jdbcType=VARCHAR},
+           #{employeeName,jdbcType=VARCHAR},
+           #{deptId,jdbcType=VARCHAR},
+           #{customerPk,jdbcType=BIGINT},
+           #{customerId,jdbcType=VARCHAR},
+           #{customerName,jdbcType=VARCHAR},
+           #{customerContactId,jdbcType=VARCHAR},
+           #{industry,jdbcType=VARCHAR},
+           #{address,jdbcType=VARCHAR},
+           #{finalCustomerId,jdbcType=VARCHAR},
+           #{finalCustomerContactId,jdbcType=VARCHAR},
+           #{productType,jdbcType=VARCHAR},
+           #{projectId,jdbcType=VARCHAR},
+           #{contractAmount,jdbcType=DECIMAL},
+           #{acceptCondition,jdbcType=VARCHAR},
+           #{b2b,jdbcType=VARCHAR},
+           #{contractType,jdbcType=VARCHAR},
+           #{creator,jdbcType=VARCHAR},
+           #{createTime,jdbcType=TIMESTAMP},
+           #{operator,jdbcType=VARCHAR},
+           #{lastTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  
+  <!-- 插入非空字段 -->
+  <insert id="insertSelective" keyColumn="contract_id" keyProperty="contractId"
+          parameterType="com.sefonsoft.oa.entity.contract.ContractInfo" useGeneratedKeys="true">
+    insert into contract_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      contract_id,
+      <if test="contractName != null">
+        contract_name,
+      </if>
+      <if test="contractDate != null">
+        contract_date,
+      </if>
+      <if test="employeePk != null">
+        employee_pk,
+      </if>
+      <if test="employeeId != null">
+        employee_id,
+      </if>
+      <if test="employeeName != null">
+        employee_name,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="customerPk != null">
+        customer_pk,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="industry != null">
+        industry,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="finalCustomerId != null">
+        final_customer_id,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="contractAmount != null">
+        contract_amount,
+      </if>
+      <if test="acceptCondition != null">
+        accept_condition,
+      </if>
+      <if test="b2b != null">
+        b2b,
+      </if>
+      <if test="contractType != null">
+        contract_type,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="lastTime != null">
+        last_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{contractId,jdbcType=VARCHAR},
+      <if test="contractName != null">
+        #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractDate != null">
+        #{contractDate,jdbcType=DATE},
+      </if>
+      <if test="employeePk != null">
+        #{employeePk,jdbcType=BIGINT},
+      </if>
+      <if test="employeeId != null">
+        #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeName != null">
+        #{employeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerPk != null">
+        #{customerPk,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="finalCustomerId != null">
+        #{finalCustomerId,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAmount != null">
+        #{contractAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="acceptCondition != null">
+        #{acceptCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="b2b != null">
+        #{b2b,jdbcType=VARCHAR},
+      </if>
+      <if test="contractType != null">
+        #{contractType,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="lastTime != null">
+        #{last_time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 更新非 NULL 字段 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.sefonsoft.oa.entity.contract.ContractInfo">
+    update contract_info
+    <set>
+      <if test="contractName != null">
+        contract_name = #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractDate != null">
+        contract_date = #{contractDate,jdbcType=DATE},
+      </if>
+      <if test="employeePk != null">
+        employee_pk = #{employeePk,jdbcType=BIGINT},
+      </if>
+      <if test="employeeId != null">
+        employee_id = #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeName != null">
+        employee_name = #{employeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerPk != null">
+        customer_pk = #{customerPk,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        industry = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="finalCustomerId != null">
+        final_customer_id = #{finalCustomerId,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAmount != null">
+        contract_amount = #{contractAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="acceptCondition != null">
+        accept_condition = #{acceptCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="b2b != null">
+        b2b = #{b2b,jdbcType=VARCHAR},
+      </if>
+      <if test="contractType != null">
+        contract_type = #{contractType,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 更新所有字段 -->
+  <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.entity.contract.ContractInfo">
+    update contract_info
+    set contract_name     = #{contractName,jdbcType=VARCHAR},
+        contract_date     = #{contractDate,jdbcType=DATE},
+        employee_pk       = #{employeePk,jdbcType=BIGINT},
+        employee_id       = #{employeeId,jdbcType=VARCHAR},
+        employee_name     = #{employeeName,jdbcType=VARCHAR},
+        dept_id           = #{deptId,jdbcType=VARCHAR},
+        customer_pk       = #{customerPk,jdbcType=BIGINT},
+        customer_id       = #{customerId,jdbcType=VARCHAR},
+        customer_name     = #{customerName,jdbcType=VARCHAR},
+        industry          = #{industry,jdbcType=VARCHAR},
+        address           = #{address,jdbcType=VARCHAR},
+        final_customer_id = #{finalCustomerId,jdbcType=VARCHAR},
+        product_type      = #{productType,jdbcType=VARCHAR},
+        project_id        = #{projectId,jdbcType=VARCHAR},
+        contract_amount   = #{contractAmount,jdbcType=DECIMAL},
+        accept_condition  = #{acceptCondition,jdbcType=VARCHAR},
+        b2b               = #{b2b,jdbcType=VARCHAR},
+        contract_type     = #{contractType,jdbcType=VARCHAR},
+        creator           = #{creator,jdbcType=VARCHAR},
+        create_time        = #{createTime,jdbcType=TIMESTAMP},
+        operator          = #{operator,jdbcType=VARCHAR},
+        last_time         = #{lastTime,jdbcType=TIMESTAMP}
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectDetailVO" resultType="com.sefonsoft.oa.domain.contract.vo.ContractDetailVO">
+    
+    SELECT
+    	ctr.contract_id,
+    	ctr.contract_name,
+    	ctr.contract_date,
+    	ctr.dept_id,
+    	(SELECT dept_name from sys_department where dept_id = ctr.dept_id) dept_name,
+    	ctr.employee_id,
+    	ctr.employee_name,
+    	ctr.contract_type,
+    	ctr.accept_condition,
+    	ctr.product_type,
+    	ctr.industry,
+    	ctr.address,
+    	ctr.contract_amount,
+    	IFNULL(( select sum(amount) from contract_pay_info where contract_id = ctr.contract_id), 0)  payAmount,
+    	IFNULL(( select sum(amount) from contract_invoice_info where contract_id = ctr.contract_id), 0) invoiceAmount,
+    	ctr.b2b,
+    	ctr.creator,
+        (SELECT employee_name FROM sys_employee WHERE employee_id = ctr.creator ) creator_name,
+    	ctr.create_time,
+    	ctr.operator,
+    	(select employee_name from sys_employee where employee_id = ctr.operator) operator_name,
+        ctr.last_time,
+    	proj.*, 
+    	cust.*,
+    	fcust.*
+    
+    FROM
+    
+    	-- 合同表
+    	contract_info ctr,
+    	
+    	-- 项目信息
+    	( 
+    		SELECT
+    				p.project_id          project_id,
+    				p.project_name        project_name,
+    				dpt.dept_id           project_employee_dept_id,
+    				dpt.dept_name         project_employee_dept_name,
+    				r.employee_id         project_employee_id,
+    				e.employee_name       project_employee_name
+    		FROM
+    			project_info p
+    			LEFT JOIN project_sale_ref r ON r.project_id = p.project_id
+    			LEFT JOIN sys_employee e ON r.employee_id = e.employee_id
+    			LEFT JOIN sys_department dpt ON e.dept_id = dpt.dept_id ) proj,
+    		
+    	-- 客户信息
+    	( 
+    		SELECT 
+    			c.id            customer_contact_id,
+    			c.customer_id   customer_id,
+    			m.customer_name customer_name,
+    			c.contact_name  customer_contact_name,
+    			c.telphone      customer_contact_telephone,
+    			c.job           customer_contact_job
+    		FROM 
+    			contact_info c
+    			LEFT JOIN customer_info m on c.customer_id = m.customer_id ) cust,
+    
+    	-- 最终客户信息
+    	( 
+    		SELECT 
+    			c.id            final_customer_contact_id,
+    			c.customer_id   final_customer_id,
+    			m.customer_name final_customer_name,
+    			c.contact_name  final_customer_contact_name,
+    			c.telphone      final_customer_contact_telephone,
+    			c.job           final_customer_contact_job
+    		FROM 
+    			contact_info c
+    			LEFT JOIN customer_info m on c.customer_id = m.customer_id) fcust
+      WHERE
+      	proj.project_id   = ctr.project_id
+      	AND cust.customer_contact_id      = ctr.customer_contact_id
+      	AND fcust.final_customer_contact_id    = ctr.final_customer_contact_id
+        AND ctr.contract_id = #{contractId}
+  </select>
+  
+  <!-- 查询页面列表条件表达式-->
+  <sql id="selectListVOWhere">
+    <where>
+        c.is_delete = 0 AND
+        <!-- 权限 -->
+        (
+          1 = 0
+          <if test="accessRule.includeDepts.size > 0">
+            OR c.dept_id IN 
+            <foreach item="deptId" collection="accessRule.includeDepts" separator="," open="(" close=")">
+              #{deptId}
+            </foreach>
+          </if>
+          <if test="accessRule.includeEmployees.size > 0">
+            OR c.employee_id IN 
+            <foreach item="empId" collection="accessRule.includeEmployees" separator="," open="(" close=")">
+              #{empId}
+            </foreach>
+          </if>
+        )
+        <!-- 合同编号 -->
+        <if test="kw != null and kw != ''">
+            and 
+            (
+              contract_id = #{kw}
+              OR contract_name like CONCAT('%', #{kw}, '%')
+            )
+        </if>
+        <if test = "employeeId != null and employeeId != ''">
+            and employee_id = #{employeeId}
+        </if>
+        <if test="year != null and year != ''">
+            and YEAR(c.contract_date) = #{year}
+        </if>
+        <if test='halfYear == "1"'>
+            and MONTH(c.contract_date) in (1, 2, 3, 4, 5, 6)
+        </if>
+        <if test='halfYear == "2"'>
+            and MONTH(c.contract_date) in (7, 8, 9, 10, 11, 12)
+        </if>
+        <if test='quarter == "1"'>
+            and MONTH(c.contract_date) in (1, 2, 3)
+        </if>
+        <if test='quarter == "2"'>
+            and MONTH(c.contract_date) in (4, 5, 6)
+        </if>
+        <if test='quarter == "3"'>
+            and MONTH(c.contract_date) in (7, 8, 9)
+        </if>
+        <if test='quarter == "4"'>
+            and MONTH(c.contract_date) in (10, 11, 12)
+        </if>
+        <if test="month != null and month != ''">
+            and MONTH(c.contract_date) = #{month}
+        </if>
+        <if test="contractDateFrom != null">
+            and c.contract_date <![CDATA[>=]]> #{contractDateFrom}
+        </if>
+        <if test="contractDateTo != null">
+            and c.contract_date <![CDATA[<=]]> #{contractDateTo}
+        </if>
+        
+        
+    </where>
+  </sql>
+  <!-- 查询页面列表 -->
+  <select id="selectListVO" parameterType="com.sefonsoft.oa.domain.contract.vo.ContractListQueryVO" resultMap="ListVOMap">
+      SELECT
+      	c.contract_id,
+      	c.contract_name,
+      	c.contract_date,
+      	c.employee_id,
+      	c.employee_name,
+      	c.dept_id,
+      	d.dept_name,
+      	c.address,
+      	c.customer_id,
+      	c.customer_name,
+      	c.product_type,
+        case c.product_type when '大数据产品' then 1 when '大数据产品+技术服务' then 2 else  3 end product_type_order,
+      	c.contract_amount,
+      	IFNULL( ( SELECT sum( amount ) FROM contract_pay_info     WHERE contract_id = c.contract_id ), 0 ) pay_amount,
+      	IFNULL( ( SELECT sum( amount ) FROM contract_invoice_info WHERE contract_id = c.contract_id ), 0 ) invoice_amount
+      FROM
+      	contract_info c
+      	LEFT JOIN sys_department d ON c.dept_id = d.dept_id
+      <include refid="selectListVOWhere" />
+      ORDER BY
+        contract_date desc,
+        product_type_order,
+        contract_amount desc
+        
+      limit #{page}, #{rows} 
+  </select>
+  
+  <!-- 查询页面列表总条数 -->
+  <select id="selectListVOCount" parameterType="com.sefonsoft.oa.domain.contract.vo.ContractListQueryVO" resultType="java.lang.Integer">
+    select
+      count(1)
+    from contract_info c
+    <include refid="selectListVOWhere" />
+  </select>
+  
+  
+  
+  
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sefonsoft.oa.dao.contract.ContractPayStageDao">
+  <resultMap id="BaseResultMap" type="com.sefonsoft.oa.entity.contract.ContractPayStage">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="contract_id" jdbcType="VARCHAR" property="contractId"/>
+    <result column="ratio" jdbcType="INTEGER" property="ratio"/>
+    <result column="amount" jdbcType="DECIMAL" property="amount"/>
+    <result column="pay_condition" jdbcType="VARCHAR" property="payCondition"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, contract_id, ratio, amount, pay_condition
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from contract_pay_stage
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete
+    from contract_pay_stage
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.sefonsoft.oa.entity.contract.ContractPayStage"
+          useGeneratedKeys="true">
+    insert into contract_pay_stage (contract_id, ratio, amount,
+                                    pay_condition)
+    values (#{contractId,jdbcType=VARCHAR}, #{ratio,jdbcType=INTEGER}, #{amount,jdbcType=DECIMAL},
+            #{payCondition,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id"
+          parameterType="com.sefonsoft.oa.entity.contract.ContractPayStage" useGeneratedKeys="true">
+    insert into contract_pay_stage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="contractId != null">
+        contract_id,
+      </if>
+      <if test="ratio != null">
+        ratio,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="payCondition != null">
+        pay_condition,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="contractId != null">
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="ratio != null">
+        #{ratio,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payCondition != null">
+        #{payCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="payDate != null">
+        #{payDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sefonsoft.oa.entity.contract.ContractPayStage">
+    update contract_pay_stage
+    <set>
+      <if test="contractId != null">
+        contract_id = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="ratio != null">
+        ratio = #{ratio,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payCondition != null">
+        pay_condition = #{payCondition,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sefonsoft.oa.entity.contract.ContractPayStage">
+    update contract_pay_stage
+    set contract_id   = #{contractId,jdbcType=VARCHAR},
+        ratio         = #{ratio,jdbcType=INTEGER},
+        amount        = #{amount,jdbcType=DECIMAL},
+        pay_condition = #{payCondition,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 根据合同ID 删除 -->
+  <delete id="deleteByContractId">
+  
+    delete from contract_pay_stage where contract_id = #{contractId}
+  
+  </delete>
+  
+  
+  
+  <!-- 根据合同编号获取产品信息 -->
+  
+  <select id="selectByContractId" resultType="com.sefonsoft.oa.domain.contract.vo.ContractPayStageVO">
+     select 
+        ratio,
+        amount,
+        pay_condition
+     from 
+        contract_pay_stage
+     where 
+        contract_id = #{contractId}
+  </select>
+</mapper>
