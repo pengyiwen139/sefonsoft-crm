@@ -19,6 +19,7 @@
       <module>crm-excontract</module>
         <module>crm-excontract6002</module>
         <module>crm-getway9527</module>
+        <module>crm-search</module>
     </modules>
     <packaging>pom</packaging>
   <name>sefonsoftcrm</name>
