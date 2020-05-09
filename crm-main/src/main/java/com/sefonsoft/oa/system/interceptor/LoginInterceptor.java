@@ -32,27 +32,27 @@ public class LoginInterceptor implements HandlerInterceptor{
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        HttpSession session = request.getSession(false);
-        if(session==null){
-            response.setStatus(401);
-            return false;
-        }else{
-            String userId = CookieUtil.getLoginUserIdByCookie(request);
-            String myid = session.getId();
-
-            Object attribute = session.getAttribute(USER_INFO + userId);
-            if (!ObjTool.isNotNull(attribute)) {
-                response.setStatus(401);
-                return false;
-            }
-
-            if (!myid.equals(userSessionMap.get(userId))) {
-              session.invalidate();
-              response.setStatus(401);
-              return false;
-            }
-        }
-        HttpRequestHolder.setHttpRequestHolder(request);
+//        HttpSession session = request.getSession(false);
+//        if(session==null){
+//            response.setStatus(401);
+//            return false;
+//        }else{
+//            String userId = CookieUtil.getLoginUserIdByCookie(request);
+//            String myid = session.getId();
+//
+//            Object attribute = session.getAttribute(USER_INFO + userId);
+//            if (!ObjTool.isNotNull(attribute)) {
+//                response.setStatus(401);
+//                return false;
+//            }
+//
+//            if (!myid.equals(userSessionMap.get(userId))) {
+//              session.invalidate();
+//              response.setStatus(401);
+//              return false;
+//            }
+//        }
+//        HttpRequestHolder.setHttpRequestHolder(request);
         return true;
     }
 
