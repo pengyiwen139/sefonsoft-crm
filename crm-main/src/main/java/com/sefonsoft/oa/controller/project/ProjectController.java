@@ -26,6 +26,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
@@ -33,10 +36,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.sefonsoft.oa.system.constant.MenuPermissionConstant.*;
@@ -58,6 +58,18 @@ public class ProjectController extends BaseController {
     @Resource
     private ProjectInfoService projectInfoService;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+
+    @RequestMapping(value = "/testJemeter")
+    public String findProjectByDataList() {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        ops.set("hello","world_"+ UUID.randomUUID().toString());
+        String hello = ops.get("hello");
+        System.out.println("hello:"+hello);
+        return "success";
+    }
 
     /**
      * 项目立项列表
@@ -449,7 +461,6 @@ public class ProjectController extends BaseController {
     }
     /**
      * 根据projectId查询项目基础信息
-     * @param projectId
      * @return 单条数据
      */
     @ApiOperation(value = "批量查询项目基础信息",response = ProjectInfoQueryDTO.class)

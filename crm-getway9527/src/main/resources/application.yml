@@ -1,36 +1,36 @@
-server:
-  port: 9527
-
-spring:
-  application:
-    name: cloud-gateway
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 10.0.2.55:8848
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-      routes:
-        - id: crm-excontract_route
-          uri: http://10.0.2.55:7001/openFeign/test
-          # - id: crm-excontract_route
-          #   uri: lb://crm-main
-          predicates:
-            - Path=/gateway
-  datasource:
-    url: jdbc:mysql://10.0.8.28:3306/sefonoa?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
-    username: root
-    password: rootroot
-
-
-
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-
-logging:
-  level:
-    com.sefonsoft.oa.dao: debug
+#server:
+#  port: 9527
+#
+#spring:
+#  application:
+#    name: cloud-gateway
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 10.0.2.55:8848
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#      routes:
+#        - id: crm-excontract_route
+#          uri: http://10.0.2.55:7001/openFeign/test
+#          # - id: crm-excontract_route
+#          #   uri: lb://crm-main
+#          predicates:
+#            - Path=/gateway
+#  datasource:
+#    url: jdbc:mysql://10.0.8.28:3306/sefonoa?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+#    username: root
+#    password: rootroot
+#
+#
+#
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#
+#logging:
+#  level:
+#    com.sefonsoft.oa.dao: debug
