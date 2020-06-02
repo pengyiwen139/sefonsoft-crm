@@ -13,6 +13,7 @@ import com.sefonsoft.oa.service.project.ProjectService;
 import com.sefonsoft.oa.service.sysemployee.SysEmployeeService;
 import com.sefonsoft.oa.system.annotation.CurrentUser;
 import com.sefonsoft.oa.system.annotation.MethodPermission;
+import com.sefonsoft.oa.system.config.RedissonConfig;
 import com.sefonsoft.oa.system.constant.ProjectConstant;
 import com.sefonsoft.oa.system.emun.Dept;
 import com.sefonsoft.oa.system.emun.Grade;
@@ -26,6 +27,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import org.apache.logging.log4j.util.Strings;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RReadWriteLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -37,6 +42,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.sefonsoft.oa.system.constant.MenuPermissionConstant.*;
@@ -61,6 +67,8 @@ public class ProjectController extends BaseController {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Resource
+    private RedissonConfig redissonClient;
 
     @RequestMapping(value = "/testJemeter")
     public String findProjectByDataList() {
@@ -68,6 +76,25 @@ public class ProjectController extends BaseController {
         ops.set("hello","world_"+ UUID.randomUUID().toString());
         String hello = ops.get("hello");
         System.out.println("hello:"+hello);
+        return "success";
+    }
+
+    @RequestMapping(value = "/getRedissonClient")
+    public String getRedissonClient() {
+        RedissonClient redisson = redissonClient.redisson();
+        RLock lock = redisson.getLock("read-write-lock");
+        try {
+            lock.lock();
+            System.out.println("加锁成功，执行业务。。。" + Thread.currentThread().getId());
+            redisTemplate.opsForValue().set("writeValue", "asdvsda");
+            Thread.sleep(45000);
+        } catch (Exception e) {
+
+        }finally {
+            //解锁就算不运行，redisson也不会出现死锁
+            System.out.println("释放锁。。。" + Thread.currentThread().getId());
+            lock.unlock();
+        }
         return "success";
     }
 
@@ -609,5 +636,21 @@ public class ProjectController extends BaseController {
     return new Response().success(data);
     }
 
-
+    public static void main(String[] args) {
+        int i = 1;
+        try {
+            String a = "zenglin";
+            List<String> list = new ArrayList<>();
+            while (true) {
+                list.add(a);
+                a = a + a;
+                i++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            System.out.println("进行了第几次就出现了OOM：" + i);
+        }
+    }
 }
